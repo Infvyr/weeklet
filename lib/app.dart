@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/core/theme/theme.dart';
 
-import 'app/router/app_routes.dart';
-import 'app/theme/theme.dart';
+import 'core/router/app_routes.dart';
 import 'core/utils/scroll_behavior.dart';
 
 class WeekletApp extends StatelessWidget {

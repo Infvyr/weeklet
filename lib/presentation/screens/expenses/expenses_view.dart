@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:weeklet/app/router/app_routes.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
+import 'package:weeklet/core/router/app_routes.dart';
 
 class ExpensesView extends StatelessWidget {
   const ExpensesView({super.key});
