@@ -21,4 +21,13 @@ extension DateTimeExtension on DateTime {
       ),
     );
   }
+
+  bool isSameDay(DateTime other) =>
+      year == other.year && month == other.month && day == other.day;
+
+  int getWeekOfMonth() {
+    final firstDayOfMonth = DateTime(year, month, 1);
+    final dayOfWeek = firstDayOfMonth.weekday;
+    return ((day + dayOfWeek - 1) / 7).ceil();
+  }
 }

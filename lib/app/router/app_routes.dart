@@ -1,20 +1,51 @@
-class _AppRoutes {
-  static const dashboard = '/';
-  static const addTransaction = '/add-transaction';
-  static const journal = '/journal';
-  static const stats = '/stats';
-  static const settings = '/settings';
-}
+import 'package:flutter/material.dart';
+import 'package:weeklet/presentation/navigation/main_navigation.dart';
+import 'package:weeklet/presentation/screens/categories/categories_screen.dart';
+import 'package:weeklet/presentation/screens/expenses/add_expense_screen.dart';
+import 'package:weeklet/presentation/screens/expenses/expenses_screen.dart';
+import 'package:weeklet/presentation/screens/settings/settings_screen.dart';
+import 'package:weeklet/presentation/screens/stats/stats_screen.dart';
 
-enum AppRoute {
-  dashboard(_AppRoutes.dashboard),
-  journal(_AppRoutes.journal),
-  stats(_AppRoutes.stats),
-  settings(_AppRoutes.settings),
-  addTransaction(_AppRoutes.addTransaction)
-  ;
+class AppRoutes {
+  static const home = '/';
+  static const expensesScreen = '/expenses';
+  static const categoriesScreen = '/categories';
+  static const statsScreen = '/stats';
+  static const settingsScreen = '/settings';
+  static const addExpenseScreen = '/add-expense';
 
-  const AppRoute(this.path);
-
-  final String path;
+  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case home:
+        return MaterialPageRoute<dynamic>(
+          builder: (context) => const MainNavigation(),
+        );
+      case expensesScreen:
+        return MaterialPageRoute<dynamic>(
+          builder: (context) => const ExpensesScreen(),
+        );
+      case categoriesScreen:
+        return MaterialPageRoute<dynamic>(
+          builder: (context) => const CategoriesScreen(),
+        );
+      case statsScreen:
+        return MaterialPageRoute<dynamic>(
+          builder: (context) => const StatsScreen(),
+        );
+      case settingsScreen:
+        return MaterialPageRoute<dynamic>(
+          builder: (context) => const SettingsScreen(),
+        );
+      case addExpenseScreen:
+        return MaterialPageRoute<dynamic>(
+          builder: (context) => const AddExpenseScreen(),
+        );
+      default:
+        return MaterialPageRoute<dynamic>(
+          builder: (context) => const Scaffold(
+            body: Center(child: Text('Route not found')),
+          ),
+        );
+    }
+  }
 }

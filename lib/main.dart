@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weeklet/app/di/injection_container.dart' as di;
+import 'package:weeklet/app/di/service_locator.dart' as di;
 
 import 'app.dart';
 
