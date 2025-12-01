@@ -8,5 +8,13 @@ class AddCategoryUseCase implements UseCase<void, Category> {
   final CategoryRepository repository;
 
   @override
-  Future<void> call(Category params) => repository.addCategory(params);
+  Future<void> call(Category params) async {
+    if (params.name.trim().isEmpty) {
+      throw ArgumentError('Category name cannot be empty');
+    }
+    if (params.icon.trim().isEmpty) {
+      throw ArgumentError('Category icon cannot be empty');
+    }
+    return repository.addCategory(params);
+  }
 }

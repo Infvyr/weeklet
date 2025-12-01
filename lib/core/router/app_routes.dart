@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weeklet/presentation/navigation/main_navigation.dart';
+import 'package:weeklet/presentation/screens/categories/add_category_screen.dart';
 import 'package:weeklet/presentation/screens/categories/categories_screen.dart';
 import 'package:weeklet/presentation/screens/expenses/add_expense_screen.dart';
 import 'package:weeklet/presentation/screens/expenses/expenses_screen.dart';
@@ -13,6 +14,7 @@ class AppRoutes {
   static const statsScreen = '/stats';
   static const settingsScreen = '/settings';
   static const addExpenseScreen = '/add-expense';
+  static const addCategoryScreen = '/add-category';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -39,6 +41,10 @@ class AppRoutes {
       case addExpenseScreen:
         return MaterialPageRoute<dynamic>(
           builder: (context) => const AddExpenseScreen(),
+        );
+      case addCategoryScreen:
+        return MaterialPageRoute<dynamic>(
+          builder: (context) => const AddCategoryScreen(),
         );
       default:
         return MaterialPageRoute<dynamic>(

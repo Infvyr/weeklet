@@ -1,5 +1,7 @@
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:weeklet/domain/entities/expense.dart';
 
+@HiveType(typeId: 1)
 class ExpenseModel {
   ExpenseModel({
     required this.id,
@@ -20,12 +22,26 @@ class ExpenseModel {
     createdAt: entity.createdAt,
     note: entity.note,
   );
+
+  @HiveField(0)
   final String id;
+
+  @HiveField(1)
   final String categoryId;
+
+  @HiveField(2)
   final String title;
+
+  @HiveField(3)
   final double amount;
+
+  @HiveField(4)
   final DateTime date;
+
+  @HiveField(5)
   final DateTime createdAt;
+
+  @HiveField(6)
   final String? note;
 
   Expense toEntity() => Expense(

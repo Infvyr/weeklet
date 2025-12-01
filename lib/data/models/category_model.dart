@@ -1,5 +1,7 @@
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:weeklet/domain/entities/category.dart';
 
+@HiveType(typeId: 0)
 class CategoryModel {
   CategoryModel({
     required this.id,
@@ -12,8 +14,14 @@ class CategoryModel {
     name: entity.name,
     icon: entity.icon,
   );
+
+  @HiveField(0)
   final String id;
+
+  @HiveField(1)
   final String name;
+
+  @HiveField(2)
   final String icon;
 
   Category toEntity() => Category(

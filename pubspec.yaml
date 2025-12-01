@@ -1,11 +1,10 @@
 name: weeklet
-description: "Weeklet is a Flutter app for simple personal finance
-  management. You can add your weekly expenses for each month, divided into
-  categories such as daily expenses, utilities, internet/TV, other, shopping,
-  savings, and car. The app automatically calculates weekly and monthly
-  totals, and in the statistics section you can see an annual overview—totals
-  by category and total income. Ideal for those who want control, clarity, and
-  financial simplicity."
+description: "Weeklet is a Flutter app for simple personal finance management.
+  You can add your weekly expenses for each month, divided into categories such
+  as daily expenses, utilities, internet/TV, other, shopping, savings, and car.
+  The app automatically calculates weekly and monthly totals, and in the
+  statistics section you can see an annual overview—totals by category and total
+  income. Ideal for those who want control, clarity, and financial simplicity."
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
@@ -21,11 +20,11 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^9.1.1
   flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.7
   get_it: ^9.0.5
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   intl: ^0.20.2
-  lucide_icons_flutter: ^3.1.6
   path_provider: ^2.1.5
   uuid: ^4.5.2
 

@@ -15,6 +15,13 @@ class GetExpensesByMonthYearUseCase
   final ExpenseRepository repository;
 
   @override
-  Future<List<Expense>> call(GetExpensesByMonthYearParams params) =>
-      repository.getExpensesByMonthYear(params.month, params.year);
+  Future<List<Expense>> call(GetExpensesByMonthYearParams params) async {
+    if (params.month < 1 || params.month > 12) {
+      throw ArgumentError('Month must be between 1 and 12');
+    }
+    if (params.year < 2000) {
+      throw ArgumentError('Invalid year');
+    }
+    return repository.getExpensesByMonthYear(params.month, params.year);
+  }
 }

@@ -7,5 +7,10 @@ class DeleteCategoryUseCase implements UseCase<void, String> {
   final CategoryRepository repository;
 
   @override
-  Future<void> call(String params) => repository.deleteCategory(params);
+  Future<void> call(String params) async {
+    if (params.trim().isEmpty) {
+      throw ArgumentError('Category ID cannot be empty');
+    }
+    return repository.deleteCategory(params);
+  }
 }

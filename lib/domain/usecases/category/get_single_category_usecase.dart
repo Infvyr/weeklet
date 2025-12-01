@@ -8,5 +8,10 @@ class GetSingleCategoryUseCase implements UseCase<Category?, String> {
   final CategoryRepository repository;
 
   @override
-  Future<Category?> call(String params) => repository.getCategoryById(params);
+  Future<Category?> call(String params) async {
+    if (params.trim().isEmpty) {
+      throw ArgumentError('Category ID cannot be empty');
+    }
+    return repository.getCategoryById(params);
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:weeklet/data/datasources/local/category_local_datasource.dart';
+import 'package:weeklet/data/models/category_model.dart';
 import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/domain/repositories/category_repository.dart';
 
@@ -8,18 +9,29 @@ class CategoryRepositoryImpl implements CategoryRepository {
   final CategoryLocalDataSource localDataSource;
 
   @override
-  Future<void> addCategory(Category category) => localDataSource.addCategory(category);
+  Future<void> addCategory(Category category) async {
+    final model = CategoryModel.fromEntity(category);
+    await localDataSource.addCategory(model);
+  }
 
   @override
   Future<void> deleteCategory(String id) => localDataSource.deleteCategory(id);
 
   @override
-  Future<void> updateCategory(Category category) =>
-      localDataSource.updateCategory(category);
+  Future<void> updateCategory(Category category) async {
+    final model = CategoryModel.fromEntity(category);
+    await localDataSource.updateCategory(model);
+  }
 
   @override
-  Future<List<Category>> getAllCategories() => localDataSource.getAllCategories();
+  Future<List<Category>> getAllCategories() async {
+    final models = await localDataSource.getAllCategories();
+    return models.map((model) => model.toEntity()).toList();
+  }
 
   @override
-  Future<Category?> getCategoryById(String id) => localDataSource.getCategoryById(id);
+  Future<Category?> getCategoryById(String id) async {
+    final model = await localDataSource.getCategoryById(id);
+    return model?.toEntity();
+  }
 }

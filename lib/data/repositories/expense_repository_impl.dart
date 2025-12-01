@@ -1,4 +1,5 @@
 import 'package:weeklet/data/datasources/local/expense_local_datasource.dart';
+import 'package:weeklet/data/models/expense_model.dart';
 import 'package:weeklet/domain/entities/expense.dart';
 import 'package:weeklet/domain/repositories/expense_repository.dart';
 
@@ -8,18 +9,29 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
   final ExpenseLocalDataSource localDataSource;
 
   @override
-  Future<void> addExpense(Expense expense) => localDataSource.addExpense(expense);
+  Future<void> addExpense(Expense expense) async {
+    final model = ExpenseModel.fromEntity(expense);
+    await localDataSource.addExpense(model);
+  }
 
   @override
   Future<void> deleteExpense(String id) => localDataSource.deleteExpense(id);
 
   @override
-  Future<void> updateExpense(Expense expense) => localDataSource.updateExpense(expense);
+  Future<void> updateExpense(Expense expense) async {
+    final model = ExpenseModel.fromEntity(expense);
+    await localDataSource.updateExpense(model);
+  }
 
   @override
-  Future<List<Expense>> getExpensesByMonthYear(int month, int year) =>
-      localDataSource.getExpensesByMonthYear(month, year);
+  Future<List<Expense>> getExpensesByMonthYear(int month, int year) async {
+    final models = await localDataSource.getExpensesByMonthYear(month, year);
+    return models.map((model) => model.toEntity()).toList();
+  }
 
   @override
-  Future<List<Expense>> getAllExpenses() => localDataSource.getAllExpenses();
+  Future<List<Expense>> getAllExpenses() async {
+    final models = await localDataSource.getAllExpenses();
+    return models.map((model) => model.toEntity()).toList();
+  }
 }

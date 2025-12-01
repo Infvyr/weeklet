@@ -7,5 +7,10 @@ class DeleteExpenseUseCase implements UseCase<void, String> {
   final ExpenseRepository repository;
 
   @override
-  Future<void> call(String params) => repository.deleteExpense(params);
+  Future<void> call(String params) async {
+    if (params.trim().isEmpty) {
+      throw ArgumentError('Expense ID cannot be empty');
+    }
+    return repository.deleteExpense(params);
+  }
 }
