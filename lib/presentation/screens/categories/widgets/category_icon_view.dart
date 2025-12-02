@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/core/constants/category_icons.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
-import 'package:weeklet/core/utils/icons_utils.dart';
 
 class CategoryIconView extends StatelessWidget {
   const CategoryIconView({
     super.key,
-    required this.iconString,
+    required this.icon,
     required this.isSelected,
     required this.onSelected,
   });
 
-  final String iconString;
+  final CategoryIcon icon;
   final bool isSelected;
   final VoidCallback onSelected;
 
@@ -25,7 +25,7 @@ class CategoryIconView extends StatelessWidget {
     return IconButton(
       onPressed: onSelected,
       icon: Icon(
-        getIconDataFromString(iconString),
+        icon.icon,
         size: 32,
         color: iconColor,
       ),

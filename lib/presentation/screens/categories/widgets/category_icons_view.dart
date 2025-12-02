@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/core/constants/category_icons.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/mixins/category_search_mixin.dart';
 import 'package:weeklet/presentation/screens/categories/widgets/add_category_empty_view.dart';
@@ -8,7 +9,12 @@ import 'package:weeklet/presentation/widgets/input_view.dart';
 import 'package:weeklet/presentation/widgets/label_view.dart';
 
 class CategoryIconsView extends StatefulWidget {
-  const CategoryIconsView({super.key});
+  const CategoryIconsView({
+    super.key,
+    required this.onIconSelected,
+  });
+
+  final void Function(CategoryIcon) onIconSelected;
 
   @override
   State<CategoryIconsView> createState() => _CategoryIconsViewState();
@@ -67,13 +73,15 @@ class _CategoryIconsViewState extends State<CategoryIconsView>
                       ),
                       itemCount: filteredIcons.length,
                       itemBuilder: (_, index) {
-                        final categoryKey = filteredIcons.keys.elementAt(index);
-                        final iconString = filteredIcons[categoryKey];
-                        final isSelected = categoryKey == selectedIconKey;
+                        final categoryIcon = filteredIcons[index];
+                        final isSelected = categoryIcon.name == selectedIcon?.name;
                         return CategoryIconView(
-                          iconString: iconString!,
+                          icon: categoryIcon,
                           isSelected: isSelected,
-                          onSelected: () => setState(() => selectedIconKey = categoryKey),
+                          onSelected: () => setState(() {
+                            selectedIcon = categoryIcon;
+                            widget.onIconSelected(categoryIcon);
+                          }),
                         );
                       },
                     ),

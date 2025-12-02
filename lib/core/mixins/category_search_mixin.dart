@@ -5,8 +5,8 @@ mixin CategorySearchMixin<T extends StatefulWidget> on State<T> {
   final ValueNotifier<String> searchNotifier = ValueNotifier('');
   final TextEditingController searchController = TextEditingController();
 
-  Map<String, String> filteredIcons = kCategoryIcons;
-  String? selectedIconKey;
+  List<CategoryIcon> filteredIcons = kCategoryIcons;
+  CategoryIcon? selectedIcon;
 
   @override
   void initState() {
@@ -23,24 +23,22 @@ mixin CategorySearchMixin<T extends StatefulWidget> on State<T> {
   }
 
   void _filterIcons() {
-    setState(() {
-      final searchTerm = searchNotifier.value.toLowerCase().trim();
+    final searchTerm = searchNotifier.value.toLowerCase().trim();
 
+    setState(() {
       if (searchTerm.isEmpty) {
         filteredIcons = kCategoryIcons;
-        return;
+      } else {
+        filteredIcons = kCategoryIcons
+            .where(
+              (icon) =>
+                  icon.label.toLowerCase().contains(searchTerm) ||
+                  icon.name.toLowerCase().contains(searchTerm),
+            )
+            .toList();
       }
-
-      final Map<String, String> results = {};
-      kCategoryIcons.forEach((key, value) {
-        if (key.contains(searchTerm) || value.contains(searchTerm)) {
-          results[key] = value;
-        }
-      });
-
-      debugPrint('Filtered Icons: $results');
-
-      filteredIcons = results;
     });
+
+    debugPrint('Filtered Icons: ${filteredIcons.map((e) => e.label).toList()}');
   }
 }

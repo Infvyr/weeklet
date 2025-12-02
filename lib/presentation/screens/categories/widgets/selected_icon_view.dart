@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/core/constants/category_icons.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/presentation/widgets/label_view.dart';
 
 class SelectedIconView extends StatelessWidget {
-  const SelectedIconView({super.key});
+  const SelectedIconView({
+    super.key,
+    required this.selectedIcon,
+    this.categoryName,
+  });
+
+  final CategoryIcon? selectedIcon;
+  final String? categoryName;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -20,13 +28,13 @@ class SelectedIconView extends StatelessWidget {
             color: context.colorScheme.outline,
           ),
         ),
-        child: const Padding(
-          padding: EdgeInsets.all(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
           child: Row(
             spacing: 12,
             children: [
-              _SelectedIcon(),
-              _SelectedIconMeta(),
+              _SelectedIcon(selectedIcon),
+              _SelectedIconMeta(selectedIcon, categoryName),
             ],
           ),
         ),
@@ -36,7 +44,9 @@ class SelectedIconView extends StatelessWidget {
 }
 
 class _SelectedIcon extends StatelessWidget {
-  const _SelectedIcon({Key? key}) : super(key: key);
+  const _SelectedIcon(this.categoryIcon, {Key? key}) : super(key: key);
+
+  final CategoryIcon? categoryIcon;
 
   @override
   Widget build(BuildContext context) => Ink(
@@ -46,33 +56,38 @@ class _SelectedIcon extends StatelessWidget {
       color: context.colorScheme.primary,
       borderRadius: BorderRadius.circular(6),
     ),
-    child: const Icon(
-      Icons.help_outline,
+    child: Icon(
+      categoryIcon?.icon ?? Icons.help_outline,
       size: 24,
       color: Colors.white,
-      semanticLabel: 'Selected icon name',
+      semanticLabel: 'Selected icon preview',
     ),
   );
 }
 
 class _SelectedIconMeta extends StatelessWidget {
-  const _SelectedIconMeta({Key? key}) : super(key: key);
+  const _SelectedIconMeta(
+    this.categoryIcon,
+    this.categoryName, {
+    Key? key,
+  }) : super(key: key);
+
+  final CategoryIcon? categoryIcon;
+  final String? categoryName;
 
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: .start,
     children: [
       Text(
-        'No icon selected',
+        categoryIcon?.label ?? 'No icon selected',
         style: context.textTheme.bodyMedium,
-        semanticsLabel: 'Selected icon description',
       ),
       Text(
-        'Shopping',
+        categoryName?.isNotEmpty == true ? categoryName! : 'Category name not set',
         style: context.textTheme.bodySmall?.copyWith(
           color: context.colorScheme.onSurfaceVariant,
         ),
-        semanticsLabel: 'Category name',
       ),
     ],
   );

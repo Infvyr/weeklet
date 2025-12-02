@@ -1,77 +1,53 @@
-const Map<String, String> kCategoryIcons = {
-  // 🏠 HOUSING & UTILITIES
-  'rent_and_mortgage': 'home',
-  'utilities_general': 'lightbulb_outline',
-  'electricity': 'flash_on',
-  'water': 'opacity',
-  'gas': 'whatshot',
-  'internet_and_cable': 'wifi',
-  'home_repairs': 'handyman',
-  'furniture_and_decor': 'chair',
+import 'package:flutter/material.dart';
 
-  // 🛒 DAILY & GROCERIES
-  'groceries_and_drinks': 'local_grocery_store',
-  'eating_out': 'restaurant',
-  'healthy_food': 'local_florist',
-  'cafes_and_drinks': 'local_cafe',
-  'gifts': 'card_giftcard',
+class CategoryIcon {
+  const CategoryIcon({
+    required this.name,
+    required this.icon,
+    required this.label,
+  });
 
-  // 🚗 TRANSPORTATION
-  'fuel_and_gas': 'local_gas_station',
-  'car_service': 'build',
-  'car_insurance': 'verified_user',
-  'public_transport': 'directions_transit',
-  'taxi_and_rideshare': 'local_taxi',
-  'parking_and_tolls': 'local_parking',
+  final String name;
+  final IconData icon;
+  final String label;
+}
 
-  // 💊 HEALTH & CARE
-  'health_general': 'favorite_border',
-  'medication_and_pharmacy': 'local_hospital',
-  'doctor_visits': 'medical_services',
-  'personal_care': 'face',
-  'cosmetics_and_makeup': 'spa',
-
-  // 🛍️ SHOPPING & PERSONAL
-  'clothes_and_shoes': 'checkroom',
-  'personal_accessories': 'watch',
-  'pets': 'pets',
-
-  // 📚 EDUCATION & DEVELOPMENT
-  'school_fees': 'school',
-  'courses_and_training': 'cast_for_education',
-  'books_and_magazines': 'menu_book',
-
-  // 💻 TECH & MEDIA
-  'mobile_phone': 'phone_android',
-  'streaming_subscriptions': 'subscriptions',
-  'electronics': 'devices_other',
-  'software_and_apps': 'apps',
-
-  // ✈️ TRAVEL
-  'travel_general': 'airplanemode_active',
-  'accommodation': 'hotel',
-  'local_trips': 'map',
-
-  // 🏦 FINANCE & DEBTS
-  'debts_and_credit': 'monetization_on',
-  'investments': 'trending_up',
-  'bank_fees': 'account_balance',
-  'taxes': 'account_balance_wallet',
-  'fines_and_penalties': 'gavel',
-  'cash_withdrawals': 'atm',
-
-  // 🎭 LEISURE & SOCIAL
-  'entertainment': 'local_movies',
-  'fitness_and_sports': 'fitness_center',
-  'video_games': 'videogame_asset',
-  'hobbies_and_leisure': 'palette',
-  'social_events': 'cake',
-  'donations': 'volunteer_activism',
-
-  // 💼 WORK & BUSINESS
-  'business_travel': 'business_center',
-  'office_supplies': 'create',
-
-  // ❓ OTHER
-  'other_uncategorized': 'more_horiz',
-};
+const List<CategoryIcon> kCategoryIcons = [
+  CategoryIcon(name: 'home', icon: Icons.home, label: 'Home'),
+  CategoryIcon(name: 'wifi', icon: Icons.wifi, label: 'WiFi'),
+  CategoryIcon(name: 'shopping_cart', icon: Icons.shopping_cart, label: 'Cart'),
+  CategoryIcon(name: 'directions_car', icon: Icons.directions_car, label: 'Car'),
+  CategoryIcon(
+    name: 'account_balance_wallet',
+    icon: Icons.account_balance_wallet,
+    label: 'Wallet',
+  ),
+  CategoryIcon(name: 'trending_up', icon: Icons.trending_up, label: 'Income'),
+  CategoryIcon(name: 'restaurant', icon: Icons.restaurant, label: 'Restaurant'),
+  CategoryIcon(name: 'local_cafe', icon: Icons.local_cafe, label: 'Coffee'),
+  CategoryIcon(name: 'movie', icon: Icons.movie, label: 'Movie'),
+  CategoryIcon(name: 'sports_esports', icon: Icons.sports_esports, label: 'Gaming'),
+  CategoryIcon(name: 'fitness_center', icon: Icons.fitness_center, label: 'Sport'),
+  CategoryIcon(name: 'flight_takeoff', icon: Icons.flight_takeoff, label: 'Travel'),
+  CategoryIcon(name: 'favorite', icon: Icons.favorite, label: 'Health'),
+  CategoryIcon(name: 'school', icon: Icons.school, label: 'Education'),
+  CategoryIcon(name: 'work', icon: Icons.work, label: 'Work'),
+  CategoryIcon(name: 'directions_bus', icon: Icons.directions_bus, label: 'Transport'),
+  CategoryIcon(name: 'local_gas_station', icon: Icons.local_gas_station, label: 'Fuel'),
+  CategoryIcon(name: 'phone_iphone', icon: Icons.phone_iphone, label: 'Phone'),
+  CategoryIcon(name: 'checkroom', icon: Icons.checkroom, label: 'Clothes'),
+  CategoryIcon(name: 'chair', icon: Icons.chair, label: 'Furniture'),
+  CategoryIcon(name: 'pets', icon: Icons.pets, label: 'Pets'),
+  CategoryIcon(name: 'shield', icon: Icons.shield, label: 'Insurance'),
+  CategoryIcon(name: 'medication', icon: Icons.medication, label: 'Medicine'),
+  CategoryIcon(name: 'menu_book', icon: Icons.menu_book, label: 'Books'),
+  CategoryIcon(name: 'music_note', icon: Icons.music_note, label: 'Music'),
+  CategoryIcon(name: 'card_giftcard', icon: Icons.card_giftcard, label: 'Gifts'),
+  CategoryIcon(name: 'savings', icon: Icons.savings, label: 'Savings'),
+  CategoryIcon(name: 'lightbulb', icon: Icons.lightbulb, label: 'Utilities'),
+  CategoryIcon(name: 'build', icon: Icons.build, label: 'Repairs'),
+  CategoryIcon(name: 'park', icon: Icons.park, label: 'Garden'),
+  CategoryIcon(name: 'child_friendly', icon: Icons.child_friendly, label: 'Kids'),
+  CategoryIcon(name: 'family_restroom', icon: Icons.family_restroom, label: 'Family'),
+  CategoryIcon(name: 'more_horiz', icon: Icons.more_horiz, label: 'Other'),
+];
