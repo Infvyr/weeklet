@@ -7,7 +7,7 @@ class CategoriesEmptyView extends StatelessWidget {
   Widget build(BuildContext context) => const Center(
     child: Text.rich(
       TextSpan(
-        text: "There's no categories. Add new one by pressing",
+        text: "There's no categories. Add new one by pressing ",
         children: [
           TextSpan(text: 'the floating button in the bottom right corner.'),
         ],

@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklet/core/constants/category_icons.dart';
 import 'package:weeklet/core/di/service_locator.dart' show sl;
 import 'package:weeklet/core/extensions/context_extensions.dart';
-import 'package:weeklet/core/theme/sizes.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_event.dart';
 import 'package:weeklet/presentation/blocs/category/category_state.dart';
+import 'package:weeklet/presentation/screens/categories/widgets/add_category_bottom_appbar_view.dart';
 import 'package:weeklet/presentation/screens/categories/widgets/category_icons_view.dart';
 import 'package:weeklet/presentation/screens/categories/widgets/category_name_view.dart';
 import 'package:weeklet/presentation/screens/categories/widgets/selected_icon_view.dart';
@@ -22,17 +22,37 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   late TextEditingController _nameController;
   final _formKey = GlobalKey<FormState>();
   CategoryIcon? _selectedIcon;
+  bool _isSaveButtonEnabled = false;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController();
+    _nameController.addListener(_updateButtonState);
   }
 
   @override
   void dispose() {
+    _nameController.removeListener(_updateButtonState);
     _nameController.dispose();
     super.dispose();
+  }
+
+  void _updateButtonState() {
+    final newEnabledState =
+        _nameController.text.trim().isNotEmpty && _selectedIcon != null;
+
+    if (newEnabledState != _isSaveButtonEnabled) {
+      setState(() => _isSaveButtonEnabled = newEnabledState);
+    }
+  }
+
+  void _onIconSelected(CategoryIcon icon) {
+    setState(() {
+      _selectedIcon = icon;
+      _isSaveButtonEnabled =
+          _nameController.text.trim().isNotEmpty && _selectedIcon != null;
+    });
   }
 
   void _saveCategory() {
@@ -43,8 +63,6 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
           icon: _selectedIcon!.name,
         ),
       );
-    } else if (_selectedIcon == null) {
-      context.showSnackBar('Please select an icon');
     }
   }
 
@@ -55,7 +73,12 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
       listener: (context, state) {
         if (state is CategorySuccess) {
           context.showSnackBar(state.message);
-          context.pop();
+          Future.delayed(const Duration(seconds: 2), () {
+            if (context.mounted) {
+              context.pop();
+            }
+          });
+          // context.pop();
         }
         if (state is CategoryError) {
           context.showSnackBar(state.message);
@@ -72,71 +95,31 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
             body: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
               child: Form(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
+                autovalidateMode: AutovalidateMode.onUnfocus,
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   spacing: 20,
                   children: [
                     CategoryName(controller: _nameController),
-                    SelectedIconView(
-                      selectedIcon: _selectedIcon,
-                      categoryName: _nameController.text,
+                    ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: _nameController,
+                      builder: (context, searchTerm, ___) => SelectedIconView(
+                        selectedIcon: _selectedIcon,
+                        categoryName: searchTerm.text,
+                      ),
                     ),
                     CategoryIconsView(
-                      onIconSelected: (icon) {
-                        setState(() => _selectedIcon = icon);
-                      },
+                      onIconSelected: _onIconSelected,
                     ),
                   ],
                 ),
               ),
             ),
-            bottomNavigationBar: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                spacing: 16,
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: isLoading ? null : () => context.pop(),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(kButtonHeight),
-                        backgroundColor: context.colorScheme.outline,
-                      ),
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: isLoading ? null : _saveCategory,
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(kButtonHeight),
-                      ),
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        child: isLoading
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator.adaptive(),
-                              )
-                            : const Text(
-                                'Add',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            bottomNavigationBar: AddCategoryBottomAppBarView(
+              isLoading: isLoading,
+              onSave: _saveCategory,
+              isEnabled: _isSaveButtonEnabled,
             ),
           );
         },

@@ -37,12 +37,15 @@ class _CategoryIconsViewState extends State<CategoryIconsView>
           size: 22,
           color: context.colorScheme.surfaceContainerHighest,
         ),
-        suffixIcon: searchNotifier.value.isNotEmpty
-            ? ClearSearchButton(
-                onClearNotifier: () => searchNotifier.value = '',
-                onClearController: searchController.clear,
-              )
-            : null,
+        suffixIcon: ValueListenableBuilder<String>(
+          valueListenable: searchNotifier,
+          builder: (context, searchTerm, ___) => searchTerm.isNotEmpty
+              ? ClearSearchButton(
+                  onClearNotifier: () => searchNotifier.value = '',
+                  onClearController: searchController.clear,
+                )
+              : const SizedBox.shrink(),
+        ),
       ),
       const SizedBox(),
       Card(
@@ -56,36 +59,39 @@ class _CategoryIconsViewState extends State<CategoryIconsView>
         ),
         child: Padding(
           padding: const EdgeInsets.all(12),
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: filteredIcons.isEmpty
-                ? NoIconsFoundView(searchTerm: searchNotifier.value)
-                : ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxHeight: context.screenHeight * 0.35,
-                    ),
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 6,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
+          child: ValueListenableBuilder<List<CategoryIcon>>(
+            valueListenable: filteredIconsNotifier,
+            builder: (context, filteredIcons, child) => AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: filteredIcons.isEmpty
+                  ? NoIconsFoundView(searchTerm: searchNotifier.value)
+                  : ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: context.screenHeight * 0.35,
                       ),
-                      itemCount: filteredIcons.length,
-                      itemBuilder: (_, index) {
-                        final categoryIcon = filteredIcons[index];
-                        final isSelected = categoryIcon.name == selectedIcon?.name;
-                        return CategoryIconView(
-                          icon: categoryIcon,
-                          isSelected: isSelected,
-                          onSelected: () => setState(() {
-                            selectedIcon = categoryIcon;
-                            widget.onIconSelected(categoryIcon);
-                          }),
-                        );
-                      },
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 6,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                        ),
+                        itemCount: filteredIcons.length,
+                        itemBuilder: (_, index) {
+                          final categoryIcon = filteredIcons[index];
+                          final isSelected = categoryIcon.name == selectedIcon?.name;
+                          return CategoryIconView(
+                            icon: categoryIcon,
+                            isSelected: isSelected,
+                            onSelected: () => setState(() {
+                              selectedIcon = categoryIcon;
+                              widget.onIconSelected(categoryIcon);
+                            }),
+                          );
+                        },
+                      ),
                     ),
-                  ),
+            ),
           ),
         ),
       ),

@@ -3,9 +3,11 @@ import 'package:weeklet/core/constants/category_icons.dart';
 
 mixin CategorySearchMixin<T extends StatefulWidget> on State<T> {
   final ValueNotifier<String> searchNotifier = ValueNotifier('');
-  final TextEditingController searchController = TextEditingController();
+  final searchController = TextEditingController();
 
-  List<CategoryIcon> filteredIcons = kCategoryIcons;
+  final ValueNotifier<List<CategoryIcon>> filteredIconsNotifier = ValueNotifier(
+    kCategoryIcons,
+  );
   CategoryIcon? selectedIcon;
 
   @override
@@ -19,26 +21,26 @@ mixin CategorySearchMixin<T extends StatefulWidget> on State<T> {
     searchNotifier.removeListener(_filterIcons);
     searchNotifier.dispose();
     searchController.dispose();
+    filteredIconsNotifier.dispose();
     super.dispose();
   }
 
   void _filterIcons() {
     final searchTerm = searchNotifier.value.toLowerCase().trim();
+    List<CategoryIcon> newFilteredIcons;
 
-    setState(() {
-      if (searchTerm.isEmpty) {
-        filteredIcons = kCategoryIcons;
-      } else {
-        filteredIcons = kCategoryIcons
-            .where(
-              (icon) =>
-                  icon.label.toLowerCase().contains(searchTerm) ||
-                  icon.name.toLowerCase().contains(searchTerm),
-            )
-            .toList();
-      }
-    });
+    if (searchTerm.isEmpty) {
+      newFilteredIcons = kCategoryIcons;
+    } else {
+      newFilteredIcons = kCategoryIcons
+          .where(
+            (icon) =>
+                icon.label.toLowerCase().contains(searchTerm) ||
+                icon.name.toLowerCase().contains(searchTerm),
+          )
+          .toList();
+    }
 
-    debugPrint('Filtered Icons: ${filteredIcons.map((e) => e.label).toList()}');
+    filteredIconsNotifier.value = newFilteredIcons;
   }
 }

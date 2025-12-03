@@ -1,6 +1,8 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:weeklet/domain/entities/expense.dart';
 
+part 'expense_model.g.dart';
+
 @HiveType(typeId: 1)
 class ExpenseModel {
   ExpenseModel({

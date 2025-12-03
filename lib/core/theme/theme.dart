@@ -116,6 +116,10 @@ class AppTheme {
         borderRadius: BorderRadius.circular(8),
         borderSide: const BorderSide(color: AppColors.lightError),
       ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColors.lightError),
+      ),
       labelStyle: const TextStyle(color: AppColors.lightOnSurfaceVariant),
       hintStyle: const TextStyle(color: AppColors.lightSurfaceVariant),
     ),
@@ -283,6 +287,10 @@ class AppTheme {
         ),
       ),
       errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColors.darkError),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide: const BorderSide(color: AppColors.darkError),
       ),

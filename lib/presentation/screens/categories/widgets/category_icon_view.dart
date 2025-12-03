@@ -40,6 +40,7 @@ class CategoryIconView extends StatelessWidget {
         ),
         backgroundColor: isSelected ? selectedBgColor : unselectedBgColor,
       ),
+      tooltip: icon.label,
     );
   }
 }

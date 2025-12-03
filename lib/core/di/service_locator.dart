@@ -8,8 +8,6 @@ import 'package:weeklet/data/models/category_model.dart';
 import 'package:weeklet/data/models/expense_model.dart';
 import 'package:weeklet/data/repositories/category_repository_impl.dart';
 import 'package:weeklet/data/repositories/expense_repository_impl.dart';
-import 'package:weeklet/domain/entities/category.dart';
-import 'package:weeklet/domain/entities/expense.dart';
 import 'package:weeklet/domain/repositories/category_repository.dart';
 import 'package:weeklet/domain/repositories/expense_repository.dart';
 import 'package:weeklet/domain/usecases/category/add_category_usecase.dart';
@@ -32,8 +30,8 @@ Future<void> init() async {
   Hive.init(appDocumentDir.path);
 
   // Register adapters
-  Hive.registerAdapter(CategoryAdapter());
-  Hive.registerAdapter(ExpenseAdapter());
+  Hive.registerAdapter(CategoryModelAdapter());
+  Hive.registerAdapter(ExpenseModelAdapter());
 
   // Open boxes and register singletons
   final categoryBox = await Hive.openBox<CategoryModel>('categories');
@@ -84,6 +82,7 @@ Future<void> init() async {
       deleteCategoryUseCase: sl<DeleteCategoryUseCase>(),
       getAllCategoriesUseCase: sl<GetAllCategoriesUseCase>(),
       getCategoryByIdUseCase: sl<GetSingleCategoryUseCase>(),
+      uuid: sl<Uuid>(),
     ),
   );
 }

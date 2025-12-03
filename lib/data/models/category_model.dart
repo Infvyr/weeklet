@@ -1,6 +1,8 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:weeklet/domain/entities/category.dart';
 
+part 'category_model.g.dart';
+
 @HiveType(typeId: 0)
 class CategoryModel {
   CategoryModel({

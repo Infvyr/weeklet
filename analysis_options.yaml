@@ -56,6 +56,7 @@ linter:
     use_named_constants: true
     use_string_buffers: true
     use_super_parameters: false
+    unnecessary_underscores: false
 
 analyzer:
   exclude:
