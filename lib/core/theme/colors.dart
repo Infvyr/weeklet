@@ -65,7 +65,7 @@ class AppColors {
   static const darkOnTertiary = Color(0xFF1A1A1A);
 
   // Error and Utility
-  static const darkError = Color(0xFF8B3A3A);
+  static const darkError = Color.fromARGB(255, 209, 84, 84);
   static const darkOnError = Color(0xFFD4A5A5);
   static const darkOutline = Color(0xFF4A5565); // Border color
   static const darkInputFill = Color(0xFF364153); // Input fill color

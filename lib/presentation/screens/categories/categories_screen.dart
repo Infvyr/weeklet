@@ -7,6 +7,7 @@ import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_event.dart';
 import 'package:weeklet/presentation/blocs/category/category_state.dart';
 import 'package:weeklet/presentation/screens/categories/widgets/categories_empty_view.dart';
+import 'package:weeklet/presentation/screens/categories/widgets/category_item_view.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -51,24 +52,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   mainAxisSpacing: 16,
                 ),
                 itemCount: state.categories.length,
-                itemBuilder: (context, index) {
+                itemBuilder: (_, index) {
                   final category = state.categories[index];
-                  return Card(
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        child: Text(category.icon),
-                      ),
-                      title: Text(category.name),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          context.read<CategoryBloc>().add(
-                            DeleteCategoryEvent(id: category.id),
-                          );
-                        },
-                      ),
-                    ),
-                  );
+                  return CategoryItemView(category);
                 },
               );
             }
