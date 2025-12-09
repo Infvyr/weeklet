@@ -49,11 +49,13 @@ class _CancelButton extends StatelessWidget {
     style: ElevatedButton.styleFrom(
       minimumSize: const Size.fromHeight(kButtonHeight),
       backgroundColor: context.colorScheme.outline,
+      shadowColor: Colors.transparent,
+      elevation: 0,
     ),
-    child: const Text(
+    child: Text(
       'Cancel',
       style: TextStyle(
-        color: Colors.white,
+        color: context.colorScheme.onSurface,
       ),
     ),
   );
@@ -76,6 +78,8 @@ class _SaveButton extends StatelessWidget {
     onPressed: isLoading || !isEnabled ? null : onSave,
     style: ElevatedButton.styleFrom(
       minimumSize: const Size.fromHeight(kButtonHeight),
+      elevation: 0,
+      shadowColor: Colors.transparent,
     ),
     child: AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
@@ -85,10 +89,10 @@ class _SaveButton extends StatelessWidget {
               height: 20,
               child: CircularProgressIndicator.adaptive(),
             )
-          : const Text(
+          : Text(
               'Save',
               style: TextStyle(
-                color: Colors.white,
+                color: isEnabled ? Colors.white : Colors.white70,
               ),
             ),
     ),
