@@ -16,16 +16,12 @@ class _MainNavigationState extends State<MainNavigation> {
 
   final List<Widget> _screens = [
     const ExpensesScreen(),
-    const CategoriesScreen(),
     const StatsScreen(),
+    const CategoriesScreen(),
     const SettingsScreen(),
   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  void _onItemTapped(int index) => setState(() => _selectedIndex = index);
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -37,12 +33,12 @@ class _MainNavigationState extends State<MainNavigation> {
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.category),
-          label: 'Categories',
-        ),
-        BottomNavigationBarItem(
           icon: Icon(Icons.trending_up),
           label: 'Stats',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.category),
+          label: 'Categories',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.settings),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklet/core/constants/category_icons.dart';
-import 'package:weeklet/core/di/service_locator.dart' show sl;
+import 'package:weeklet/core/di/service_locator.dart';
+import 'package:weeklet/core/extensions/category_extensions.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
+import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_event.dart';
 import 'package:weeklet/presentation/blocs/category/category_state.dart';
@@ -11,14 +13,16 @@ import 'package:weeklet/presentation/screens/categories/widgets/category_icons_v
 import 'package:weeklet/presentation/screens/categories/widgets/category_name_view.dart';
 import 'package:weeklet/presentation/screens/categories/widgets/selected_icon_view.dart';
 
-class AddCategoryScreen extends StatefulWidget {
-  const AddCategoryScreen({Key? key}) : super(key: key);
+class EditCategoryFormView extends StatefulWidget {
+  const EditCategoryFormView(this.category, {super.key});
+
+  final Category category;
 
   @override
-  State<AddCategoryScreen> createState() => _AddCategoryScreenState();
+  State<EditCategoryFormView> createState() => _EditCategoryFormViewState();
 }
 
-class _AddCategoryScreenState extends State<AddCategoryScreen> {
+class _EditCategoryFormViewState extends State<EditCategoryFormView> {
   late TextEditingController _nameController;
   late ValueNotifier<CategoryIcon?> _selectedIconNotifier;
   final _formKey = GlobalKey<FormState>();
@@ -26,8 +30,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController();
-    _selectedIconNotifier = ValueNotifier(null);
+    _nameController = TextEditingController(text: widget.category.name);
+    _selectedIconNotifier = ValueNotifier(widget.category.toCategoryIcon());
   }
 
   @override
@@ -41,12 +45,13 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     _selectedIconNotifier.value = icon;
   }
 
-  void _saveCategory() {
+  void _updateCategory() {
     if (_formKey.currentState!.validate() && _selectedIconNotifier.value != null) {
       sl<CategoryBloc>().add(
-        AddCategoryEvent(
+        UpdateCategoryEvent(
           name: _nameController.text.trim(),
           icon: _selectedIconNotifier.value!.name,
+          id: widget.category.id,
         ),
       );
     }
@@ -58,12 +63,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     child: BlocConsumer<CategoryBloc, CategoryState>(
       listener: (context, state) {
         if (state is CategorySuccess) {
-          context.showSnackBar(state.message);
-          Future.delayed(const Duration(seconds: 2), () {
-            if (context.mounted) {
-              context.pop();
-            }
-          });
+          if (context.mounted) {
+            context.pop();
+          }
         }
         if (state is CategoryError) {
           context.showSnackBar(state.message);
@@ -73,11 +75,13 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
         final isLoading = state is CategoryLoading;
 
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('Add Category'),
-          ),
           body: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            padding: const EdgeInsets.only(
+              left: 16,
+              right: 16,
+              top: 16,
+              bottom: 24,
+            ),
             child: Form(
               autovalidateMode: AutovalidateMode.onUnfocus,
               key: _formKey,
@@ -85,8 +89,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 spacing: 20,
                 children: [
+                  const _FormHeader(),
                   CategoryName(controller: _nameController),
-                  ValueListenableBuilder<CategoryIcon?>(
+                  ValueListenableBuilder(
                     valueListenable: _selectedIconNotifier,
                     builder: (context, selectedIcon, ___) =>
                         ValueListenableBuilder<TextEditingValue>(
@@ -107,12 +112,34 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
           ),
           bottomNavigationBar: CategoryFormFooterView(
             isLoading: isLoading,
-            onSave: _saveCategory,
+            onSave: _updateCategory,
             nameController: _nameController,
             selectedIconNotifier: _selectedIconNotifier,
           ),
         );
       },
     ),
+  );
+}
+
+class _FormHeader extends StatelessWidget {
+  const _FormHeader({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(
+        'Edit Category',
+        style: context.titleLarge,
+      ),
+      IconButton(
+        onPressed: () => context.pop(true),
+        icon: Icon(
+          Icons.close,
+          color: context.colorScheme.onSurfaceVariant,
+        ),
+      ),
+    ],
   );
 }

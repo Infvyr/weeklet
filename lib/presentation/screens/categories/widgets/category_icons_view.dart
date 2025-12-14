@@ -12,9 +12,11 @@ class CategoryIconsView extends StatefulWidget {
   const CategoryIconsView({
     super.key,
     required this.onIconSelected,
+    required this.selectedIconNotifier,
   });
 
   final void Function(CategoryIcon) onIconSelected;
+  final ValueNotifier<CategoryIcon?> selectedIconNotifier;
 
   @override
   State<CategoryIconsView> createState() => _CategoryIconsViewState();
@@ -22,6 +24,13 @@ class CategoryIconsView extends StatefulWidget {
 
 class _CategoryIconsViewState extends State<CategoryIconsView>
     with CategorySearchMixin<CategoryIconsView> {
+  @override
+  void initState() {
+    super.initState();
+    // Sync mixin's selectedIcon with parent's notifier
+    selectedIcon = widget.selectedIconNotifier.value;
+  }
+
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: .start,
@@ -69,26 +78,32 @@ class _CategoryIconsViewState extends State<CategoryIconsView>
                       constraints: BoxConstraints(
                         maxHeight: context.screenHeight * 0.35,
                       ),
-                      child: GridView.builder(
-                        shrinkWrap: true,
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 6,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
+                      child: ValueListenableBuilder<CategoryIcon?>(
+                        valueListenable: widget.selectedIconNotifier,
+                        builder: (context, selectedIcon, ___) => GridView.builder(
+                          shrinkWrap: true,
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 6,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                          ),
+                          itemCount: filteredIcons.length,
+                          itemBuilder: (_, index) {
+                            final categoryIcon = filteredIcons[index];
+                            final isSelected = categoryIcon.name == selectedIcon?.name;
+                            return CategoryIconView(
+                              icon: categoryIcon,
+                              isSelected: isSelected,
+                              onSelected: () {
+                                setState(() {
+                                  selectedIcon = categoryIcon;
+                                  widget.onIconSelected(categoryIcon);
+                                });
+                                widget.selectedIconNotifier.value = categoryIcon;
+                              },
+                            );
+                          },
                         ),
-                        itemCount: filteredIcons.length,
-                        itemBuilder: (_, index) {
-                          final categoryIcon = filteredIcons[index];
-                          final isSelected = categoryIcon.name == selectedIcon?.name;
-                          return CategoryIconView(
-                            icon: categoryIcon,
-                            isSelected: isSelected,
-                            onSelected: () => setState(() {
-                              selectedIcon = categoryIcon;
-                              widget.onIconSelected(categoryIcon);
-                            }),
-                          );
-                        },
                       ),
                     ),
             ),
