@@ -16,7 +16,9 @@ class AppRoutes {
   static const addExpenseScreen = '/add-expense';
   static const addCategoryScreen = '/add-category';
 
-  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+  static Route<dynamic> onGenerateRoute(
+    RouteSettings settings,
+  ) {
     switch (settings.name) {
       case home:
         return MaterialPageRoute<dynamic>(
@@ -49,7 +51,11 @@ class AppRoutes {
       default:
         return MaterialPageRoute<dynamic>(
           builder: (context) => const Scaffold(
-            body: Center(child: Text('Route not found')),
+            body: Center(
+              child: Text(
+                'Route not found',
+              ),
+            ),
           ),
         );
     }

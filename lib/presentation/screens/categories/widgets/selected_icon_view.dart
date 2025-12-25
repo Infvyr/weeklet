@@ -18,7 +18,9 @@ class SelectedIconView extends StatelessWidget {
     crossAxisAlignment: .start,
     spacing: 8,
     children: [
-      const LabelView(text: 'Selected Icon'),
+      const LabelView(
+        text: 'Selected Icon',
+      ),
       Card(
         margin: EdgeInsets.zero,
         semanticContainer: false,
@@ -44,7 +46,10 @@ class SelectedIconView extends StatelessWidget {
 }
 
 class _SelectedIcon extends StatelessWidget {
-  const _SelectedIcon(this.categoryIcon, {Key? key}) : super(key: key);
+  const _SelectedIcon(
+    this.categoryIcon, {
+    Key? key,
+  }) : super(key: key);
 
   final CategoryIcon? categoryIcon;
 
@@ -84,7 +89,9 @@ class _SelectedIconMeta extends StatelessWidget {
         style: context.textTheme.bodyMedium,
       ),
       Text(
-        categoryName?.isNotEmpty == true ? categoryName! : 'Category name not set',
+        categoryName?.isNotEmpty == true
+            ? categoryName!
+            : 'Category name not set',
         style: context.textTheme.bodySmall?.copyWith(
           color: context.colorScheme.onSurfaceVariant,
         ),

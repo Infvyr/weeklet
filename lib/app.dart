@@ -8,7 +8,9 @@ class WeekletApp extends StatelessWidget {
   const WeekletApp({super.key});
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
+  Widget build(
+    BuildContext context,
+  ) => MaterialApp(
     title: 'Weeklet',
     debugShowCheckedModeBanner: false,
     theme: AppTheme.lightTheme,

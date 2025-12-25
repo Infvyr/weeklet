@@ -6,7 +6,9 @@ class ExpensesView extends StatelessWidget {
   const ExpensesView({super.key});
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(
+    BuildContext context,
+  ) => Scaffold(
     appBar: AppBar(
       automaticallyImplyLeading: false,
       title: const Text('Expenses'),
@@ -22,7 +24,9 @@ class ExpensesView extends StatelessWidget {
       ),
     ),
     floatingActionButton: FloatingActionButton(
-      onPressed: () => context.pushNamed(AppRoutes.addExpenseScreen),
+      onPressed: () => context.pushNamed(
+        AppRoutes.addExpenseScreen,
+      ),
       child: const Icon(Icons.add),
     ),
   );

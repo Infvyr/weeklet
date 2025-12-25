@@ -17,15 +17,19 @@ final class UpdateCategoryEvent extends CategoryEvent {
     required this.id,
     required this.name,
     required this.icon,
+    required this.createdAt,
   });
 
   final String id;
   final String name;
   final String icon;
+  final DateTime createdAt;
 }
 
 final class DeleteCategoryEvent extends CategoryEvent {
-  const DeleteCategoryEvent({required this.id});
+  const DeleteCategoryEvent({
+    required this.id,
+  });
 
   final String id;
 }
@@ -35,7 +39,9 @@ final class GetAllCategoriesEvent extends CategoryEvent {
 }
 
 final class GetCategoryByIdEvent extends CategoryEvent {
-  const GetCategoryByIdEvent({required this.id});
+  const GetCategoryByIdEvent({
+    required this.id,
+  });
 
   final String id;
 }

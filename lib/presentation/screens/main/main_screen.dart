@@ -14,25 +14,44 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     const ExpensesScreen(),
     const Center(child: Text('Stats')),
-    const Center(child: Text('Settings')),
+    const Center(
+      child: Text('Settings'),
+    ),
   ];
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(
+    BuildContext context,
+  ) => Scaffold(
     body: IndexedStack(
       index: _currentIndex,
       children: _pages,
     ),
     bottomNavigationBar: BottomNavigationBar(
       currentIndex: _currentIndex,
-      onTap: (index) => setState(() => _currentIndex = index),
+      onTap: (index) => setState(
+        () => _currentIndex = index,
+      ),
       type: BottomNavigationBarType.fixed,
       useLegacyColorScheme: false,
       iconSize: 20,
       items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Expenses'),
-        BottomNavigationBarItem(icon: Icon(Icons.trending_up), label: 'Stats'),
-        BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Expenses',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.trending_up,
+          ),
+          label: 'Stats',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.settings,
+          ),
+          label: 'Settings',
+        ),
       ],
     ),
   );

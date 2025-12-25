@@ -19,7 +19,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     required this.getAllCategoriesUseCase,
     required this.getCategoryByIdUseCase,
     required this.uuid,
-  }) : super(const CategoryInitial()) {
+  }) : super(const CategoryLoading()) {
     on<AddCategoryEvent>(_onAddCategory);
     on<UpdateCategoryEvent>(_onUpdateCategory);
     on<DeleteCategoryEvent>(_onDeleteCategory);
@@ -44,13 +44,20 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         id: uuid.v4(),
         name: event.name,
         icon: event.icon,
+        createdAt: DateTime.now(),
       );
       await addCategoryUseCase(category);
-      emit(const CategorySuccess(message: 'Category added successfully'));
+      emit(
+        const CategorySuccess(
+          message: 'Category added successfully',
+        ),
+      );
       add(const GetAllCategoriesEvent());
     } catch (e) {
       debugPrint('error in _onAddCategory: $e');
-      emit(CategoryError(message: e.toString()));
+      emit(
+        CategoryError(message: e.toString()),
+      );
     }
   }
 
@@ -64,6 +71,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         id: event.id,
         name: event.name,
         icon: event.icon,
+        createdAt: event.createdAt,
       );
       await updateCategoryUseCase(category);
       emit(const CategorySuccess(message: 'Category updated successfully'));

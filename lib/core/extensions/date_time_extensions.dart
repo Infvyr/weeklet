@@ -2,16 +2,24 @@ extension DateTimeExtension on DateTime {
   DateTime get dateOnly => DateTime(year, month, day);
 
   // Calculate week start (Monday, time 00:00:00)
-  DateTime startOfWeek({int firstDayOfWeek = 1}) {
+  DateTime startOfWeek({
+    int firstDayOfWeek = 1,
+  }) {
     final now = dateOnly;
     final currentDay = now.weekday;
     final daysToSubtract = (currentDay - firstDayOfWeek) % 7;
-    return now.subtract(Duration(days: daysToSubtract));
+    return now.subtract(
+      Duration(days: daysToSubtract),
+    );
   }
 
   // Calculate week end (Sunday, ora 23:59:59)
-  DateTime endOfWeek({int firstDayOfWeek = 1}) {
-    final start = startOfWeek(firstDayOfWeek: firstDayOfWeek);
+  DateTime endOfWeek({
+    int firstDayOfWeek = 1,
+  }) {
+    final start = startOfWeek(
+      firstDayOfWeek: firstDayOfWeek,
+    );
     return start.add(
       const Duration(
         days: 6,
@@ -26,7 +34,11 @@ extension DateTimeExtension on DateTime {
       year == other.year && month == other.month && day == other.day;
 
   int getWeekOfMonth() {
-    final firstDayOfMonth = DateTime(year, month, 1);
+    final firstDayOfMonth = DateTime(
+      year,
+      month,
+      1,
+    );
     final dayOfWeek = firstDayOfMonth.weekday;
     return ((day + dayOfWeek - 1) / 7).ceil();
   }

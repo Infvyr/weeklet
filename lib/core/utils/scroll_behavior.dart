@@ -9,7 +9,9 @@ class WeekletScrollBehavior extends ScrollBehavior {
   ) => child;
 
   @override
-  ScrollPhysics getScrollPhysics(BuildContext context) => const BouncingScrollPhysics(
+  ScrollPhysics getScrollPhysics(
+    BuildContext context,
+  ) => const BouncingScrollPhysics(
     parent: AlwaysScrollableScrollPhysics(),
   );
 }

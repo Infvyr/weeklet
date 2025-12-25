@@ -6,7 +6,9 @@ class StatsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: const Text('Statistics'),
+      title: const Text(
+        'Statistics',
+      ),
     ),
     body: const Center(
       child: Text('Stats Screen'),

@@ -163,7 +163,9 @@ class CustomConfirmationDialog extends StatelessWidget {
   );
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
+  Widget build(
+    BuildContext context,
+  ) => AlertDialog(
     backgroundColor: context.colorScheme.surface,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(24),
@@ -196,7 +198,9 @@ class CustomConfirmationDialog extends StatelessWidget {
         const SizedBox(height: 4),
 
         // Second subtitle
-        _DialogSubtitle(text: subtitle2),
+        _DialogSubtitle(
+          text: subtitle2,
+        ),
       ],
     ),
     actions: [
@@ -281,7 +285,9 @@ class _DialogSubtitle extends StatelessWidget {
             text: accentedText,
             style: TextStyle(
               fontWeight: .w700,
-              color: context.colorScheme.onSurface.withValues(alpha: .8),
+              color: context.colorScheme.onSurface.withValues(
+                alpha: .8,
+              ),
             ),
           ),
       ],
@@ -315,7 +321,9 @@ class _DialogButtons extends StatelessWidget {
   final VoidCallback? onConfirm;
 
   @override
-  Widget build(BuildContext context) => Row(
+  Widget build(
+    BuildContext context,
+  ) => Row(
     spacing: 16,
     children: [
       // Cancel button
@@ -354,7 +362,9 @@ class _DialogCancelButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   @override
-  Widget build(BuildContext context) => ElevatedButton(
+  Widget build(
+    BuildContext context,
+  ) => ElevatedButton(
     onPressed: () {
       onPressed?.call();
       context.pop(false);
@@ -362,15 +372,15 @@ class _DialogCancelButton extends StatelessWidget {
     style: ElevatedButton.styleFrom(
       backgroundColor: cancelButtonColor,
       foregroundColor: cancelButtonTextColor,
-      minimumSize: const Size.fromHeight(kButtonHeight),
+      minimumSize: const Size.fromHeight(
+        kButtonHeight,
+      ),
       elevation: 0,
       shadowColor: Colors.transparent,
     ),
     child: Text(
       text,
-      style: context.labelMedium?.copyWith(
-        fontWeight: .w400,
-      ),
+      style: context.labelMedium?.copyWith(fontWeight: .w400),
     ),
   );
 }
@@ -395,7 +405,9 @@ class _DialogConfirmButton extends StatelessWidget {
     },
     style: ElevatedButton.styleFrom(
       backgroundColor: bgColor,
-      minimumSize: const Size.fromHeight(kButtonHeight),
+      minimumSize: const Size.fromHeight(
+        kButtonHeight,
+      ),
       elevation: 0,
     ),
     child: Text(

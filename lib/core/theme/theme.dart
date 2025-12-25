@@ -114,20 +114,33 @@ class AppTheme {
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.lightError),
+        borderSide: const BorderSide(
+          color: AppColors.lightError,
+        ),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.lightError),
+        borderRadius: BorderRadius.circular(
+          8,
+        ),
+        borderSide: const BorderSide(
+          color: AppColors.lightError,
+        ),
       ),
-      labelStyle: const TextStyle(color: AppColors.lightOnSurfaceVariant),
-      hintStyle: const TextStyle(color: AppColors.lightSurfaceVariant),
+      labelStyle: const TextStyle(
+        color: AppColors.lightOnSurfaceVariant,
+      ),
+      hintStyle: const TextStyle(
+        color: AppColors.lightSurfaceVariant,
+      ),
     ),
 
     // Elevated Button Theme
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+        padding: const EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 24,
+        ),
         backgroundColor: AppColors.lightPrimaryColor,
         foregroundColor: AppColors.lightOnPrimaryColor,
         disabledBackgroundColor: AppColors.lightSurfaceVariant,
@@ -160,7 +173,9 @@ class AppTheme {
       backgroundColor: AppColors.lightPrimaryColor,
       foregroundColor: AppColors.lightOnPrimaryColor,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(
+          16,
+        ),
       ),
       enableFeedback: true,
     ),
@@ -179,7 +194,9 @@ class AppTheme {
       backgroundColor: AppColors.lightSurface,
       elevation: 8,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(12)),
+        borderRadius: BorderRadius.all(
+          Radius.circular(12),
+        ),
       ),
     ),
 
@@ -263,7 +280,9 @@ class AppTheme {
       elevation: 2,
       shadowColor: Colors.black54,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(12)),
+        borderRadius: BorderRadius.all(
+          Radius.circular(12),
+        ),
       ),
     ),
 
@@ -272,7 +291,10 @@ class AppTheme {
       floatingLabelBehavior: FloatingLabelBehavior.never,
       filled: true,
       fillColor: AppColors.darkInputFill,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 12,
+      ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide: const BorderSide(
@@ -288,20 +310,33 @@ class AppTheme {
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.darkError),
+        borderSide: const BorderSide(
+          color: AppColors.darkError,
+        ),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.darkError),
+        borderRadius: BorderRadius.circular(
+          8,
+        ),
+        borderSide: const BorderSide(
+          color: AppColors.darkError,
+        ),
       ),
-      labelStyle: const TextStyle(color: AppColors.darkOnSurfaceVariant),
-      hintStyle: const TextStyle(color: AppColors.darkSurfaceVariant),
+      labelStyle: const TextStyle(
+        color: AppColors.darkOnSurfaceVariant,
+      ),
+      hintStyle: const TextStyle(
+        color: AppColors.darkSurfaceVariant,
+      ),
     ),
 
     // Elevated Button Theme
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+        padding: const EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 24,
+        ),
         backgroundColor: AppColors.darkPrimaryColor,
         foregroundColor: AppColors.darkOnPrimaryColor,
         disabledBackgroundColor: AppColors.darkSurfaceVariant,
@@ -334,7 +369,9 @@ class AppTheme {
       backgroundColor: AppColors.darkPrimaryColor,
       foregroundColor: AppColors.darkOnPrimaryColor,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(
+          16,
+        ),
       ),
       enableFeedback: true,
     ),
@@ -353,7 +390,9 @@ class AppTheme {
       backgroundColor: AppColors.darkBackground,
       elevation: 8,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(12)),
+        borderRadius: BorderRadius.all(
+          Radius.circular(12),
+        ),
       ),
     ),
 

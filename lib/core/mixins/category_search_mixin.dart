@@ -13,12 +13,16 @@ mixin CategorySearchMixin<T extends StatefulWidget> on State<T> {
   @override
   void initState() {
     super.initState();
-    searchNotifier.addListener(_filterIcons);
+    searchNotifier.addListener(
+      _filterIcons,
+    );
   }
 
   @override
   void dispose() {
-    searchNotifier.removeListener(_filterIcons);
+    searchNotifier.removeListener(
+      _filterIcons,
+    );
     searchNotifier.dispose();
     searchController.dispose();
     filteredIconsNotifier.dispose();
@@ -35,8 +39,12 @@ mixin CategorySearchMixin<T extends StatefulWidget> on State<T> {
       newFilteredIcons = kCategoryIcons
           .where(
             (icon) =>
-                icon.label.toLowerCase().contains(searchTerm) ||
-                icon.name.toLowerCase().contains(searchTerm),
+                icon.label.toLowerCase().contains(
+                  searchTerm,
+                ) ||
+                icon.name.toLowerCase().contains(
+                  searchTerm,
+                ),
           )
           .toList();
     }

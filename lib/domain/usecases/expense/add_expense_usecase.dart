@@ -8,16 +8,26 @@ class AddExpenseUseCase implements UseCase<void, Expense> {
   final ExpenseRepository repository;
 
   @override
-  Future<void> call(Expense params) async {
+  Future<void> call(
+    Expense params,
+  ) async {
     if (params.title.trim().isEmpty) {
-      throw ArgumentError('Expense title cannot be empty');
+      throw ArgumentError(
+        'Expense title cannot be empty',
+      );
     }
     if (params.amount <= 0) {
-      throw ArgumentError('Expense amount must be greater than 0');
+      throw ArgumentError(
+        'Expense amount must be greater than 0',
+      );
     }
     if (params.categoryId.trim().isEmpty) {
-      throw ArgumentError('Category ID cannot be empty');
+      throw ArgumentError(
+        'Category ID cannot be empty',
+      );
     }
-    return repository.addExpense(params);
+    return repository.addExpense(
+      params,
+    );
   }
 }

@@ -15,23 +15,24 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
   final Box<CategoryModel> categoryBox;
 
   @override
-  Future<void> addCategory(CategoryModel model) async => categoryBox.put(
-    model.id,
-    model,
-  );
+  Future<void> addCategory(CategoryModel model) async =>
+      categoryBox.put(model.id, model);
 
   @override
   Future<void> deleteCategory(String id) async => categoryBox.delete(id);
 
   @override
-  Future<void> updateCategory(CategoryModel model) async => categoryBox.put(
-    model.id,
-    model,
-  );
+  Future<void> updateCategory(CategoryModel model) async =>
+      categoryBox.put(model.id, model);
 
   @override
-  Future<List<CategoryModel>> getAllCategories() async => categoryBox.values.toList();
+  Future<List<CategoryModel>> getAllCategories() async {
+    final List<CategoryModel> list = categoryBox.values.toList();
+    list.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    return list;
+  }
 
   @override
-  Future<CategoryModel?> getCategoryById(String id) async => categoryBox.get(id);
+  Future<CategoryModel?> getCategoryById(String id) async =>
+      categoryBox.get(id);
 }

@@ -14,7 +14,10 @@ import 'package:weeklet/presentation/screens/categories/widgets/category_name_vi
 import 'package:weeklet/presentation/screens/categories/widgets/selected_icon_view.dart';
 
 class EditCategoryFormView extends StatefulWidget {
-  const EditCategoryFormView(this.category, {super.key});
+  const EditCategoryFormView(
+    this.category, {
+    super.key,
+  });
 
   final Category category;
 
@@ -30,8 +33,12 @@ class _EditCategoryFormViewState extends State<EditCategoryFormView> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.category.name);
-    _selectedIconNotifier = ValueNotifier(widget.category.toCategoryIcon());
+    _nameController = TextEditingController(
+      text: widget.category.name,
+    );
+    _selectedIconNotifier = ValueNotifier(
+      widget.category.toCategoryIcon(),
+    );
   }
 
   @override
@@ -41,24 +48,30 @@ class _EditCategoryFormViewState extends State<EditCategoryFormView> {
     super.dispose();
   }
 
-  void _onIconSelected(CategoryIcon icon) {
+  void _onIconSelected(
+    CategoryIcon icon,
+  ) {
     _selectedIconNotifier.value = icon;
   }
 
   void _updateCategory() {
-    if (_formKey.currentState!.validate() && _selectedIconNotifier.value != null) {
+    if (_formKey.currentState!.validate() &&
+        _selectedIconNotifier.value != null) {
       sl<CategoryBloc>().add(
         UpdateCategoryEvent(
           name: _nameController.text.trim(),
           icon: _selectedIconNotifier.value!.name,
           id: widget.category.id,
+          createdAt: widget.category.createdAt,
         ),
       );
     }
   }
 
   @override
-  Widget build(BuildContext context) => BlocProvider<CategoryBloc>.value(
+  Widget build(
+    BuildContext context,
+  ) => BlocProvider<CategoryBloc>.value(
     value: sl<CategoryBloc>(),
     child: BlocConsumer<CategoryBloc, CategoryState>(
       listener: (context, state) {
@@ -68,7 +81,9 @@ class _EditCategoryFormViewState extends State<EditCategoryFormView> {
           }
         }
         if (state is CategoryError) {
-          context.showSnackBar(state.message);
+          context.showSnackBar(
+            state.message,
+          );
         }
       },
       builder: (context, state) {
@@ -90,16 +105,27 @@ class _EditCategoryFormViewState extends State<EditCategoryFormView> {
                 spacing: 20,
                 children: [
                   const _FormHeader(),
-                  CategoryName(controller: _nameController),
+                  CategoryName(
+                    controller: _nameController,
+                  ),
                   ValueListenableBuilder(
                     valueListenable: _selectedIconNotifier,
-                    builder: (context, selectedIcon, ___) =>
-                        ValueListenableBuilder<TextEditingValue>(
+                    builder:
+                        (
+                          context,
+                          selectedIcon,
+                          ___,
+                        ) => ValueListenableBuilder<TextEditingValue>(
                           valueListenable: _nameController,
-                          builder: (context, searchTerm, ___) => SelectedIconView(
-                            selectedIcon: selectedIcon,
-                            categoryName: searchTerm.text,
-                          ),
+                          builder:
+                              (
+                                context,
+                                searchTerm,
+                                ___,
+                              ) => SelectedIconView(
+                                selectedIcon: selectedIcon,
+                                categoryName: searchTerm.text,
+                              ),
                         ),
                   ),
                   CategoryIconsView(
@@ -126,7 +152,9 @@ class _FormHeader extends StatelessWidget {
   const _FormHeader({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Row(
+  Widget build(
+    BuildContext context,
+  ) => Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Text(

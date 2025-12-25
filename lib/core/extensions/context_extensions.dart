@@ -15,7 +15,8 @@ extension ContextExtensions on BuildContext {
   double get screenHeight => MediaQuery.sizeOf(this).height;
 
   bool get isPortrait => MediaQuery.orientationOf(this) == Orientation.portrait;
-  bool get isLandscape => MediaQuery.orientationOf(this) == Orientation.landscape;
+  bool get isLandscape =>
+      MediaQuery.orientationOf(this) == Orientation.landscape;
 
   bool get isSmallScreen => screenWidth < 600;
   bool get isMediumScreen => screenWidth >= 600 && screenWidth < 840;
@@ -29,12 +30,20 @@ extension ContextExtensions on BuildContext {
   double get leftPadding => MediaQuery.paddingOf(this).left;
   double get rightPadding => MediaQuery.paddingOf(this).right;
 
-  double get bottomViewInset => MediaQuery.viewInsetsOf(this).bottom;
+  double get bottomViewInset => MediaQuery.viewInsetsOf(
+    this,
+  ).bottom;
   double get topViewInset => MediaQuery.viewInsetsOf(this).top;
 
   // Device Properties
-  double get devicePixelRatio => MediaQuery.maybeDevicePixelRatioOf(this) ?? 1.0;
-  double? get maybeDevicePixelRatio => MediaQuery.maybeDevicePixelRatioOf(this);
+  double get devicePixelRatio =>
+      MediaQuery.maybeDevicePixelRatioOf(
+        this,
+      ) ??
+      1.0;
+  double? get maybeDevicePixelRatio => MediaQuery.maybeDevicePixelRatioOf(
+    this,
+  );
   bool get isDarkMode => theme.brightness == Brightness.dark;
   bool get isLightMode => theme.brightness == Brightness.light;
 
@@ -56,39 +65,65 @@ extension ContextExtensions on BuildContext {
   TextStyle? get labelSmall => textTheme.labelSmall;
 
   // Navigation
-  Future<T?> push<T extends Object?>(Widget page) =>
-      Navigator.of(this).push<T>(MaterialPageRoute(builder: (_) => page));
+  Future<T?> push<T extends Object?>(
+    Widget page,
+  ) => Navigator.of(this).push<T>(
+    MaterialPageRoute(
+      builder: (_) => page,
+    ),
+  );
 
-  Future<T?> pushNamed<T extends Object?>(String routeName, {Object? arguments}) =>
-      Navigator.of(this).pushNamed<T>(routeName, arguments: arguments);
+  Future<T?> pushNamed<T extends Object?>(
+    String routeName, {
+    Object? arguments,
+  }) => Navigator.of(this).pushNamed<T>(
+    routeName,
+    arguments: arguments,
+  );
 
-  void pop<T extends Object?>([T? result]) {
+  void pop<T extends Object?>([
+    T? result,
+  ]) {
     Navigator.of(this).pop<T>(result);
   }
 
   Future<T?> pushReplacementNamed<T extends Object?, TO extends Object?>(
     String routeName, {
     Object? arguments,
-  }) => Navigator.of(
-    this,
-  ).pushReplacementNamed<T, TO>(routeName, arguments: arguments);
+  }) => Navigator.of(this).pushReplacementNamed<T, TO>(
+    routeName,
+    arguments: arguments,
+  );
 
   void popUntil(String routeName) {
-    Navigator.of(this).popUntil(ModalRoute.withName(routeName));
+    Navigator.of(this).popUntil(
+      ModalRoute.withName(routeName),
+    );
   }
 
   // Dialogs & Snackbars
   void showSnackBar(
     String message, {
-    Duration duration = const Duration(seconds: 2),
+    Duration duration = const Duration(
+      seconds: 2,
+    ),
   }) {
-    ScaffoldMessenger.of(this).showSnackBar(
-      SnackBar(content: Text(message), duration: duration),
+    ScaffoldMessenger.of(
+      this,
+    ).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: duration,
+      ),
     );
   }
 
-  void showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(this).showSnackBar(
+  void showErrorSnackBar(
+    String message,
+  ) {
+    ScaffoldMessenger.of(
+      this,
+    ).showSnackBar(
       SnackBar(
         content: Text(message),
         backgroundColor: colorScheme.error,
@@ -96,8 +131,12 @@ extension ContextExtensions on BuildContext {
     );
   }
 
-  void showSuccessSnackBar(String message) {
-    ScaffoldMessenger.of(this).showSnackBar(
+  void showSuccessSnackBar(
+    String message,
+  ) {
+    ScaffoldMessenger.of(
+      this,
+    ).showSnackBar(
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.green,

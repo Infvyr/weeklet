@@ -8,8 +8,15 @@ extension CategoryToCategoryIcon on Category {
     orElse: () => kCategoryIcons.first,
   );
 
-  Icon toIcon({double? size, Color? color}) {
+  Icon toIcon({
+    double? size,
+    Color? color,
+  }) {
     final ci = toCategoryIcon();
-    return Icon(ci.icon, size: size, color: color);
+    return Icon(
+      ci.icon,
+      size: size,
+      color: color,
+    );
   }
 }

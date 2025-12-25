@@ -9,12 +9,16 @@ class CategoryModel {
     required this.id,
     required this.name,
     required this.icon,
+    required this.createdAt,
   });
 
-  factory CategoryModel.fromEntity(Category entity) => CategoryModel(
+  factory CategoryModel.fromEntity(
+    Category entity,
+  ) => CategoryModel(
     id: entity.id,
     name: entity.name,
     icon: entity.icon,
+    createdAt: entity.createdAt,
   );
 
   @HiveField(0)
@@ -26,22 +30,29 @@ class CategoryModel {
   @HiveField(2)
   final String icon;
 
+  @HiveField(3)
+  final DateTime createdAt;
+
   Category toEntity() => Category(
     id: id,
     name: name,
     icon: icon,
+    createdAt: createdAt,
   );
 
   CategoryModel copyWith({
     String? id,
     String? name,
     String? icon,
+    DateTime? createdAt,
   }) => CategoryModel(
     id: id ?? this.id,
     name: name ?? this.name,
     icon: icon ?? this.icon,
+    createdAt: createdAt ?? this.createdAt,
   );
 
   @override
-  String toString() => 'CategoryModel(id: $id, name: $name, icon: $icon)';
+  String toString() =>
+      'CategoryModel(id: $id, name: $name, icon: $icon, createdAt: $createdAt)';
 }

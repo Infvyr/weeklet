@@ -11,11 +11,15 @@ class CategoryName extends StatelessWidget {
   final TextEditingController controller;
 
   @override
-  Widget build(BuildContext context) => Column(
+  Widget build(
+    BuildContext context,
+  ) => Column(
     crossAxisAlignment: .start,
     spacing: 8,
     children: [
-      const LabelView(text: 'Category Name *'),
+      const LabelView(
+        text: 'Category Name *',
+      ),
       InputView(
         controller: controller,
         hintText: 'e.g., Shopping',

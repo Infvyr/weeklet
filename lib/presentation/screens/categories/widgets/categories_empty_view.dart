@@ -5,14 +5,22 @@ class CategoriesEmptyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => const Center(
-    child: Text.rich(
-      TextSpan(
-        text: "There's no categories. Add new one by pressing ",
-        children: [
-          TextSpan(text: 'the floating button in the bottom right corner.'),
-        ],
+    child: Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 24.0,
       ),
-      textAlign: TextAlign.center,
+      child: Text.rich(
+        TextSpan(
+          text: "There's no categories.\n",
+          children: [
+            TextSpan(
+              text:
+                  'Add new one by pressing the floating button in the bottom right corner.',
+            ),
+          ],
+        ),
+        textAlign: TextAlign.center,
+      ),
     ),
   );
 }

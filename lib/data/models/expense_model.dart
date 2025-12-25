@@ -15,7 +15,9 @@ class ExpenseModel {
     this.note,
   });
 
-  factory ExpenseModel.fromEntity(Expense entity) => ExpenseModel(
+  factory ExpenseModel.fromEntity(
+    Expense entity,
+  ) => ExpenseModel(
     id: entity.id,
     categoryId: entity.categoryId,
     title: entity.title,

@@ -9,7 +9,10 @@ import 'package:weeklet/presentation/screens/categories/widgets/edit_category_fo
 import 'package:weeklet/presentation/widgets/deletion_dialog.dart';
 
 class CategoryItemView extends StatelessWidget {
-  const CategoryItemView(this.category, {super.key});
+  const CategoryItemView(
+    this.category, {
+    super.key,
+  });
 
   final Category category;
 
@@ -31,7 +34,9 @@ class CategoryItemView extends StatelessWidget {
               spacing: 5,
               children: [
                 _IconView(category),
-                _IconNameView(category),
+                _IconNameView(
+                  category,
+                ),
               ],
             ),
           ),
@@ -72,7 +77,9 @@ class _IconNameView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const .symmetric(horizontal: 5),
+    padding: const .symmetric(
+      horizontal: 5,
+    ),
     child: Text(
       category.name,
       style: context.textTheme.labelMedium?.copyWith(
@@ -93,40 +100,56 @@ class _MoreOptionsView extends StatelessWidget {
 
   final Category category;
 
-  void _deleteCategory(BuildContext context) {
-    sl<CategoryBloc>().add(DeleteCategoryEvent(id: category.id));
+  void _deleteCategory(
+    BuildContext context,
+  ) {
+    sl<CategoryBloc>().add(
+      DeleteCategoryEvent(
+        id: category.id,
+      ),
+    );
   }
 
   @override
-  Widget build(BuildContext context) => Positioned(
+  Widget build(
+    BuildContext context,
+  ) => Positioned(
     right: 5,
     top: 5,
     child: MenuAnchor(
-      alignmentOffset: const Offset(-65, 4),
-      consumeOutsideTap: true,
-      builder: (context, controller, ___) => IconButton(
-        padding: .zero,
-        visualDensity: .compact,
-        tooltip: 'More options',
-        style: IconButton.styleFrom(
-          tapTargetSize: .shrinkWrap,
-          shape: RoundedRectangleBorder(
-            borderRadius: .circular(12),
-          ),
-        ),
-        onPressed: () {
-          if (controller.isOpen) {
-            controller.close();
-          } else {
-            controller.open();
-          }
-        },
-        icon: Icon(
-          Icons.more_vert,
-          size: 16,
-          color: context.colorScheme.onSurfaceVariant,
-        ),
+      alignmentOffset: const Offset(
+        -65,
+        4,
       ),
+      consumeOutsideTap: true,
+      builder:
+          (
+            context,
+            controller,
+            ___,
+          ) => IconButton(
+            padding: .zero,
+            visualDensity: .compact,
+            tooltip: 'More options',
+            style: IconButton.styleFrom(
+              tapTargetSize: .shrinkWrap,
+              shape: RoundedRectangleBorder(
+                borderRadius: .circular(12),
+              ),
+            ),
+            onPressed: () {
+              if (controller.isOpen) {
+                controller.close();
+              } else {
+                controller.open();
+              }
+            },
+            icon: Icon(
+              Icons.more_vert,
+              size: 16,
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
       menuChildren: [
         MenuItemButton(
           onPressed: () => showModalBottomSheet<void>(
@@ -137,7 +160,9 @@ class _MoreOptionsView extends StatelessWidget {
             showDragHandle: true,
             builder: (_) => SizedBox(
               height: context.screenHeight * 0.8,
-              child: EditCategoryFormView(category),
+              child: EditCategoryFormView(
+                category,
+              ),
             ),
           ),
           semanticsLabel: 'Edit category',
@@ -157,7 +182,9 @@ class _MoreOptionsView extends StatelessWidget {
             subtitle1AccentText: ' ${category.name}?',
             subtitle2: 'This action cannot be undone.',
             confirmButtonColor: context.colorScheme.error,
-            onConfirm: () => _deleteCategory(context),
+            onConfirm: () => _deleteCategory(
+              context,
+            ),
             confirmButtonTextColor: Colors.white,
             cancelButtonColor: context.colorScheme.outline,
             cancelButtonTextColor: context.colorScheme.onSurface,

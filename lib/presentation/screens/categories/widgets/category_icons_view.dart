@@ -82,15 +82,17 @@ class _CategoryIconsViewState extends State<CategoryIconsView>
                         valueListenable: widget.selectedIconNotifier,
                         builder: (context, selectedIcon, ___) => GridView.builder(
                           shrinkWrap: true,
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 6,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                          ),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 6,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                              ),
                           itemCount: filteredIcons.length,
                           itemBuilder: (_, index) {
                             final categoryIcon = filteredIcons[index];
-                            final isSelected = categoryIcon.name == selectedIcon?.name;
+                            final isSelected =
+                                categoryIcon.name == selectedIcon?.name;
                             return CategoryIconView(
                               icon: categoryIcon,
                               isSelected: isSelected,
@@ -99,7 +101,8 @@ class _CategoryIconsViewState extends State<CategoryIconsView>
                                   selectedIcon = categoryIcon;
                                   widget.onIconSelected(categoryIcon);
                                 });
-                                widget.selectedIconNotifier.value = categoryIcon;
+                                widget.selectedIconNotifier.value =
+                                    categoryIcon;
                               },
                             );
                           },

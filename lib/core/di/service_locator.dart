@@ -30,49 +30,107 @@ Future<void> init() async {
   Hive.init(appDocumentDir.path);
 
   // Register adapters
-  Hive.registerAdapter(CategoryModelAdapter());
-  Hive.registerAdapter(ExpenseModelAdapter());
+  Hive.registerAdapter(
+    CategoryModelAdapter(),
+  );
+  Hive.registerAdapter(
+    ExpenseModelAdapter(),
+  );
 
   // Open boxes and register singletons
-  final categoryBox = await Hive.openBox<CategoryModel>('categories');
-  final expenseBox = await Hive.openBox<ExpenseModel>('expenses');
+  final categoryBox = await Hive.openBox<CategoryModel>(
+    'categories',
+  );
+  final expenseBox = await Hive.openBox<ExpenseModel>(
+    'expenses',
+  );
 
   sl.registerSingleton<Box<CategoryModel>>(categoryBox);
   sl.registerSingleton<Box<ExpenseModel>>(expenseBox);
 
-  sl.registerLazySingleton(() => const Uuid());
+  sl.registerLazySingleton(
+    () => const Uuid(),
+  );
 
   // DATA layer - DataSources
   sl.registerLazySingleton<CategoryLocalDataSource>(
-    () => CategoryLocalDataSourceImpl(sl<Box<CategoryModel>>()),
+    () => CategoryLocalDataSourceImpl(
+      sl<Box<CategoryModel>>(),
+    ),
   );
 
   sl.registerLazySingleton<ExpenseLocalDataSource>(
-    () => ExpenseLocalDataSourceImpl(sl<Box<ExpenseModel>>()),
+    () => ExpenseLocalDataSourceImpl(
+      sl<Box<ExpenseModel>>(),
+    ),
   );
 
   // DATA layer - Repositories
   sl.registerLazySingleton<CategoryRepository>(
-    () => CategoryRepositoryImpl(sl<CategoryLocalDataSource>()),
+    () => CategoryRepositoryImpl(
+      sl<CategoryLocalDataSource>(),
+    ),
   );
 
   sl.registerLazySingleton<ExpenseRepository>(
-    () => ExpenseRepositoryImpl(sl<ExpenseLocalDataSource>()),
+    () => ExpenseRepositoryImpl(
+      sl<ExpenseLocalDataSource>(),
+    ),
   );
 
   // DOMAIN layer - UseCases (Category)
-  sl.registerLazySingleton(() => AddCategoryUseCase(sl<CategoryRepository>()));
-  sl.registerLazySingleton(() => DeleteCategoryUseCase(sl<CategoryRepository>()));
-  sl.registerLazySingleton(() => UpdateCategoryUseCase(sl<CategoryRepository>()));
-  sl.registerLazySingleton(() => GetAllCategoriesUseCase(sl<CategoryRepository>()));
-  sl.registerLazySingleton(() => GetSingleCategoryUseCase(sl<CategoryRepository>()));
+  sl.registerLazySingleton(
+    () => AddCategoryUseCase(
+      sl<CategoryRepository>(),
+    ),
+  );
+  sl.registerLazySingleton(
+    () => DeleteCategoryUseCase(
+      sl<CategoryRepository>(),
+    ),
+  );
+  sl.registerLazySingleton(
+    () => UpdateCategoryUseCase(
+      sl<CategoryRepository>(),
+    ),
+  );
+  sl.registerLazySingleton(
+    () => GetAllCategoriesUseCase(
+      sl<CategoryRepository>(),
+    ),
+  );
+  sl.registerLazySingleton(
+    () => GetSingleCategoryUseCase(
+      sl<CategoryRepository>(),
+    ),
+  );
 
   // DOMAIN layer - UseCases (Expense)
-  sl.registerLazySingleton(() => AddExpenseUseCase(sl<ExpenseRepository>()));
-  sl.registerLazySingleton(() => DeleteExpenseUseCase(sl<ExpenseRepository>()));
-  sl.registerLazySingleton(() => UpdateExpenseUseCase(sl<ExpenseRepository>()));
-  sl.registerLazySingleton(() => GetExpensesByMonthYearUseCase(sl<ExpenseRepository>()));
-  sl.registerLazySingleton(() => GetAllExpensesUseCase(sl<ExpenseRepository>()));
+  sl.registerLazySingleton(
+    () => AddExpenseUseCase(
+      sl<ExpenseRepository>(),
+    ),
+  );
+  sl.registerLazySingleton(
+    () => DeleteExpenseUseCase(
+      sl<ExpenseRepository>(),
+    ),
+  );
+  sl.registerLazySingleton(
+    () => UpdateExpenseUseCase(
+      sl<ExpenseRepository>(),
+    ),
+  );
+  sl.registerLazySingleton(
+    () => GetExpensesByMonthYearUseCase(
+      sl<ExpenseRepository>(),
+    ),
+  );
+  sl.registerLazySingleton(
+    () => GetAllExpensesUseCase(
+      sl<ExpenseRepository>(),
+    ),
+  );
 
   // PRESENTATION layer - Blocs (Category)
   sl.registerLazySingleton(

@@ -14,7 +14,9 @@ class ClearSearchButton extends StatelessWidget {
   final Color? iconColor;
 
   @override
-  Widget build(BuildContext context) => IconButton(
+  Widget build(
+    BuildContext context,
+  ) => IconButton(
     onPressed: () {
       onClearNotifier();
       onClearController();

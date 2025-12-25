@@ -12,7 +12,7 @@ import 'package:weeklet/presentation/screens/categories/widgets/category_name_vi
 import 'package:weeklet/presentation/screens/categories/widgets/selected_icon_view.dart';
 
 class AddCategoryScreen extends StatefulWidget {
-  const AddCategoryScreen({Key? key}) : super(key: key);
+  const AddCategoryScreen({super.key});
 
   @override
   State<AddCategoryScreen> createState() => _AddCategoryScreenState();
@@ -22,6 +22,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   late TextEditingController _nameController;
   late ValueNotifier<CategoryIcon?> _selectedIconNotifier;
   final _formKey = GlobalKey<FormState>();
+
+  /// Indicates whether the form is in the process of finishing submission.
+  bool _isFinishing = false;
 
   @override
   void initState() {
@@ -42,7 +45,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   }
 
   void _saveCategory() {
-    if (_formKey.currentState!.validate() && _selectedIconNotifier.value != null) {
+    if (_formKey.currentState!.validate() &&
+        _selectedIconNotifier.value != null) {
+      setState(() => _isFinishing = true);
       sl<CategoryBloc>().add(
         AddCategoryEvent(
           name: _nameController.text.trim(),
@@ -53,55 +58,69 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => BlocProvider<CategoryBloc>.value(
+  Widget build(
+    BuildContext context,
+  ) => BlocProvider<CategoryBloc>.value(
     value: sl<CategoryBloc>(),
     child: BlocConsumer<CategoryBloc, CategoryState>(
       listener: (context, state) {
         if (state is CategorySuccess) {
           context.showSnackBar(state.message);
-          Future.delayed(const Duration(seconds: 2), () {
-            if (context.mounted) {
-              context.pop();
-            }
-          });
+          Future.delayed(
+            const Duration(seconds: 2),
+            () {
+              if (context.mounted) {
+                context.pop();
+              }
+            },
+          );
         }
         if (state is CategoryError) {
+          setState(() => _isFinishing = false);
           context.showSnackBar(state.message);
         }
       },
       builder: (context, state) {
-        final isLoading = state is CategoryLoading;
+        final isLoading = state is CategoryLoading || _isFinishing;
 
         return Scaffold(
           appBar: AppBar(
+            automaticallyImplyLeading: !isLoading,
             title: const Text('Add Category'),
           ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-            child: Form(
-              autovalidateMode: AutovalidateMode.onUnfocus,
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                spacing: 20,
-                children: [
-                  CategoryName(controller: _nameController),
-                  ValueListenableBuilder<CategoryIcon?>(
-                    valueListenable: _selectedIconNotifier,
-                    builder: (context, selectedIcon, ___) =>
-                        ValueListenableBuilder<TextEditingValue>(
-                          valueListenable: _nameController,
-                          builder: (context, searchTerm, ___) => SelectedIconView(
-                            selectedIcon: selectedIcon,
-                            categoryName: searchTerm.text,
+          body: IgnorePointer(
+            ignoring: isLoading,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 24,
+              ),
+              child: Form(
+                autovalidateMode: AutovalidateMode.onUnfocus,
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  spacing: 20,
+                  children: [
+                    CategoryName(controller: _nameController),
+                    ValueListenableBuilder<CategoryIcon?>(
+                      valueListenable: _selectedIconNotifier,
+                      builder: (context, selectedIcon, ___) =>
+                          ValueListenableBuilder<TextEditingValue>(
+                            valueListenable: _nameController,
+                            builder: (context, searchTerm, ___) =>
+                                SelectedIconView(
+                                  selectedIcon: selectedIcon,
+                                  categoryName: searchTerm.text,
+                                ),
                           ),
-                        ),
-                  ),
-                  CategoryIconsView(
-                    onIconSelected: _onIconSelected,
-                    selectedIconNotifier: _selectedIconNotifier,
-                  ),
-                ],
+                    ),
+                    CategoryIconsView(
+                      onIconSelected: _onIconSelected,
+                      selectedIconNotifier: _selectedIconNotifier,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

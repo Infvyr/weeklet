@@ -21,10 +21,14 @@ class _MainNavigationState extends State<MainNavigation> {
     const SettingsScreen(),
   ];
 
-  void _onItemTapped(int index) => setState(() => _selectedIndex = index);
+  void _onItemTapped(int index) => setState(
+    () => _selectedIndex = index,
+  );
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(
+    BuildContext context,
+  ) => Scaffold(
     body: _screens[_selectedIndex],
     bottomNavigationBar: BottomNavigationBar(
       items: const [
@@ -33,15 +37,21 @@ class _MainNavigationState extends State<MainNavigation> {
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.trending_up),
+          icon: Icon(
+            Icons.trending_up,
+          ),
           label: 'Stats',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.category),
+          icon: Icon(
+            Icons.category,
+          ),
           label: 'Categories',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.settings),
+          icon: Icon(
+            Icons.settings,
+          ),
           label: 'Settings',
         ),
       ],
