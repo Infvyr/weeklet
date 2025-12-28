@@ -10,9 +10,7 @@ class NoIconsFoundView extends StatelessWidget {
   final String searchTerm;
 
   @override
-  Widget build(
-    BuildContext context,
-  ) => Center(
+  Widget build(BuildContext context) => Center(
     child: Text(
       'No icons found for "$searchTerm"',
       style: context.textTheme.bodyLarge,

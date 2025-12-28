@@ -29,18 +29,11 @@ class CategoryFormFooterView extends StatelessWidget {
     duration: const Duration(milliseconds: 300),
     opacity: isLoading ? 0.6 : 1.0,
     child: Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 12,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         spacing: 16,
         children: [
-          Expanded(
-            child: _CancelButton(
-              isLoading: isLoading,
-            ),
-          ),
+          Expanded(child: _CancelButton(isLoading: isLoading)),
           Expanded(
             child: _SaveButton(
               isLoading: isLoading,
@@ -109,16 +102,12 @@ class _SaveButton extends StatelessWidget {
                 return ElevatedButton(
                   onPressed: isLoading || !isEnabled ? null : onSave,
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(
-                      kButtonHeight,
-                    ),
+                    minimumSize: const Size.fromHeight(kButtonHeight),
                     elevation: 0,
                     shadowColor: Colors.transparent,
                   ),
                   child: AnimatedSwitcher(
-                    duration: const Duration(
-                      milliseconds: 200,
-                    ),
+                    duration: const Duration(milliseconds: 200),
                     child: isLoading
                         ? const SizedBox(
                             width: 20,

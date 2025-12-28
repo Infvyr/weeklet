@@ -1,19 +1,30 @@
-class Expense {
-  Expense({
+import 'package:equatable/equatable.dart';
+
+class Expense extends Equatable {
+  const Expense({
     required this.id,
-    required this.categoryId,
-    required this.title,
     required this.amount,
-    required this.date,
+    required this.description,
+    required this.categoryId,
     required this.createdAt,
-    this.note,
   });
 
-  late String id;
-  late String categoryId;
-  late String title;
-  late double amount;
-  late DateTime date;
-  late DateTime createdAt;
-  late String? note;
+  final String id;
+  final double amount;
+  final String description;
+  final String categoryId;
+  final DateTime createdAt;
+
+  @override
+  List<Object> get props => [
+    id,
+    categoryId,
+    amount,
+    createdAt,
+    description,
+  ];
+
+  @override
+  String toString() =>
+      'Expense{id: $id, categoryId: $categoryId, amount: $amount, createdAt: $createdAt, description: $description}';
 }

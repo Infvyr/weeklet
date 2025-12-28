@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show TextInputFormatter;
 
 class InputView extends StatelessWidget {
   const InputView({
@@ -11,6 +12,7 @@ class InputView extends StatelessWidget {
     this.onChanged,
     this.suffixIcon,
     this.prefixIcon,
+    this.inputFormatters,
   });
 
   final String hintText;
@@ -21,6 +23,7 @@ class InputView extends StatelessWidget {
   final void Function(String)? onChanged;
   final Widget? suffixIcon;
   final Widget? prefixIcon;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   Widget build(BuildContext context) => TextFormField(
@@ -28,6 +31,7 @@ class InputView extends StatelessWidget {
     autocorrect: false,
     keyboardType: keyboardType,
     textInputAction: textInputAction,
+    inputFormatters: inputFormatters,
     decoration: InputDecoration(
       hintText: hintText,
       suffixIcon: suffixIcon,

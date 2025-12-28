@@ -18,33 +18,27 @@ class ExpenseModelAdapter extends TypeAdapter<ExpenseModel> {
     };
     return ExpenseModel(
       id: fields[0] as String,
-      categoryId: fields[1] as String,
-      title: fields[2] as String,
-      amount: fields[3] as double,
-      date: fields[4] as DateTime,
-      createdAt: fields[5] as DateTime,
-      note: fields[6] as String?,
+      amount: fields[1] as double,
+      description: fields[2] as String,
+      categoryId: fields[3] as String,
+      createdAt: fields[4] as DateTime,
     );
   }
 
   @override
   void write(BinaryWriter writer, ExpenseModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.categoryId)
-      ..writeByte(2)
-      ..write(obj.title)
-      ..writeByte(3)
       ..write(obj.amount)
+      ..writeByte(2)
+      ..write(obj.description)
+      ..writeByte(3)
+      ..write(obj.categoryId)
       ..writeByte(4)
-      ..write(obj.date)
-      ..writeByte(5)
-      ..write(obj.createdAt)
-      ..writeByte(6)
-      ..write(obj.note);
+      ..write(obj.createdAt);
   }
 
   @override

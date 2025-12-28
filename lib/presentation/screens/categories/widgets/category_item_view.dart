@@ -111,45 +111,35 @@ class _MoreOptionsView extends StatelessWidget {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) => Positioned(
+  Widget build(BuildContext context) => Positioned(
     right: 5,
     top: 5,
     child: MenuAnchor(
-      alignmentOffset: const Offset(
-        -65,
-        4,
-      ),
+      alignmentOffset: const Offset(-65, 4),
       consumeOutsideTap: true,
-      builder:
-          (
-            context,
-            controller,
-            ___,
-          ) => IconButton(
-            padding: .zero,
-            visualDensity: .compact,
-            tooltip: 'More options',
-            style: IconButton.styleFrom(
-              tapTargetSize: .shrinkWrap,
-              shape: RoundedRectangleBorder(
-                borderRadius: .circular(12),
-              ),
-            ),
-            onPressed: () {
-              if (controller.isOpen) {
-                controller.close();
-              } else {
-                controller.open();
-              }
-            },
-            icon: Icon(
-              Icons.more_vert,
-              size: 16,
-              color: context.colorScheme.onSurfaceVariant,
-            ),
+      builder: (context, controller, ___) => IconButton(
+        padding: .zero,
+        visualDensity: .compact,
+        tooltip: 'More options',
+        style: IconButton.styleFrom(
+          tapTargetSize: .shrinkWrap,
+          shape: RoundedRectangleBorder(
+            borderRadius: .circular(12),
           ),
+        ),
+        onPressed: () {
+          if (controller.isOpen) {
+            controller.close();
+          } else {
+            controller.open();
+          }
+        },
+        icon: Icon(
+          Icons.more_vert,
+          size: 16,
+          color: context.colorScheme.onSurfaceVariant,
+        ),
+      ),
       menuChildren: [
         MenuItemButton(
           onPressed: () => showModalBottomSheet<void>(
@@ -160,9 +150,7 @@ class _MoreOptionsView extends StatelessWidget {
             showDragHandle: true,
             builder: (_) => SizedBox(
               height: context.screenHeight * 0.8,
-              child: EditCategoryFormView(
-                category,
-              ),
+              child: EditCategoryFormView(category),
             ),
           ),
           semanticsLabel: 'Edit category',
@@ -182,9 +170,7 @@ class _MoreOptionsView extends StatelessWidget {
             subtitle1AccentText: ' ${category.name}?',
             subtitle2: 'This action cannot be undone.',
             confirmButtonColor: context.colorScheme.error,
-            onConfirm: () => _deleteCategory(
-              context,
-            ),
+            onConfirm: () => _deleteCategory(context),
             confirmButtonTextColor: Colors.white,
             cancelButtonColor: context.colorScheme.outline,
             cancelButtonTextColor: context.colorScheme.onSurface,

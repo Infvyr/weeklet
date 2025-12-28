@@ -6,9 +6,7 @@ class CategoriesEmptyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) => const Center(
     child: Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 24.0,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 24.0),
       child: Text.rich(
         TextSpan(
           text: "There's no categories.\n",

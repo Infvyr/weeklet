@@ -58,9 +58,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) => BlocProvider<CategoryBloc>.value(
+  Widget build(BuildContext context) => BlocProvider<CategoryBloc>.value(
     value: sl<CategoryBloc>(),
     child: BlocConsumer<CategoryBloc, CategoryState>(
       listener: (context, state) {

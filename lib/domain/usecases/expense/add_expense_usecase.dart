@@ -3,31 +3,25 @@ import 'package:weeklet/domain/repositories/expense_repository.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
 
 class AddExpenseUseCase implements UseCase<void, Expense> {
-  AddExpenseUseCase(this.repository);
+  const AddExpenseUseCase(this.repository);
 
   final ExpenseRepository repository;
 
   @override
-  Future<void> call(
-    Expense params,
-  ) async {
-    if (params.title.trim().isEmpty) {
-      throw ArgumentError(
-        'Expense title cannot be empty',
-      );
+  Future<void> call(Expense params) async {
+    _validateExpense(params);
+    return repository.addExpense(params);
+  }
+
+  void _validateExpense(Expense expense) {
+    if (expense.description.trim().isEmpty) {
+      throw ArgumentError('Expense description cannot be empty');
     }
-    if (params.amount <= 0) {
-      throw ArgumentError(
-        'Expense amount must be greater than 0',
-      );
+    if (expense.amount <= 0) {
+      throw ArgumentError('Expense amount must be greater than 0');
     }
-    if (params.categoryId.trim().isEmpty) {
-      throw ArgumentError(
-        'Category ID cannot be empty',
-      );
+    if (expense.categoryId.trim().isEmpty) {
+      throw ArgumentError('Category cannot be empty');
     }
-    return repository.addExpense(
-      params,
-    );
   }
 }

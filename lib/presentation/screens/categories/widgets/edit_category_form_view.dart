@@ -48,9 +48,7 @@ class _EditCategoryFormViewState extends State<EditCategoryFormView> {
     super.dispose();
   }
 
-  void _onIconSelected(
-    CategoryIcon icon,
-  ) {
+  void _onIconSelected(CategoryIcon icon) {
     _selectedIconNotifier.value = icon;
   }
 
@@ -81,9 +79,7 @@ class _EditCategoryFormViewState extends State<EditCategoryFormView> {
           }
         }
         if (state is CategoryError) {
-          context.showSnackBar(
-            state.message,
-          );
+          context.showSnackBar(state.message);
         }
       },
       builder: (context, state) {
@@ -105,24 +101,14 @@ class _EditCategoryFormViewState extends State<EditCategoryFormView> {
                 spacing: 20,
                 children: [
                   const _FormHeader(),
-                  CategoryName(
-                    controller: _nameController,
-                  ),
+                  CategoryName(controller: _nameController),
                   ValueListenableBuilder(
                     valueListenable: _selectedIconNotifier,
-                    builder:
-                        (
-                          context,
-                          selectedIcon,
-                          ___,
-                        ) => ValueListenableBuilder<TextEditingValue>(
+                    builder: (context, selectedIcon, ___) =>
+                        ValueListenableBuilder<TextEditingValue>(
                           valueListenable: _nameController,
-                          builder:
-                              (
-                                context,
-                                searchTerm,
-                                ___,
-                              ) => SelectedIconView(
+                          builder: (context, searchTerm, ___) =>
+                              SelectedIconView(
                                 selectedIcon: selectedIcon,
                                 categoryName: searchTerm.text,
                               ),
@@ -152,9 +138,7 @@ class _FormHeader extends StatelessWidget {
   const _FormHeader({Key? key}) : super(key: key);
 
   @override
-  Widget build(
-    BuildContext context,
-  ) => Row(
+  Widget build(BuildContext context) => Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Text(

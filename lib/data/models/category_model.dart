@@ -1,20 +1,19 @@
+import 'package:equatable/equatable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:weeklet/domain/entities/category.dart';
 
 part 'category_model.g.dart';
 
 @HiveType(typeId: 0)
-class CategoryModel {
-  CategoryModel({
+class CategoryModel extends Equatable {
+  const CategoryModel({
     required this.id,
     required this.name,
     required this.icon,
     required this.createdAt,
   });
 
-  factory CategoryModel.fromEntity(
-    Category entity,
-  ) => CategoryModel(
+  factory CategoryModel.fromEntity(Category entity) => CategoryModel(
     id: entity.id,
     name: entity.name,
     icon: entity.icon,
@@ -40,17 +39,13 @@ class CategoryModel {
     createdAt: createdAt,
   );
 
-  CategoryModel copyWith({
-    String? id,
-    String? name,
-    String? icon,
-    DateTime? createdAt,
-  }) => CategoryModel(
-    id: id ?? this.id,
-    name: name ?? this.name,
-    icon: icon ?? this.icon,
-    createdAt: createdAt ?? this.createdAt,
-  );
+  @override
+  List<Object> get props => [
+    id,
+    name,
+    icon,
+    createdAt,
+  ];
 
   @override
   String toString() =>

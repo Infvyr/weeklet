@@ -11,9 +11,7 @@ class CategoryName extends StatelessWidget {
   final TextEditingController controller;
 
   @override
-  Widget build(
-    BuildContext context,
-  ) => Column(
+  Widget build(BuildContext context) => Column(
     crossAxisAlignment: .start,
     spacing: 8,
     children: [
