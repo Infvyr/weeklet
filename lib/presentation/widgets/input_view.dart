@@ -13,6 +13,8 @@ class InputView extends StatelessWidget {
     this.suffixIcon,
     this.prefixIcon,
     this.inputFormatters,
+    this.readOnly = false,
+    this.onTap,
   });
 
   final String hintText;
@@ -24,11 +26,14 @@ class InputView extends StatelessWidget {
   final Widget? suffixIcon;
   final Widget? prefixIcon;
   final List<TextInputFormatter>? inputFormatters;
+  final bool readOnly;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) => TextFormField(
     controller: controller,
     autocorrect: false,
+    readOnly: readOnly,
     keyboardType: keyboardType,
     textInputAction: textInputAction,
     inputFormatters: inputFormatters,
@@ -39,5 +44,6 @@ class InputView extends StatelessWidget {
     ),
     validator: validator,
     onChanged: onChanged,
+    onTap: onTap,
   );
 }

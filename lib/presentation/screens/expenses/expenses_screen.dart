@@ -22,6 +22,7 @@ class ExpensesScreen extends StatelessWidget {
       ),
     ),
     floatingActionButton: FloatingActionButton(
+      tooltip: 'Add new expense',
       onPressed: () => showModalBottomSheet<void>(
         context: context,
         useRootNavigator: true,

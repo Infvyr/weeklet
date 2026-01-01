@@ -7,6 +7,7 @@ import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_event.dart';
 import 'package:weeklet/presentation/blocs/category/category_state.dart';
+import 'package:weeklet/presentation/widgets/label_view.dart';
 
 class ExpenseFormCategoryView extends StatefulWidget {
   const ExpenseFormCategoryView({super.key});
@@ -36,41 +37,50 @@ class _ExpenseFormCategoryViewState extends State<ExpenseFormCategoryView> {
           categories = state.categories;
         }
 
-        return DropdownButtonFormField<Category>(
-          initialValue: _selectedCategory,
-          hint: Text(
-            'Select Category',
-            style: context.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w400,
-              color: context.colorScheme.onSurfaceVariant,
+        return Column(
+          crossAxisAlignment: .start,
+          spacing: 8,
+          children: [
+            const LabelView(
+              text: 'Category',
             ),
-          ),
-          isExpanded: true,
-          enableFeedback: true,
-          validator: (value) {
-            if (value == null) {
-              return 'This field is required';
-            }
-            return null;
-          },
-          items: categories
-              .map(
-                (category) => DropdownMenuItem<Category>(
-                  value: category,
-                  child: Row(
-                    children: [
-                      category.toIcon(size: 20),
-                      const SizedBox(width: 10),
-                      Text(category.name, style: context.bodyLarge),
-                    ],
-                  ),
+            DropdownButtonFormField<Category>(
+              initialValue: _selectedCategory,
+              hint: Text(
+                'Select Category',
+                style: context.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w400,
+                  color: context.colorScheme.onSurfaceVariant,
                 ),
-              )
-              .toList(),
-          onChanged: (newValue) {
-            setState(() => _selectedCategory = newValue);
-            // Send to the bloc
-          },
+              ),
+              isExpanded: true,
+              enableFeedback: true,
+              validator: (value) {
+                if (value == null) {
+                  return 'This field is required';
+                }
+                return null;
+              },
+              items: categories
+                  .map(
+                    (category) => DropdownMenuItem<Category>(
+                      value: category,
+                      child: Row(
+                        children: [
+                          category.toIcon(size: 20),
+                          const SizedBox(width: 10),
+                          Text(category.name, style: context.bodyLarge),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (newValue) {
+                setState(() => _selectedCategory = newValue);
+                // Send to the bloc
+              },
+            ),
+          ],
         );
       },
     ),
