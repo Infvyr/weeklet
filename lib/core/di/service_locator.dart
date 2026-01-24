@@ -21,6 +21,7 @@ import 'package:weeklet/domain/usecases/expense/get_all_expenses_usecase.dart';
 import 'package:weeklet/domain/usecases/expense/get_expenses_by_month_year_usecase.dart';
 import 'package:weeklet/domain/usecases/expense/update_expense_usecase.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
+import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -132,7 +133,9 @@ Future<void> init() async {
     ),
   );
 
-  // PRESENTATION layer - Blocs (Category)
+  // PRESENTATION layer - Blocs
+
+  // Category
   sl.registerLazySingleton(
     () => CategoryBloc(
       addCategoryUseCase: sl<AddCategoryUseCase>(),
@@ -140,6 +143,17 @@ Future<void> init() async {
       deleteCategoryUseCase: sl<DeleteCategoryUseCase>(),
       getAllCategoriesUseCase: sl<GetAllCategoriesUseCase>(),
       getCategoryByIdUseCase: sl<GetSingleCategoryUseCase>(),
+      uuid: sl<Uuid>(),
+    ),
+  );
+
+  // Expense
+  sl.registerLazySingleton(
+    () => ExpenseBloc(
+      addExpenseUseCase: sl<AddExpenseUseCase>(),
+      updateExpenseUseCase: sl<UpdateExpenseUseCase>(),
+      deleteExpenseUseCase: sl<DeleteExpenseUseCase>(),
+      getExpensesUseCase: sl<GetAllExpensesUseCase>(),
       uuid: sl<Uuid>(),
     ),
   );

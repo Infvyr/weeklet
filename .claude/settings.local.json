@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /Users/vasilenovatchii/My\\\\ Projects/Flutter/Weeklet && flutter analyze:*)",
+      "Bash(cd:*)",
+      "Bash(git mv:*)",
+      "Bash(git mv lib/presentation/widgets/expense_details_column.dart lib/presentation/widgets/common/)",
+      "Bash(git mv lib/presentation/widgets/week_total_row.dart lib/presentation/widgets/common/)",
+      "Bash(flutter analyze:*)",
+      "Bash(tree:*)",
+      "Bash(flutter build:*)",
+      "Bash(wc:*)"
+    ]
+  }
+}

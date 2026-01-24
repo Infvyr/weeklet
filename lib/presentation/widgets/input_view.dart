@@ -15,6 +15,7 @@ class InputView extends StatelessWidget {
     this.inputFormatters,
     this.readOnly = false,
     this.onTap,
+    this.errorText,
   });
 
   final String hintText;
@@ -28,6 +29,7 @@ class InputView extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
   final bool readOnly;
   final VoidCallback? onTap;
+  final String? errorText;
 
   @override
   Widget build(BuildContext context) => TextFormField(
@@ -41,6 +43,7 @@ class InputView extends StatelessWidget {
       hintText: hintText,
       suffixIcon: suffixIcon,
       prefixIcon: prefixIcon,
+      errorText: errorText,
     ),
     validator: validator,
     onChanged: onChanged,

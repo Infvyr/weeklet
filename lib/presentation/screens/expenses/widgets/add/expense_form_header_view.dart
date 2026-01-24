@@ -6,7 +6,7 @@ class ExpenseFormHeaderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    mainAxisAlignment: .spaceBetween,
     children: [
       Text(
         'Add Expense',

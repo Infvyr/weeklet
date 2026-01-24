@@ -1,43 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklet/core/theme/sizes.dart';
+import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
+import 'package:weeklet/presentation/blocs/expense/expense_state.dart';
 
 class ExpenseFormSubmitView extends StatelessWidget {
-  const ExpenseFormSubmitView({super.key});
+  const ExpenseFormSubmitView({
+    super.key,
+    required this.onPressed,
+    this.isEnabled = false,
+  });
+
+  final VoidCallback onPressed;
+  final bool isEnabled;
 
   @override
-  Widget build(BuildContext context) {
-    final isLoading = false;
-    final isEnabled = true;
+  Widget build(BuildContext context) => BlocBuilder<ExpenseBloc, ExpenseState>(
+    builder: (context, state) {
+      final isLoading = state is ExpenseLoading;
+      final canSubmit = isEnabled && !isLoading;
 
-    return AnimatedOpacity(
-      duration: const Duration(milliseconds: 300),
-      opacity: isLoading ? 0.6 : 1.0,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-            minimumSize: const Size.fromHeight(kButtonHeight),
-            elevation: 0,
-            shadowColor: Colors.transparent,
-          ),
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            child: isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator.adaptive(),
-                  )
-                : Text(
-                    'Save',
-                    style: TextStyle(
-                      color: isEnabled ? Colors.white : Colors.white70,
-                    ),
-                  ),
+      return AnimatedOpacity(
+        duration: const Duration(milliseconds: 300),
+        opacity: isLoading ? 0.6 : 1.0,
+        child: Padding(
+          padding: const .symmetric(horizontal: 16, vertical: 12),
+          child: ElevatedButton(
+            onPressed: canSubmit ? onPressed : null,
+            style: ElevatedButton.styleFrom(
+              minimumSize: const .fromHeight(kButtonHeight),
+              elevation: 0,
+              shadowColor: Colors.transparent,
+            ),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: Visibility(
+                visible: isLoading,
+                replacement: const Text(
+                  'Save Expense',
+                  style: TextStyle(color: Colors.white),
+                ),
+                child: const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator.adaptive(),
+                ),
+              ),
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
+    },
+  );
 }

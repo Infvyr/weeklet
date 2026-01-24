@@ -2,61 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/theme/sizes.dart';
 
-/// Custom confirmation dialog with icon, title, and two subtitles
-///
-/// Features:
-/// - Customizable icon and icon background color
-/// - Title and two subtitle texts
-/// - Cancel button (default styling)
-/// - Confirm button with customizable color
-/// - Callbacks for both actions
-/// - Returns true on confirm, false on cancel
-///
-/// Usage:
-/// ```dart
-/// Method 1: Using the static show method
-/// final result = await CustomConfirmationDialog.show(
-///  context: context,
-/// icon: Icons.delete,
-/// iconBackgroundColor: Colors.red,
-/// title: 'Delete Item',
-/// subtitle1: 'Are you sure you want to delete this item?',
-/// subtitle2: 'This action cannot be undone.',
-/// confirmButtonColor: Colors.red,
-/// onConfirm: () {
-///  // Handle confirm action
-/// },
-/// onCancel: () {
-/// // Handle cancel action
-/// },
-/// );
-///
-/// Method 2: Using Navigator directly
-/// final result = await showDialog<bool>(
-//   context: context,
-//   builder: (context) => CustomConfirmationDialog(
-//     icon: Icons.delete,
-//     iconBackgroundColor: const Color(0xFF8B3A3A),
-//     title: 'Șterge categoria?',
-//     subtitle1: 'Do you want to delete this category?',
-//     subtitle2: 'All associated items will also be deleted.',
-//     confirmButtonColor: const Color(0xFFD32F2F),
-//     onConfirm: () {
-//       print('Confirmed');
-//     },
-//     onCancel: () {
-//       print('Cancelled');
-//     },
-//   ),
-// );
-///
-/// if (result == true) {
-/// // Confirmed
-/// } else {
-/// // Cancelled
-/// }
-/// ```
-///
+/// Custom confirmation dialog widget
 class CustomConfirmationDialog extends StatelessWidget {
   const CustomConfirmationDialog({
     super.key,
@@ -168,9 +114,9 @@ class CustomConfirmationDialog extends StatelessWidget {
   ) => AlertDialog(
     backgroundColor: context.colorScheme.surface,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: .circular(24),
     ),
-    contentPadding: const EdgeInsets.all(20),
+    contentPadding: const .all(20),
     content: Column(
       mainAxisSize: .min,
       crossAxisAlignment: .start,
@@ -237,7 +183,7 @@ class _DialogIcon extends StatelessWidget {
     child: DecoratedBox(
       decoration: BoxDecoration(
         color: backgroundColor,
-        shape: BoxShape.circle,
+        shape: .circle,
       ),
       child: Icon(
         icon,
@@ -372,7 +318,7 @@ class _DialogCancelButton extends StatelessWidget {
     style: ElevatedButton.styleFrom(
       backgroundColor: cancelButtonColor,
       foregroundColor: cancelButtonTextColor,
-      minimumSize: const Size.fromHeight(
+      minimumSize: const .fromHeight(
         kButtonHeight,
       ),
       elevation: 0,
@@ -405,7 +351,7 @@ class _DialogConfirmButton extends StatelessWidget {
     },
     style: ElevatedButton.styleFrom(
       backgroundColor: bgColor,
-      minimumSize: const Size.fromHeight(
+      minimumSize: const .fromHeight(
         kButtonHeight,
       ),
       elevation: 0,

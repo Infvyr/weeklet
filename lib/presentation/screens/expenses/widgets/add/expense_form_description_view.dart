@@ -1,10 +1,12 @@
-import 'package:flutter/services.dart' show TextInputAction;
 import 'package:flutter/widgets.dart';
+import 'package:weeklet/core/utils/form_validators.dart';
 import 'package:weeklet/presentation/widgets/input_view.dart';
 import 'package:weeklet/presentation/widgets/label_view.dart';
 
 class ExpenseFormDescriptionView extends StatelessWidget {
-  const ExpenseFormDescriptionView({super.key});
+  const ExpenseFormDescriptionView({super.key, required this.controller});
+
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -15,10 +17,10 @@ class ExpenseFormDescriptionView extends StatelessWidget {
         text: 'Description',
       ),
       InputView(
-        // controller: controller,
+        controller: controller,
         hintText: 'For ex.: Grocery shopping',
-        textInputAction: TextInputAction.next,
-        validator: (value) => null,
+        textInputAction: .next,
+        validator: FormValidators.required,
       ),
     ],
   );
