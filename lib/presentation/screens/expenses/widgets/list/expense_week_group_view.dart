@@ -36,9 +36,10 @@ class ExpenseWeekGroupView extends StatelessWidget {
         padding: const .all(16),
         child: Column(
           crossAxisAlignment: .start,
-          spacing: 16,
           children: [
             WeekHeaderText(weekNumber: weekNumber),
+            const SizedBox(height: 10),
+            const Divider(height: 0),
             ...groupedByDay.entries.map(
               (entry) => ExpenseDayGroupView(
                 date: entry.key,
@@ -47,6 +48,9 @@ class ExpenseWeekGroupView extends StatelessWidget {
                 currencySymbol: currencySymbol,
               ),
             ),
+            const SizedBox(height: 10),
+            const Divider(height: 0),
+            const SizedBox(height: 10),
             WeekTotalRow(formattedTotal: formattedTotal),
           ],
         ),

@@ -77,13 +77,13 @@ class ExpenseItemView extends StatelessWidget {
     return Padding(
       padding: const .symmetric(vertical: 8),
       child: Row(
+        spacing: 12,
         children: [
           CategoryIconCircle(
             category: category,
             iconSize: 22,
             useTransparentBackground: true,
           ),
-          const SizedBox(width: 12),
           Expanded(
             child: ExpenseDetailsColumn(
               description: expense.description,

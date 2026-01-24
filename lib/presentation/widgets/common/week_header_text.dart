@@ -15,7 +15,6 @@ class WeekHeaderText extends StatelessWidget {
     'Week $weekNumber',
     style: context.titleMedium?.copyWith(
       fontWeight: .w400,
-      fontStyle: .italic,
       color: context.colorScheme.onSurfaceVariant,
     ),
   );

@@ -15,10 +15,7 @@ class DayHeaderText extends StatelessWidget {
     padding: const .only(top: 16, bottom: 8),
     child: Text(
       title,
-      style: context.bodyMedium?.copyWith(
-        fontWeight: .w500,
-        color: context.colorScheme.onSurfaceVariant,
-      ),
+      style: context.labelLarge,
     ),
   );
 }

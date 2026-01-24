@@ -16,7 +16,7 @@ class AppColors {
 
   // Surface Colors (Cards, Dialogs)
   static const lightSurface = Color(
-    0xFFFBF9FA,
+    0xFFF0EDED,
   );
   static const lightOnSurface = Color(
     0xFF262626,

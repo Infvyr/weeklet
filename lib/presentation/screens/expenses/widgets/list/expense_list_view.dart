@@ -10,7 +10,7 @@ class ExpenseListView extends StatelessWidget {
     super.key,
     required this.expenses,
     required this.categories,
-    this.currencySymbol = 'lei',
+    this.currencySymbol = 'MDL',
   });
 
   final List<Expense> expenses;
@@ -32,6 +32,7 @@ class ExpenseListView extends StatelessWidget {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
+      padding: const .only(bottom: 50),
       itemCount: groupedByWeek.length,
       itemBuilder: (context, index) {
         final entry = groupedByWeek.entries.elementAt(index);

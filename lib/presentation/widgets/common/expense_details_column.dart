@@ -18,18 +18,20 @@ class ExpenseDetailsColumn extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: .start,
     children: [
-      Text(
-        description,
-        style: context.bodyLarge?.copyWith(
-          fontWeight: .w500,
+      Tooltip(
+        message: description,
+        child: Text(
+          description,
+          style: context.titleSmall?.copyWith(
+            fontWeight: .w500,
+          ),
+          maxLines: 1,
+          overflow: .ellipsis,
         ),
-        maxLines: 1,
-        overflow: .ellipsis,
       ),
-      const SizedBox(height: 2),
       Text(
         '$categoryName \u2022 $time',
-        style: context.bodySmall?.copyWith(
+        style: context.labelSmall?.copyWith(
           color: context.colorScheme.onSurfaceVariant,
         ),
         maxLines: 1,

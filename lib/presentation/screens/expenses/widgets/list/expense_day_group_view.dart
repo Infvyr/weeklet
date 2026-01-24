@@ -12,7 +12,7 @@ class ExpenseDayGroupView extends StatelessWidget {
     required this.date,
     required this.expenses,
     required this.categories,
-    this.currencySymbol = 'lei',
+    this.currencySymbol = 'MDL',
   });
 
   final DateTime date;
