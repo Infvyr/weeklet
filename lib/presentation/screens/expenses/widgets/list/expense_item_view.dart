@@ -6,6 +6,7 @@ import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/domain/entities/expense.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_event.dart';
+import 'package:weeklet/presentation/screens/expenses/widgets/edit_expense_form_view.dart';
 import 'package:weeklet/presentation/widgets/common/category_icon_circle.dart';
 import 'package:weeklet/presentation/widgets/common/common_menu_button.dart';
 import 'package:weeklet/presentation/widgets/common/deletion_dialog.dart';
@@ -31,7 +32,17 @@ class ExpenseItemView extends StatelessWidget {
   }
 
   void _editExpense(BuildContext context) {
-    // TODO: Implement edit expense screen navigation
+    showModalBottomSheet<void>(
+      context: context,
+      useRootNavigator: true,
+      useSafeArea: true,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (_) => SizedBox(
+        height: context.screenHeight * 0.8,
+        child: EditExpenseFormView(expense),
+      ),
+    );
   }
 
   List<MenuItem> _buildMenuItems(BuildContext context) => [

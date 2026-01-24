@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklet/core/constants/category_icons.dart';
-import 'package:weeklet/core/di/service_locator.dart';
 import 'package:weeklet/core/extensions/category_extensions.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/domain/entities/category.dart';
@@ -12,6 +12,7 @@ import 'package:weeklet/presentation/screens/categories/widgets/category_form_fo
 import 'package:weeklet/presentation/screens/categories/widgets/category_icons_view.dart';
 import 'package:weeklet/presentation/screens/categories/widgets/category_name_view.dart';
 import 'package:weeklet/presentation/screens/categories/widgets/selected_icon_view.dart';
+import 'package:weeklet/presentation/widgets/common/unsaved_changes_dialog.dart';
 
 class EditCategoryFormView extends StatefulWidget {
   const EditCategoryFormView(
@@ -52,10 +53,28 @@ class _EditCategoryFormViewState extends State<EditCategoryFormView> {
     _selectedIconNotifier.value = icon;
   }
 
+  bool _hasUnsavedChanges() {
+    final nameChanged = _nameController.text.trim() != widget.category.name;
+    final iconChanged =
+        _selectedIconNotifier.value?.name != widget.category.icon;
+    return nameChanged || iconChanged;
+  }
+
+  Future<void> _handleClose() async {
+    if (_hasUnsavedChanges()) {
+      final shouldDiscard = await UnsavedChangesDialog.show(context);
+      if (shouldDiscard && mounted) {
+        context.pop();
+      }
+    } else {
+      context.pop();
+    }
+  }
+
   void _updateCategory() {
     if (_formKey.currentState!.validate() &&
         _selectedIconNotifier.value != null) {
-      sl<CategoryBloc>().add(
+      context.read<CategoryBloc>().add(
         UpdateCategoryEvent(
           name: _nameController.text.trim(),
           icon: _selectedIconNotifier.value!.name,
@@ -67,75 +86,90 @@ class _EditCategoryFormViewState extends State<EditCategoryFormView> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) => BlocProvider<CategoryBloc>.value(
-    value: sl<CategoryBloc>(),
-    child: BlocConsumer<CategoryBloc, CategoryState>(
-      listener: (context, state) {
-        if (state is CategorySuccess) {
-          if (context.mounted) {
-            context.pop();
+  Widget build(BuildContext context) =>
+      BlocConsumer<CategoryBloc, CategoryState>(
+        listener: (context, state) {
+          if (state is CategorySuccess) {
+            if (context.mounted) {
+              context.pop();
+            }
           }
-        }
-        if (state is CategoryError) {
-          context.showSnackBar(state.message);
-        }
-      },
-      builder: (context, state) {
-        final isLoading = state is CategoryLoading;
+          if (state is CategoryError) {
+            context.showSnackBar(state.message);
+          }
+        },
+        builder: (context, state) {
+          final isLoading = state is CategoryLoading;
 
-        return Scaffold(
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 16,
-              bottom: 24,
-            ),
-            child: Form(
-              autovalidateMode: AutovalidateMode.onUnfocus,
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                spacing: 20,
-                children: [
-                  const _FormHeader(),
-                  CategoryName(controller: _nameController),
-                  ValueListenableBuilder(
-                    valueListenable: _selectedIconNotifier,
-                    builder: (context, selectedIcon, ___) =>
-                        ValueListenableBuilder<TextEditingValue>(
-                          valueListenable: _nameController,
-                          builder: (context, searchTerm, ___) =>
-                              SelectedIconView(
-                                selectedIcon: selectedIcon,
-                                categoryName: searchTerm.text,
-                              ),
-                        ),
+          return CallbackShortcuts(
+            bindings: <ShortcutActivator, VoidCallback>{
+              const SingleActivator(LogicalKeyboardKey.escape): _handleClose,
+            },
+            child: Focus(
+              autofocus: true,
+              child: GestureDetector(
+                onTap: context.unfocus,
+                child: Scaffold(
+                  body: SingleChildScrollView(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 16,
+                      bottom: 24,
+                    ),
+                    child: Form(
+                      autovalidateMode: AutovalidateMode.onUnfocus,
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        spacing: 20,
+                        children: [
+                          _FormHeader(onClose: _handleClose),
+                          CategoryName(controller: _nameController),
+                          ValueListenableBuilder(
+                            valueListenable: _selectedIconNotifier,
+                            builder: (context, selectedIcon, ___) =>
+                                ValueListenableBuilder<TextEditingValue>(
+                                  valueListenable: _nameController,
+                                  builder: (context, searchTerm, ___) =>
+                                      SelectedIconView(
+                                        selectedIcon: selectedIcon,
+                                        categoryName: searchTerm.text,
+                                      ),
+                                ),
+                          ),
+                          CategoryIconsView(
+                            onIconSelected: _onIconSelected,
+                            selectedIconNotifier: _selectedIconNotifier,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  CategoryIconsView(
-                    onIconSelected: _onIconSelected,
+                  bottomNavigationBar: CategoryFormFooterView(
+                    isLoading: isLoading,
+                    onSave: _updateCategory,
+                    onCancel: _handleClose,
+                    nameController: _nameController,
                     selectedIconNotifier: _selectedIconNotifier,
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-          bottomNavigationBar: CategoryFormFooterView(
-            isLoading: isLoading,
-            onSave: _updateCategory,
-            nameController: _nameController,
-            selectedIconNotifier: _selectedIconNotifier,
-          ),
-        );
-      },
-    ),
-  );
+          );
+        },
+      );
 }
 
 class _FormHeader extends StatelessWidget {
-  const _FormHeader({Key? key}) : super(key: key);
+  const _FormHeader({
+    Key? key,
+    required this.onClose,
+  }) : super(key: key);
+
+  final VoidCallback onClose;
 
   @override
   Widget build(BuildContext context) => Row(
@@ -146,7 +180,7 @@ class _FormHeader extends StatelessWidget {
         style: context.titleLarge,
       ),
       IconButton(
-        onPressed: () => context.pop(true),
+        onPressed: onClose,
         icon: Icon(
           Icons.close,
           color: context.colorScheme.onSurfaceVariant,

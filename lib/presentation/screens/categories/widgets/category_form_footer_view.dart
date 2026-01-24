@@ -8,6 +8,7 @@ class CategoryFormFooterView extends StatelessWidget {
     super.key,
     required this.isLoading,
     required this.onSave,
+    required this.onCancel,
     required this.nameController,
     required this.selectedIconNotifier,
   });
@@ -17,6 +18,9 @@ class CategoryFormFooterView extends StatelessWidget {
 
   /// Callback invoked when the Save button is pressed.
   final VoidCallback onSave;
+
+  /// Callback invoked when the Cancel button is pressed.
+  final VoidCallback onCancel;
 
   /// The controller for the category name input.
   final TextEditingController nameController;
@@ -33,7 +37,12 @@ class CategoryFormFooterView extends StatelessWidget {
       child: Row(
         spacing: 16,
         children: [
-          Expanded(child: _CancelButton(isLoading: isLoading)),
+          Expanded(
+            child: _CancelButton(
+              isLoading: isLoading,
+              onCancel: onCancel,
+            ),
+          ),
           Expanded(
             child: _SaveButton(
               isLoading: isLoading,
@@ -52,13 +61,15 @@ class _CancelButton extends StatelessWidget {
   const _CancelButton({
     Key? key,
     required this.isLoading,
+    required this.onCancel,
   }) : super(key: key);
 
   final bool isLoading;
+  final VoidCallback onCancel;
 
   @override
   Widget build(BuildContext context) => ElevatedButton(
-    onPressed: isLoading ? null : () => context.pop(),
+    onPressed: isLoading ? null : onCancel,
     style: ElevatedButton.styleFrom(
       minimumSize: const Size.fromHeight(kButtonHeight),
       backgroundColor: context.colorScheme.outline,

@@ -2,18 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 
 class ExpenseFormHeaderView extends StatelessWidget {
-  const ExpenseFormHeaderView({Key? key}) : super(key: key);
+  const ExpenseFormHeaderView({
+    super.key,
+    this.title = 'Add Expense',
+    this.onClose,
+  });
+
+  final String title;
+  final VoidCallback? onClose;
 
   @override
   Widget build(BuildContext context) => Row(
-    mainAxisAlignment: .spaceBetween,
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Text(
-        'Add Expense',
+        title,
         style: context.titleLarge,
       ),
       IconButton(
-        onPressed: () => context.pop(true),
+        onPressed: onClose ?? () => context.pop(true),
         icon: Icon(
           Icons.close,
           color: context.colorScheme.onSurfaceVariant,

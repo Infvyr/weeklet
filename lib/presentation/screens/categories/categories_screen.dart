@@ -1,32 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weeklet/core/di/service_locator.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/router/app_routes.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
-import 'package:weeklet/presentation/blocs/category/category_event.dart';
 import 'package:weeklet/presentation/blocs/category/category_state.dart';
 import 'package:weeklet/presentation/screens/categories/widgets/categories_empty_view.dart';
 import 'package:weeklet/presentation/screens/categories/widgets/category_item_view.dart';
 
-class CategoriesScreen extends StatefulWidget {
+class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({super.key});
 
   @override
-  State<CategoriesScreen> createState() => _CategoriesScreenState();
-}
-
-class _CategoriesScreenState extends State<CategoriesScreen> {
-  @override
-  void initState() {
-    super.initState();
-    sl<CategoryBloc>().add(const GetAllCategoriesEvent());
-  }
-
-  @override
-  Widget build(BuildContext context) => BlocProvider<CategoryBloc>.value(
-    value: sl<CategoryBloc>(),
-    child: Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: const Text('Categories'),
       ),
@@ -77,6 +62,5 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         onPressed: () => context.pushNamed(AppRoutes.addCategoryScreen),
         child: const Icon(Icons.add),
       ),
-    ),
-  );
+    );
 }

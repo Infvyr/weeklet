@@ -9,7 +9,8 @@
       "Bash(flutter analyze:*)",
       "Bash(tree:*)",
       "Bash(flutter build:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(flutter run:*)"
     ]
   }
 }

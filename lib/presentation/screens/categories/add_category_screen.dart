@@ -125,6 +125,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
           bottomNavigationBar: CategoryFormFooterView(
             isLoading: isLoading,
             onSave: _saveCategory,
+            onCancel: () => context.pop(),
             nameController: _nameController,
             selectedIconNotifier: _selectedIconNotifier,
           ),
