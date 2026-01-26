@@ -58,7 +58,7 @@ final class ExpenseSuccess extends ExpenseState {
     allExpenses: allExpenses ?? this.allExpenses,
     filteredExpenses: filteredExpenses ?? this.filteredExpenses,
     selectedYear: selectedYear ?? this.selectedYear,
-    selectedMonth: selectedMonth ?? this.selectedMonth,
+    selectedMonth: selectedMonth, // Allow null to be set for "All Months"
     availableYears: availableYears ?? this.availableYears,
     availableMonths: availableMonths ?? this.availableMonths,
     actionError: actionError, // allow null to reset error

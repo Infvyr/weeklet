@@ -38,7 +38,12 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
     Emitter<ExpenseState> emit,
   ) {
     if (state case final ExpenseSuccess st) {
-      emit(st.copyWith(actionError: null));
+      emit(
+        st.copyWith(
+          selectedMonth: st.selectedMonth,
+          actionError: null,
+        ),
+      );
     }
   }
 
@@ -64,8 +69,10 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
           : availableYears.first;
 
       // Extract available months for selected year
-      final availableMonths =
-          ExpenseFilterUtils.extractAvailableMonthsForYear(expenses, selectedYear);
+      final availableMonths = ExpenseFilterUtils.extractAvailableMonthsForYear(
+        expenses,
+        selectedYear,
+      );
 
       // Select current month if available, otherwise select the last (most recent) available month
       final currentMonth = DateTime.now().month;
@@ -108,6 +115,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
         if (parsedAmount == null || parsedAmount <= 0) {
           emit(
             st.copyWith(
+              selectedMonth: st.selectedMonth,
               actionError: 'Please enter a valid amount',
             ),
           );
@@ -137,6 +145,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
         debugPrint('error in _onAddExpense: $e');
         emit(
           st.copyWith(
+            selectedMonth: st.selectedMonth,
             actionError: 'Could not add the expense',
           ),
         );
@@ -155,6 +164,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
       } catch (e) {
         emit(
           st.copyWith(
+            selectedMonth: st.selectedMonth,
             actionError: 'Could not update the expense',
           ),
         );
@@ -173,6 +183,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
       } catch (e) {
         emit(
           st.copyWith(
+            selectedMonth: st.selectedMonth,
             actionError: 'Could not delete the expense',
           ),
         );
@@ -197,15 +208,21 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
           : st.availableMonths;
 
       // Determine the selected month:
-      // - If month was explicitly changed in event, use it
-      // - If year changed and current month doesn't exist in new year,
-      //   select the first available month
-      // - Otherwise, keep the current month
-      final selectedMonth = event.month ?? (yearChanged
-          ? (availableMonths.contains(st.selectedMonth)
-              ? st.selectedMonth
-              : (availableMonths.isNotEmpty ? availableMonths.first : null))
-          : st.selectedMonth);
+      // If only year was changed (year provided, month not), adjust month if needed
+      // If month was explicitly changed through the event, use it (even if null for "All Months")
+      final int? selectedMonth;
+      if (event.year != null && event.month == null) {
+        // Only year was changed in this event
+        selectedMonth = availableMonths.contains(st.selectedMonth)
+            ? st.selectedMonth
+            : (availableMonths.isNotEmpty ? availableMonths.first : null);
+      } else if (event.year == null) {
+        // Only month was changed in this event
+        selectedMonth = event.month;
+      } else {
+        // Both year and month were changed
+        selectedMonth = event.month ?? st.selectedMonth;
+      }
 
       final filtered = st.allExpenses.where((expense) {
         final matchYear = expense.createdAt.year == newYear;

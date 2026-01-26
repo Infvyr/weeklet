@@ -59,6 +59,7 @@ class _CommonDropdownButtonState<T extends Object?>
     _buttonKey = GlobalKey();
   }
 
+  /// Update button width after layout
   void _updateButtonWidth() {
     final size = _buttonKey.currentContext?.size;
     if (size != null && _buttonWidth != size.width) {
@@ -66,6 +67,15 @@ class _CommonDropdownButtonState<T extends Object?>
         _buttonWidth = size.width;
       });
     }
+  }
+
+  /// Check if the selected item is in the items list
+  bool _isItemSelected() {
+    final selected = widget.selectedItem;
+    if (selected == null) {
+      return widget.items.any((item) => item == null);
+    }
+    return widget.items.contains(selected);
   }
 
   @override
@@ -148,7 +158,7 @@ class _CommonDropdownButtonState<T extends Object?>
                                     color: context.colorScheme.onSurfaceVariant,
                                   ),
                                 )
-                              : widget.selectedItem != null
+                              : _isItemSelected()
                               ? widget.itemBuilder(widget.selectedItem as T)
                               : Text(
                                   widget.hint,

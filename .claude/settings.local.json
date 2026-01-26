@@ -11,7 +11,9 @@
       "Bash(flutter build:*)",
       "Bash(wc:*)",
       "Bash(flutter run:*)",
-      "Bash(*)"
+      "Bash(*)",
+      "Bash(flutter pub get:*)",
+      "Bash(git add:*)"
     ]
   }
 }

@@ -59,6 +59,17 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     ),
   );
 
+  Future<void> _onRefresh() async {
+    if (!mounted) return;
+    context.read<ExpenseBloc>().add(const LoadExpensesRequested());
+
+    await Future.doWhile(() async {
+      if (!mounted) return false;
+      final state = context.read<ExpenseBloc>().state;
+      return state is! ExpenseSuccess && state is! ExpenseFailure;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final expenseState = context.watch<ExpenseBloc>().state;
@@ -102,12 +113,15 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         ),
 
         (final ExpenseSuccess success, final CategoriesLoaded catLoaded) =>
-          SingleChildScrollView(
-            controller: _scrollController,
-            padding: const EdgeInsets.all(16.0),
-            child: ExpenseListView(
-              expenses: success.filteredExpenses,
-              categories: catLoaded.categories,
+          RefreshIndicator.adaptive(
+            onRefresh: _onRefresh,
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              padding: const EdgeInsets.all(16.0),
+              child: ExpenseListView(
+                expenses: success.filteredExpenses,
+                categories: catLoaded.categories,
+              ),
             ),
           ),
 
