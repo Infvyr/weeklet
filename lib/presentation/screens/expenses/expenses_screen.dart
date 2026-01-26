@@ -9,8 +9,54 @@ import 'package:weeklet/presentation/blocs/expense/expense_state.dart';
 import 'package:weeklet/presentation/screens/expenses/widgets/add_expense_form_view.dart';
 import 'package:weeklet/presentation/screens/expenses/widgets/list/expense_list_view.dart';
 
-class ExpensesScreen extends StatelessWidget {
+class ExpensesScreen extends StatefulWidget {
   const ExpensesScreen({super.key});
+
+  @override
+  State<ExpensesScreen> createState() => _ExpensesScreenState();
+}
+
+class _ExpensesScreenState extends State<ExpensesScreen> {
+  late ScrollController _scrollController;
+  bool _isAtBottom = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScrolled);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScrolled);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScrolled() {
+    if (!_scrollController.hasClients) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    final isAtBottom = currentScroll >= maxScroll - 50;
+
+    if (isAtBottom != _isAtBottom) {
+      setState(() => _isAtBottom = isAtBottom);
+    }
+  }
+
+  void _showAddExpenseSheet() => showModalBottomSheet<void>(
+    context: context,
+    useRootNavigator: true,
+    useSafeArea: true,
+    isScrollControlled: true,
+    showDragHandle: true,
+    builder: (_) => SizedBox(
+      height: context.screenHeight * 0.8,
+      child: const AddExpenseFormView(),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +98,8 @@ class ExpensesScreen extends StatelessWidget {
 
         (final ExpenseSuccess success, final CategoriesLoaded catLoaded) =>
           SingleChildScrollView(
-            padding: const .all(16.0),
+            controller: _scrollController,
+            padding: const EdgeInsets.all(16.0),
             child: ExpenseListView(
               expenses: success.filteredExpenses,
               categories: catLoaded.categories,
@@ -61,20 +108,27 @@ class ExpensesScreen extends StatelessWidget {
 
         _ => const SizedBox.shrink(),
       },
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Add new expense',
-        onPressed: () => showModalBottomSheet<void>(
-          context: context,
-          useRootNavigator: true,
-          useSafeArea: true,
-          isScrollControlled: true,
-          showDragHandle: true,
-          builder: (_) => SizedBox(
-            height: context.screenHeight * 0.8,
-            child: const AddExpenseFormView(),
+      floatingActionButton: AnimatedContainer(
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+        width: _isAtBottom ? context.screenWidth - 32 : 56,
+        height: _isAtBottom ? 48 : 56,
+        child: AnimatedSlide(
+          duration: const Duration(milliseconds: 400),
+          offset: Offset.zero,
+          child: FloatingActionButton.extended(
+            onPressed: _showAddExpenseSheet,
+            icon: Transform.translate(
+              offset: _isAtBottom ? Offset.zero : const Offset(6, 0),
+              child: const Icon(Icons.add),
+            ),
+            label: Visibility(
+              visible: _isAtBottom,
+              child: const Text('Add Expense'),
+            ),
+            tooltip: _isAtBottom ? '' : 'Add new expense',
           ),
         ),
-        child: const Icon(Icons.add),
       ),
     );
   }
