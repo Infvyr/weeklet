@@ -7,6 +7,7 @@ import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_event.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_state.dart';
 import 'package:weeklet/presentation/screens/expenses/widgets/add_expense_form_view.dart';
+import 'package:weeklet/presentation/screens/expenses/widgets/expense_filter_bar.dart';
 import 'package:weeklet/presentation/screens/expenses/widgets/list/expense_list_view.dart';
 
 class ExpensesScreen extends StatefulWidget {
@@ -68,6 +69,10 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         automaticallyImplyLeading: false,
         title: const Text('My Expenses'),
         centerTitle: true,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(60),
+          child: ExpenseFilterBar(),
+        ),
       ),
       body: switch ((expenseState, categoryState)) {
         (ExpenseLoading _, _) || (_, CategoryLoading _) => const Center(

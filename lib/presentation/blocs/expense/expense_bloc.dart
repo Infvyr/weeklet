@@ -8,6 +8,7 @@ import 'package:weeklet/domain/usecases/expense/add_expense_usecase.dart';
 import 'package:weeklet/domain/usecases/expense/delete_expense_usecase.dart';
 import 'package:weeklet/domain/usecases/expense/get_all_expenses_usecase.dart';
 import 'package:weeklet/domain/usecases/expense/update_expense_usecase.dart';
+import 'package:weeklet/domain/utils/expense_filter_utils.dart';
 
 import 'expense_event.dart';
 import 'expense_state.dart';
@@ -54,15 +55,40 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
     emit(const ExpenseLoading());
     try {
       final expenses = await getExpensesUseCase(NoParams());
+
+      // Extract available years and select current year if available
+      final availableYears = ExpenseFilterUtils.extractAvailableYears(expenses);
       final currentYear = DateTime.now().year;
-      final filtered = expenses
-          .where((e) => e.createdAt.year == currentYear)
-          .toList();
+      final selectedYear = availableYears.contains(currentYear)
+          ? currentYear
+          : availableYears.first;
+
+      // Extract available months for selected year
+      final availableMonths =
+          ExpenseFilterUtils.extractAvailableMonthsForYear(expenses, selectedYear);
+
+      // Select current month if available, otherwise select the last (most recent) available month
+      final currentMonth = DateTime.now().month;
+      final selectedMonth = availableMonths.contains(currentMonth)
+          ? currentMonth
+          : (availableMonths.isNotEmpty ? availableMonths.last : null);
+
+      // Filter expenses for selected year and month
+      final filtered = expenses.where((expense) {
+        final matchYear = expense.createdAt.year == selectedYear;
+        final matchMonth =
+            selectedMonth == null || expense.createdAt.month == selectedMonth;
+        return matchYear && matchMonth;
+      }).toList();
+
       emit(
         ExpenseSuccess(
           allExpenses: expenses,
           filteredExpenses: filtered,
-          selectedYear: currentYear,
+          selectedYear: selectedYear,
+          selectedMonth: selectedMonth,
+          availableYears: availableYears,
+          availableMonths: availableMonths,
         ),
       );
     } catch (e) {
@@ -160,12 +186,31 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
   ) async {
     if (state case final ExpenseSuccess st) {
       final newYear = event.year ?? st.selectedYear;
-      final newMonth = event.month; // can be null to indicate no month filter
+      final yearChanged = newYear != st.selectedYear;
+
+      // Recalculate available months if year changed
+      final availableMonths = yearChanged
+          ? ExpenseFilterUtils.extractAvailableMonthsForYear(
+              st.allExpenses,
+              newYear,
+            )
+          : st.availableMonths;
+
+      // Determine the selected month:
+      // - If month was explicitly changed in event, use it
+      // - If year changed and current month doesn't exist in new year,
+      //   select the first available month
+      // - Otherwise, keep the current month
+      final selectedMonth = event.month ?? (yearChanged
+          ? (availableMonths.contains(st.selectedMonth)
+              ? st.selectedMonth
+              : (availableMonths.isNotEmpty ? availableMonths.first : null))
+          : st.selectedMonth);
 
       final filtered = st.allExpenses.where((expense) {
         final matchYear = expense.createdAt.year == newYear;
         final matchMonth =
-            newMonth == null || expense.createdAt.month == newMonth;
+            selectedMonth == null || expense.createdAt.month == selectedMonth;
         return matchYear && matchMonth;
       }).toList();
 
@@ -173,7 +218,8 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
         st.copyWith(
           filteredExpenses: filtered,
           selectedYear: newYear,
-          selectedMonth: newMonth,
+          selectedMonth: selectedMonth,
+          availableMonths: availableMonths,
         ),
       );
     }

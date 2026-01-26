@@ -5,7 +5,7 @@ import 'package:weeklet/core/theme/colors.dart';
 /// Generic dropdown button component with clean UX
 ///
 /// Displays a button with selected value and dropdown menu
-class CommonDropdownButton<T extends Object> extends StatefulWidget {
+class CommonDropdownButton<T extends Object?> extends StatefulWidget {
   const CommonDropdownButton({
     super.key,
     required this.items,
@@ -48,7 +48,7 @@ class CommonDropdownButton<T extends Object> extends StatefulWidget {
       _CommonDropdownButtonState<T>();
 }
 
-class _CommonDropdownButtonState<T extends Object>
+class _CommonDropdownButtonState<T extends Object?>
     extends State<CommonDropdownButton<T>> {
   late GlobalKey _buttonKey;
   double _buttonWidth = double.infinity;

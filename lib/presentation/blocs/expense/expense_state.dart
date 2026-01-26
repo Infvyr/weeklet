@@ -21,6 +21,8 @@ final class ExpenseSuccess extends ExpenseState {
     required this.allExpenses,
     required this.filteredExpenses,
     required this.selectedYear,
+    required this.availableYears,
+    required this.availableMonths,
     this.selectedMonth,
     this.actionError,
   });
@@ -29,6 +31,8 @@ final class ExpenseSuccess extends ExpenseState {
   final List<Expense> filteredExpenses;
   final int selectedYear; // Default: DateTime.now().year
   final int? selectedMonth;
+  final List<int> availableYears; // Unique years from all expenses
+  final List<int> availableMonths; // Unique months for selectedYear
   final String? actionError;
 
   @override
@@ -37,6 +41,8 @@ final class ExpenseSuccess extends ExpenseState {
     filteredExpenses,
     selectedYear,
     selectedMonth,
+    availableYears,
+    availableMonths,
     actionError,
   ];
 
@@ -45,12 +51,16 @@ final class ExpenseSuccess extends ExpenseState {
     List<Expense>? filteredExpenses,
     int? selectedYear,
     int? selectedMonth,
+    List<int>? availableYears,
+    List<int>? availableMonths,
     String? actionError,
   }) => ExpenseSuccess(
     allExpenses: allExpenses ?? this.allExpenses,
     filteredExpenses: filteredExpenses ?? this.filteredExpenses,
     selectedYear: selectedYear ?? this.selectedYear,
     selectedMonth: selectedMonth ?? this.selectedMonth,
+    availableYears: availableYears ?? this.availableYears,
+    availableMonths: availableMonths ?? this.availableMonths,
     actionError: actionError, // allow null to reset error
   );
 }
