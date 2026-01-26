@@ -174,7 +174,7 @@ class AppTheme {
       foregroundColor: AppColors.lightOnPrimaryColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(
-          16,
+          12,
         ),
       ),
       enableFeedback: true,
@@ -370,7 +370,7 @@ class AppTheme {
       foregroundColor: AppColors.darkOnPrimaryColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(
-          16,
+          12,
         ),
       ),
       enableFeedback: true,
