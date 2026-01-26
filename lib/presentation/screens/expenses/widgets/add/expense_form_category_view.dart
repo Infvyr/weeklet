@@ -5,7 +5,7 @@ import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_state.dart';
-import 'package:weeklet/presentation/widgets/label_view.dart';
+import 'package:weeklet/presentation/widgets/common/common_dropdown_button.dart';
 
 class ExpenseFormCategoryView extends StatelessWidget {
   const ExpenseFormCategoryView({
@@ -21,53 +21,34 @@ class ExpenseFormCategoryView extends StatelessWidget {
       BlocBuilder<CategoryBloc, CategoryState>(
         builder: (context, state) {
           List<Category> categories = [];
-          String? loadingError;
+          String? errorText;
 
           if (state is CategoriesLoaded) {
             categories = state.categories;
           } else if (state is CategoryError) {
-            loadingError = 'Could not load categories';
+            errorText = 'Could not load categories';
           }
 
-          return Column(
-            crossAxisAlignment: .start,
-            spacing: 8,
-            children: [
-              const LabelView(text: 'Category'),
-              DropdownButtonFormField<Category>(
-                initialValue: selectedCategory,
-                hint: Text(
-                  state is CategoryLoading ? 'Loading...' : 'Select Category',
+          return CommonDropdownButton<Category>(
+            label: 'Category',
+            items: categories,
+            selectedItem: selectedCategory,
+            hint: 'Select Category',
+            isLoading: state is CategoryLoading,
+            errorText: errorText,
+            itemBuilder: (category) => Row(
+              spacing: 10,
+              children: [
+                category.toIcon(size: 20),
+                Text(
+                  category.name,
                   style: context.bodyLarge?.copyWith(
-                    fontWeight: .w400,
                     color: context.colorScheme.onSurfaceVariant,
                   ),
                 ),
-                isExpanded: true,
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please select a category';
-                  }
-                  return null;
-                },
-                items: categories
-                    .map(
-                      (category) => DropdownMenuItem<Category>(
-                        value: category,
-                        child: Row(
-                          spacing: 10,
-                          children: [
-                            category.toIcon(size: 20),
-                            Text(category.name, style: context.bodyLarge),
-                          ],
-                        ),
-                      ),
-                    )
-                    .toList(),
-                onChanged: onChanged,
-                decoration: InputDecoration(errorText: loadingError),
-              ),
-            ],
+              ],
+            ),
+            onChanged: onChanged,
           );
         },
       );
