@@ -38,15 +38,15 @@ class _MainNavigationState extends State<MainNavigation> {
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            Icons.trending_up,
-          ),
-          label: 'Stats',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
             Icons.category,
           ),
           label: 'Categories',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.trending_up,
+          ),
+          label: 'Stats',
         ),
         BottomNavigationBarItem(
           icon: Icon(
