@@ -22,6 +22,17 @@ import 'package:weeklet/domain/usecases/expense/get_expenses_by_month_year_useca
 import 'package:weeklet/domain/usecases/expense/update_expense_usecase.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
+import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
+import 'package:weeklet/data/repositories/statistics_repository_impl.dart';
+import 'package:weeklet/domain/repositories/statistics_repository.dart';
+import 'package:weeklet/domain/usecases/stats/get_monthly_stats_use_case.dart';
+import 'package:weeklet/data/datasources/local/income_local_data_source.dart';
+import 'package:weeklet/data/models/income_model.dart';
+import 'package:weeklet/data/repositories/income_repository_impl.dart';
+import 'package:weeklet/domain/repositories/income_repository.dart';
+import 'package:weeklet/domain/usecases/income/add_income_use_case.dart';
+import 'package:weeklet/domain/usecases/income/delete_income_use_case.dart';
+import 'package:weeklet/domain/usecases/income/get_incomes_use_case.dart';
 
 final sl = GetIt.instance;
 
@@ -37,6 +48,9 @@ Future<void> init() async {
   Hive.registerAdapter(
     ExpenseModelAdapter(),
   );
+  Hive.registerAdapter(
+    IncomeModelAdapter(),
+  );
 
   // Open boxes and register singletons
   final categoryBox = await Hive.openBox<CategoryModel>(
@@ -45,9 +59,13 @@ Future<void> init() async {
   final expenseBox = await Hive.openBox<ExpenseModel>(
     'expenses',
   );
+  final incomeBox = await Hive.openBox<IncomeModel>(
+    'incomes',
+  );
 
   sl.registerSingleton<Box<CategoryModel>>(categoryBox);
   sl.registerSingleton<Box<ExpenseModel>>(expenseBox);
+  sl.registerSingleton<Box<IncomeModel>>(incomeBox);
 
   sl.registerLazySingleton(
     () => const Uuid(),
@@ -66,6 +84,12 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<IncomeLocalDataSource>(
+    () => IncomeLocalDataSourceImpl(
+      sl<Box<IncomeModel>>(),
+    ),
+  );
+
   // DATA layer - Repositories
   sl.registerLazySingleton<CategoryRepository>(
     () => CategoryRepositoryImpl(
@@ -76,6 +100,20 @@ Future<void> init() async {
   sl.registerLazySingleton<ExpenseRepository>(
     () => ExpenseRepositoryImpl(
       sl<ExpenseLocalDataSource>(),
+    ),
+  );
+
+  sl.registerLazySingleton<IncomeRepository>(
+    () => IncomeRepositoryImpl(
+      sl<IncomeLocalDataSource>(),
+    ),
+  );
+
+  sl.registerLazySingleton<StatisticsRepository>(
+    () => StatisticsRepositoryImpl(
+      expenseRepository: sl<ExpenseRepository>(),
+      incomeRepository: sl<IncomeRepository>(),
+      categoryRepository: sl<CategoryRepository>(),
     ),
   );
 
@@ -130,6 +168,35 @@ Future<void> init() async {
   sl.registerLazySingleton(
     () => GetAllExpensesUseCase(
       sl<ExpenseRepository>(),
+    ),
+  );
+
+  // DOMAIN layer - UseCases (Income)
+  sl.registerLazySingleton(
+    () => AddIncomeUseCase(
+      sl<IncomeRepository>(),
+    ),
+  );
+  sl.registerLazySingleton(
+    () => DeleteIncomeUseCase(
+      sl<IncomeRepository>(),
+    ),
+  );
+  sl.registerLazySingleton(
+    () => GetIncomesUseCase(
+      sl<IncomeRepository>(),
+    ),
+  );
+
+  sl.registerLazySingleton(
+    () => GetMonthlyStatsUseCase(
+      sl<StatisticsRepository>(),
+    ),
+  );
+
+  sl.registerFactory(
+    () => StatsBloc(
+      getMonthlyStatsUseCase: sl<GetMonthlyStatsUseCase>(),
     ),
   );
 
