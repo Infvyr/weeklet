@@ -4,6 +4,7 @@ import 'package:weeklet/data/models/income_model.dart';
 
 abstract class IncomeLocalDataSource {
   Future<void> addIncome(IncomeModel income);
+  Future<void> updateIncome(IncomeModel income);
   Future<void> deleteIncome(String id);
   Future<List<IncomeModel>> getIncomes();
 }
@@ -19,6 +20,16 @@ class IncomeLocalDataSourceImpl implements IncomeLocalDataSource {
       await incomeBox.put(income.id, income);
     } catch (e) {
       debugPrint('[IncomeLocalDataSourceImpl.addIncome] error: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateIncome(IncomeModel income) async {
+    try {
+      await incomeBox.put(income.id, income);
+    } catch (e) {
+      debugPrint('[IncomeLocalDataSourceImpl.updateIncome] error: $e');
       rethrow;
     }
   }

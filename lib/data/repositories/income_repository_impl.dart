@@ -15,6 +15,12 @@ class IncomeRepositoryImpl implements IncomeRepository {
   }
 
   @override
+  Future<void> updateIncome(Income income) async {
+    final model = IncomeModel.fromEntity(income);
+    await localDataSource.updateIncome(model);
+  }
+
+  @override
   Future<void> deleteIncome(String id) async {
     await localDataSource.deleteIncome(id);
   }

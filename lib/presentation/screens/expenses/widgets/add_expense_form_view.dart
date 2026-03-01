@@ -110,9 +110,9 @@ class _AddExpenseFormViewState extends State<AddExpenseFormView> {
               crossAxisAlignment: .stretch,
               spacing: 20,
               children: [
-                const ExpenseFormHeaderView(),
-                ExpenseFormAmountView(controller: _amountController),
-                ExpenseFormDescriptionView(
+                const SheetHeaderView(),
+                AmountFieldView(controller: _amountController),
+                DescriptionFieldView(
                   controller: _descriptionController,
                 ),
                 ExpenseFormCategoryView(
@@ -124,7 +124,7 @@ class _AddExpenseFormViewState extends State<AddExpenseFormView> {
                     });
                   },
                 ),
-                ExpenseFormDateView(
+                DateFieldView(
                   selectedDate: _selectedDate,
                   errorText: _dateError,
                   onDateSelected: (date) {

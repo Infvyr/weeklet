@@ -6,9 +6,11 @@ class WeekTotalRow extends StatelessWidget {
   const WeekTotalRow({
     super.key,
     required this.formattedTotal,
+    this.amountColor,
   });
 
   final String formattedTotal;
+  final Color? amountColor;
 
   @override
   Widget build(BuildContext context) => Row(
@@ -24,7 +26,7 @@ class WeekTotalRow extends StatelessWidget {
         formattedTotal,
         style: context.bodyLarge?.copyWith(
           fontWeight: .w600,
-          color: context.colorScheme.primary,
+          color: amountColor ?? context.colorScheme.primary,
         ),
       ),
     ],

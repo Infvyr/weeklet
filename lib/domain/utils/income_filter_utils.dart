@@ -1,0 +1,43 @@
+import 'package:weeklet/domain/entities/income.dart';
+import 'package:weeklet/domain/utils/expense_filter_utils.dart';
+
+/// Utility class for extracting and managing income filter options.
+class IncomeFilterUtils {
+  IncomeFilterUtils._();
+
+  /// Extracts unique years from incomes, sorted descending (newest first).
+  static List<int> extractAvailableYears(List<Income> incomes) {
+    if (incomes.isEmpty) {
+      return [DateTime.now().year];
+    }
+
+    final years = incomes.map((e) => e.date.year).toSet().toList()
+      ..sort((a, b) => b.compareTo(a));
+
+    return years;
+  }
+
+  /// Extracts unique months for a given year, sorted ascending (1-12).
+  static List<int> extractAvailableMonthsForYear(
+    List<Income> incomes,
+    int year,
+  ) {
+    final monthsInYear =
+        incomes
+            .where((e) => e.date.year == year)
+            .map((e) => e.date.month)
+            .toSet()
+            .toList()
+          ..sort();
+
+    return monthsInYear;
+  }
+
+  /// Gets the month name for a given month number (1-12).
+  static String getMonthName(int month) =>
+      ExpenseFilterUtils.getMonthName(month);
+
+  /// Gets the abbreviated Romanian month name for a given month number (1-12).
+  static String getMonthAbbreviation(int month) =>
+      ExpenseFilterUtils.getMonthAbbreviation(month);
+}

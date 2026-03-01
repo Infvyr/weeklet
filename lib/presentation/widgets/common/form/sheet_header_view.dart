@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 
-class ExpenseFormHeaderView extends StatelessWidget {
-  const ExpenseFormHeaderView({
+class SheetHeaderView extends StatelessWidget {
+  const SheetHeaderView({
     super.key,
     this.title = 'Add Expense',
     this.onClose,

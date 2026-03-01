@@ -35,6 +35,8 @@ import 'package:weeklet/domain/repositories/income_repository.dart';
 import 'package:weeklet/domain/usecases/income/add_income_use_case.dart';
 import 'package:weeklet/domain/usecases/income/delete_income_use_case.dart';
 import 'package:weeklet/domain/usecases/income/get_incomes_use_case.dart';
+import 'package:weeklet/domain/usecases/income/update_income_use_case.dart';
+import 'package:weeklet/presentation/blocs/income/income_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -191,6 +193,12 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton(
+    () => UpdateIncomeUseCase(
+      sl<IncomeRepository>(),
+    ),
+  );
+
+  sl.registerLazySingleton(
     () => GetMonthlyStatsUseCase(
       sl<StatisticsRepository>(),
     ),
@@ -226,6 +234,17 @@ Future<void> init() async {
       deleteCategoryUseCase: sl<DeleteCategoryUseCase>(),
       getAllCategoriesUseCase: sl<GetAllCategoriesUseCase>(),
       getCategoryByIdUseCase: sl<GetSingleCategoryUseCase>(),
+      uuid: sl<Uuid>(),
+    ),
+  );
+
+  // Income
+  sl.registerLazySingleton(
+    () => IncomeBloc(
+      addIncomeUseCase: sl<AddIncomeUseCase>(),
+      updateIncomeUseCase: sl<UpdateIncomeUseCase>(),
+      deleteIncomeUseCase: sl<DeleteIncomeUseCase>(),
+      getIncomesUseCase: sl<GetIncomesUseCase>(),
       uuid: sl<Uuid>(),
     ),
   );

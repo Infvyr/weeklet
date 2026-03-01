@@ -3,6 +3,7 @@ import 'package:weeklet/presentation/navigation/main_navigation.dart';
 import 'package:weeklet/presentation/screens/categories/add_category_screen.dart';
 import 'package:weeklet/presentation/screens/categories/categories_screen.dart';
 import 'package:weeklet/presentation/screens/expenses/expenses_screen.dart';
+import 'package:weeklet/presentation/screens/income/income_screen.dart';
 import 'package:weeklet/presentation/screens/settings/settings_screen.dart';
 import 'package:weeklet/presentation/screens/stats/stats_screen.dart';
 
@@ -12,6 +13,7 @@ class AppRoutes {
   static const categoriesScreen = '/categories';
   static const statsScreen = '/stats';
   static const settingsScreen = '/settings';
+  static const incomeScreen = '/income';
   static const addCategoryScreen = '/add-category';
 
   static Route<dynamic> onGenerateRoute(
@@ -25,6 +27,10 @@ class AppRoutes {
       case expensesScreen:
         return MaterialPageRoute<dynamic>(
           builder: (context) => const ExpensesScreen(),
+        );
+      case incomeScreen:
+        return MaterialPageRoute<dynamic>(
+          builder: (context) => const IncomeScreen(),
         );
       case categoriesScreen:
         return MaterialPageRoute<dynamic>(

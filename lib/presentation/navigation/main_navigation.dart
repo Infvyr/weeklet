@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weeklet/presentation/screens/categories/categories_screen.dart';
 import 'package:weeklet/presentation/screens/expenses/expenses_screen.dart';
+import 'package:weeklet/presentation/screens/income/income_screen.dart';
 import 'package:weeklet/presentation/screens/settings/settings_screen.dart';
 import 'package:weeklet/presentation/screens/stats/stats_screen.dart';
 
@@ -16,6 +17,7 @@ class _MainNavigationState extends State<MainNavigation> {
 
   final List<Widget> _screens = [
     const ExpensesScreen(),
+    const IncomeScreen(),
     const CategoriesScreen(),
     const StatsScreen(),
     const SettingsScreen(),
@@ -35,6 +37,10 @@ class _MainNavigationState extends State<MainNavigation> {
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.account_balance_wallet),
+          label: 'Income',
         ),
         BottomNavigationBarItem(
           icon: Icon(

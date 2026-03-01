@@ -5,8 +5,8 @@ import 'package:weeklet/core/utils/locale_manager.dart';
 import 'package:weeklet/presentation/widgets/input_view.dart';
 import 'package:weeklet/presentation/widgets/label_view.dart';
 
-class ExpenseFormDateView extends StatelessWidget {
-  const ExpenseFormDateView({
+class DateFieldView extends StatelessWidget {
+  const DateFieldView({
     super.key,
     required this.selectedDate,
     required this.onDateSelected,

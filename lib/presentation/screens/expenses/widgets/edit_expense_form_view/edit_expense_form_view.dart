@@ -170,12 +170,12 @@ class _EditExpenseFormViewState extends State<EditExpenseFormView> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   spacing: 20,
                   children: [
-                    ExpenseFormHeaderView(
+                    SheetHeaderView(
                       title: 'Edit Expense',
                       onClose: _handleClose,
                     ),
-                    ExpenseFormAmountView(controller: _amountController),
-                    ExpenseFormDescriptionView(
+                    AmountFieldView(controller: _amountController),
+                    DescriptionFieldView(
                       controller: _descriptionController,
                     ),
                     ExpenseFormCategoryView(
@@ -187,7 +187,7 @@ class _EditExpenseFormViewState extends State<EditExpenseFormView> {
                         });
                       },
                     ),
-                    ExpenseFormDateView(
+                    DateFieldView(
                       selectedDate: _selectedDate,
                       errorText: _dateError,
                       onDateSelected: (date) {
