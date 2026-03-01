@@ -2,7 +2,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
-import 'package:weeklet/core/theme/colors.dart';
 import 'package:weeklet/core/utils/category_color_utils.dart';
 import 'package:weeklet/domain/entities/statistics.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
@@ -20,13 +19,13 @@ class CategoryDistributionChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (categoryStats.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         height: 200,
         child: Center(
           child: Text(
             'No data available',
             style: TextStyle(
-              color: AppColors.darkOnSurfaceVariant,
+              color: context.colorScheme.onSurfaceVariant,
             ),
           ),
         ),
@@ -40,7 +39,6 @@ class CategoryDistributionChart extends StatelessWidget {
             : -1;
 
         return Card(
-          color: AppColors.darkSurface, // Or use context theme
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -49,9 +47,11 @@ class CategoryDistributionChart extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Category Distribution - Current Month',
-                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                  style: context.bodySmall?.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 SizedBox(
@@ -115,7 +115,10 @@ class CategoryDistributionChart extends StatelessWidget {
                               shape: BoxShape.circle,
                               color: color,
                               border: isTouched
-                                  ? Border.all(color: Colors.white, width: 2)
+                                  ? Border.all(
+                                    color: context.colorScheme.onSurface,
+                                    width: 2,
+                                  )
                                   : null,
                             ),
                           ),

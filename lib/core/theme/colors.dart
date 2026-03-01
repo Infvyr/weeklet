@@ -28,6 +28,10 @@ class AppColors {
   static const lightTertiary = Color(0xFF030213);
   static const lightOnTertiary = Color(0xFFFFFFFF);
 
+  // Success Colors (Income)
+  static const lightSuccess = Color(0xFF16A34A);
+  static const darkSuccess = Color(0xFF4ADE80);
+
   // Error and Utility
   static const lightError = Color(0xFFD4183D);
   static const lightOnError = Color(0xFFFFFFFF);

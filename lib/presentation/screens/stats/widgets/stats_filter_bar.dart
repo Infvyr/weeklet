@@ -18,14 +18,11 @@ class StatsFilterBar extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    // Generate years for now, ideally this comes from AvailableYears/Months logic
-    // similar to ExpenseBloc, but for now we stick to fixed list or current year
-    // extended.
-    final List<int> years = List.generate(
-      5,
-      (index) => DateTime.now().year - 2 + index,
-    );
-    final List<int> months = List.generate(12, (index) => index + 1);
+    // Use available periods from state, fall back to current year/month if empty
+    final years = state.availableYears.isEmpty
+        ? [state.year]
+        : state.availableYears;
+    final months = state.availablePeriods[state.year] ?? [];
 
     return Container(
       color: context.colorScheme.surface,
@@ -33,24 +30,25 @@ class StatsFilterBar extends StatelessWidget {
       child: Row(
         spacing: 12,
         children: [
-          // Month Dropdown
+          // Month Dropdown (nullable, includes "All Months" option)
           Expanded(
-            child: CommonDropdownButton<int>(
-              items: months,
+            flex: 2,
+            child: CommonDropdownButton<int?>(
+              items: [null, ...months],
               selectedItem: state.month,
               itemBuilder: (month) => Text(
-                ExpenseFilterUtils.getMonthName(month),
+                month == null
+                    ? 'All Months'
+                    : ExpenseFilterUtils.getMonthName(month),
               ),
               hint: 'Select Month',
               onChanged: (month) {
-                if (month != null) {
-                  context.read<StatsBloc>().add(
-                    LoadMonthlyStats(
-                      month: month,
-                      year: state.year,
-                    ),
-                  );
-                }
+                context.read<StatsBloc>().add(
+                  LoadMonthlyStats(
+                    month: month,
+                    year: state.year,
+                  ),
+                );
               },
             ),
           ),

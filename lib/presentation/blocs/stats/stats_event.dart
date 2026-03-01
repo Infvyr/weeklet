@@ -5,23 +5,23 @@ sealed class StatsEvent extends Equatable {
   const StatsEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-class LoadMonthlyStats extends StatsEvent {
+final class LoadMonthlyStats extends StatsEvent {
   const LoadMonthlyStats({
-    required this.month,
+    this.month,
     required this.year,
   });
 
-  final int month;
+  final int? month;
   final int year;
 
   @override
-  List<Object> get props => [month, year];
+  List<Object?> get props => [month, year];
 }
 
-class ChangeStatsTab extends StatsEvent {
+final class ChangeStatsTab extends StatsEvent {
   const ChangeStatsTab(this.tab);
   final StatsTab tab;
 
@@ -29,7 +29,7 @@ class ChangeStatsTab extends StatsEvent {
   List<Object> get props => [tab];
 }
 
-class ChartTouchInteraction extends StatsEvent {
+final class ChartTouchInteraction extends StatsEvent {
   const ChartTouchInteraction(this.index);
   final int index;
 

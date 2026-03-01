@@ -4,11 +4,11 @@ import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_event.dart';
-import 'package:weeklet/presentation/screens/categories/widgets/edit_category_form_view.dart';
+import 'package:weeklet/presentation/screens/categories/widgets/edit_category_form_view/edit_category_form_view.dart';
 import 'package:weeklet/presentation/widgets/common/category_icon_circle.dart';
 import 'package:weeklet/presentation/widgets/common/category_name_text.dart';
 import 'package:weeklet/presentation/widgets/common/common_menu_button.dart';
-import 'package:weeklet/presentation/widgets/common/deletion_dialog.dart';
+import 'package:weeklet/presentation/widgets/common/deletion_dialog/deletion_dialog.dart';
 
 class CategoryItemView extends StatelessWidget {
   const CategoryItemView(

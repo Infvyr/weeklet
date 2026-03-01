@@ -1,30 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weeklet/core/di/service_locator.dart';
-import 'package:weeklet/core/theme/colors.dart';
+import 'package:weeklet/core/extensions/context_extensions.dart';
+import 'package:weeklet/domain/entities/statistics.dart';
+import 'package:weeklet/domain/utils/evolution_stats_utils.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_state.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_tab.dart';
-import 'package:weeklet/presentation/screens/stats/widgets/category_details_list.dart';
+import 'package:weeklet/presentation/screens/stats/widgets/category_details_list/category_details_list.dart';
 import 'package:weeklet/presentation/screens/stats/widgets/category_distribution_chart.dart';
+import 'package:weeklet/presentation/screens/stats/widgets/category_evolution_chart.dart';
+import 'package:weeklet/presentation/screens/stats/widgets/monthly_expenses_list.dart';
+import 'package:weeklet/presentation/screens/stats/widgets/stats_empty_view.dart';
 import 'package:weeklet/presentation/screens/stats/widgets/stats_filter_bar.dart';
-import 'package:weeklet/presentation/screens/stats/widgets/stats_summary_cards.dart';
+import 'package:weeklet/presentation/screens/stats/widgets/stats_summary_cards/stats_summary_cards.dart';
+import 'package:weeklet/presentation/screens/stats/widgets/stats_tabs_section.dart';
 
-class StatsScreen extends StatelessWidget {
+class StatsScreen extends StatefulWidget {
   const StatsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) => BlocProvider(
-    create: (_) => sl<StatsBloc>()
-      ..add(
-        LoadMonthlyStats(
-          month: DateTime.now().month,
-          year: DateTime.now().year,
-        ),
+  State<StatsScreen> createState() => _StatsScreenState();
+}
+
+class _StatsScreenState extends State<StatsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<StatsBloc>().add(
+      LoadMonthlyStats(
+        year: DateTime.now().year,
       ),
-    child: const StatsView(),
-  );
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => const StatsView();
 }
 
 class StatsView extends StatelessWidget {
@@ -32,69 +43,75 @@ class StatsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.darkBackground,
     appBar: AppBar(
-      title: const Text('Statistics', style: TextStyle(color: Colors.white)),
-      backgroundColor: AppColors.darkPrimaryColor,
-      elevation: 0,
-      centerTitle: false,
+      title: const Text('Statistics'),
     ),
     body: BlocBuilder<StatsBloc, StatsState>(
-      builder: (context, state) {
-        if (state is StatsLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (state is StatsError) {
-          return Center(
-            child: Text(
-              'Error: ${state.message}',
-              style: const TextStyle(color: Colors.red),
-            ),
-          );
-        }
-        if (state is MonthlyStatsLoaded) {
-          return CustomScrollView(
-            slivers: [
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: _StickyFilterHeaderDelegate(
-                  child: const StatsFilterBar(),
-                ),
+      builder: (context, state) => switch (state) {
+        StatsLoading _ => const Center(
+          child: CircularProgressIndicator.adaptive(),
+        ),
+        final StatsError error => Center(
+          child: Text(
+            'Error: ${error.message}',
+            style: TextStyle(color: context.colorScheme.error),
+          ),
+        ),
+        final MonthlyStatsLoaded loaded => CustomScrollView(
+          slivers: [
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _StickyFilterHeaderDelegate(
+                child: const StatsFilterBar(),
               ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    spacing: 16,
-                    children: [
-                      StatsSummaryCards(stats: state.stats),
-                      _TabsSection(currentTab: state.currentTab),
-                      if (state.currentTab == StatsTab.monthly) ...[
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  spacing: 16,
+                  children: [
+                    StatsSummaryCards(stats: loaded.stats),
+                    StatsTabsSection(currentTab: loaded.currentTab),
+                    if (loaded.currentTab == StatsTab.monthly) ...[
+                      if (loaded.stats.categoryStats.isEmpty)
+                        const StatsEmptyView()
+                      else ...[
                         CategoryDistributionChart(
-                          categoryStats: state.stats.categoryStats,
+                          categoryStats: loaded.stats.categoryStats,
                         ),
                         CategoryDetailsList(
-                          categoryStats: state.stats.categoryStats,
+                          categoryStats: loaded.stats.categoryStats,
                         ),
+                      ],
+                    ] else if (loaded.evolutionStats
+                        case final EvolutionStats es) ...[
+                      if (EvolutionStatsUtils.getSnapshotsWithData(
+                        es,
+                      ).isNotEmpty) ...[
+                        CategoryEvolutionChart(evolutionStats: es),
+                        MonthlyExpensesList(evolutionStats: es),
                       ] else
-                        const _AnnualStatsPlaceholder(),
-                    ],
-                  ),
+                        const StatsEmptyView(),
+                    ] else
+                      const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      ),
+                  ],
                 ),
               ),
-            ],
-          );
-        }
-        return const SizedBox.shrink();
+            ),
+          ],
+        ),
+        _ => const SizedBox.shrink(),
       },
     ),
   );
 }
 
 class _StickyFilterHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final Widget child;
-
   _StickyFilterHeaderDelegate({required this.child});
+  final Widget child;
 
   @override
   double get minExtent => 70;
@@ -107,111 +124,11 @@ class _StickyFilterHeaderDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) => Container(
-    color: AppColors.darkBackground,
+    color: context.scaffoldBackgroundColor,
     child: child,
   );
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
       true;
-}
-
-class _TabsSection extends StatelessWidget {
-  const _TabsSection({required this.currentTab});
-
-  final StatsTab currentTab;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    decoration: BoxDecoration(
-      color: AppColors.darkSurface,
-      borderRadius: BorderRadius.circular(8),
-    ),
-    child: Row(
-      children: [
-        Expanded(
-          child: _TabButton(
-            title: 'Monthly',
-            isSelected: currentTab == StatsTab.monthly,
-            onTap: () {
-              context.read<StatsBloc>().add(
-                const ChangeStatsTab(StatsTab.monthly),
-              );
-            },
-          ),
-        ),
-        Expanded(
-          child: _TabButton(
-            title: 'Annual Evolution',
-            isSelected: currentTab == StatsTab.annual,
-            onTap: () {
-              context.read<StatsBloc>().add(
-                const ChangeStatsTab(StatsTab.annual),
-              );
-            },
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class _TabButton extends StatelessWidget {
-  const _TabButton({
-    required this.title,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  final String title;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.darkPrimaryColor : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Text(
-            title,
-            style: TextStyle(
-              color: isSelected ? Colors.white : Colors.white70,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _AnnualStatsPlaceholder extends StatelessWidget {
-  const _AnnualStatsPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 300,
-      decoration: BoxDecoration(
-        color: AppColors.darkSurface,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: const Center(
-        child: Text(
-          'Annual Evolution Chart\n(Coming Soon)',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.white70,
-            fontSize: 16,
-          ),
-        ),
-      ),
-    );
-  }
 }

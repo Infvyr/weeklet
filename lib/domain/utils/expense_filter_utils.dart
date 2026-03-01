@@ -23,6 +23,22 @@ class ExpenseFilterUtils {
     'December',
   ];
 
+  /// Abbreviated Romanian month names indexed by month number (1-12)
+  static const List<String> kMonthAbbreviations = [
+    'Ian',
+    'Feb',
+    'Mar',
+    'Apr',
+    'Mai',
+    'Iun',
+    'Iul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+
   /// Extracts unique years from expenses, sorted descending (newest first).
   ///
   /// Returns at least [currentYear] if the list is empty, ensuring there's
@@ -66,5 +82,16 @@ class ExpenseFilterUtils {
       throw RangeError.range(month, 1, 12, 'month');
     }
     return kMonthNames[month - 1];
+  }
+
+  /// Gets the abbreviated Romanian month name for a given month number (1-12).
+  ///
+  /// Returns the 3-letter Romanian abbreviation (e.g., "Ian", "Feb", "Oct").
+  /// Throws [RangeError] if month is not between 1-12.
+  static String getMonthAbbreviation(int month) {
+    if (month < 1 || month > 12) {
+      throw RangeError.range(month, 1, 12, 'month');
+    }
+    return kMonthAbbreviations[month - 1];
   }
 }

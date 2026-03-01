@@ -6,10 +6,10 @@ import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/domain/entities/expense.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_event.dart';
-import 'package:weeklet/presentation/screens/expenses/widgets/edit_expense_form_view.dart';
+import 'package:weeklet/presentation/screens/expenses/widgets/edit_expense_form_view/edit_expense_form_view.dart';
 import 'package:weeklet/presentation/widgets/common/category_icon_circle.dart';
 import 'package:weeklet/presentation/widgets/common/common_menu_button.dart';
-import 'package:weeklet/presentation/widgets/common/deletion_dialog.dart';
+import 'package:weeklet/presentation/widgets/common/deletion_dialog/deletion_dialog.dart';
 import 'package:weeklet/presentation/widgets/common/expense_amount_text.dart';
 import 'package:weeklet/presentation/widgets/common/expense_details_column.dart';
 

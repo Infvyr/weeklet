@@ -44,3 +44,42 @@ class CategoryStats extends Equatable {
   @override
   List<Object> get props => [category, totalAmount, percentage];
 }
+
+class MonthlySnapshot extends Equatable {
+  const MonthlySnapshot({
+    required this.month,
+    required this.year,
+    required this.totalIncome,
+    required this.totalExpenses,
+    required this.balance,
+    required this.categoryStats,
+  });
+
+  final int month;
+  final int year;
+  final double totalIncome;
+  final double totalExpenses;
+  final double balance;
+  final List<CategoryStats> categoryStats;
+
+  @override
+  List<Object> get props => [
+    month,
+    year,
+    totalIncome,
+    totalExpenses,
+    balance,
+    categoryStats,
+  ];
+}
+
+class EvolutionStats extends Equatable {
+  const EvolutionStats({
+    required this.snapshots,
+  });
+
+  final List<MonthlySnapshot> snapshots; // 6 items, oldest → newest
+
+  @override
+  List<Object> get props => [snapshots];
+}

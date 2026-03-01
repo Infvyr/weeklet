@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/core/theme/colors.dart';
 
 extension ContextExtensions on BuildContext {
   // ThemeData & Colors
@@ -8,6 +9,8 @@ extension ContextExtensions on BuildContext {
 
   Color get primaryColor => theme.primaryColor;
   Color get scaffoldBackgroundColor => theme.scaffoldBackgroundColor;
+  Color get successColor =>
+      isDarkMode ? AppColors.darkSuccess : AppColors.lightSuccess;
 
   // MediaQuery - Size
   Size get screenSize => MediaQuery.of(this).size;

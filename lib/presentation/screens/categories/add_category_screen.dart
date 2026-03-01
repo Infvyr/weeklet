@@ -6,10 +6,10 @@ import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_event.dart';
 import 'package:weeklet/presentation/blocs/category/category_state.dart';
-import 'package:weeklet/presentation/screens/categories/widgets/category_form_footer_view.dart';
+import 'package:weeklet/presentation/screens/categories/widgets/category_form_footer_view/category_form_footer_view.dart';
 import 'package:weeklet/presentation/screens/categories/widgets/category_icons_view.dart';
 import 'package:weeklet/presentation/screens/categories/widgets/category_name_view.dart';
-import 'package:weeklet/presentation/screens/categories/widgets/selected_icon_view.dart';
+import 'package:weeklet/presentation/screens/categories/widgets/selected_icon_view/selected_icon_view.dart';
 
 class AddCategoryScreen extends StatefulWidget {
   const AddCategoryScreen({super.key});

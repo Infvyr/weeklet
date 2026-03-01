@@ -8,10 +8,11 @@ import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_event.dart';
 import 'package:weeklet/presentation/blocs/category/category_state.dart';
-import 'package:weeklet/presentation/screens/categories/widgets/category_form_footer_view.dart';
+import 'package:weeklet/presentation/screens/categories/widgets/category_form_footer_view/category_form_footer_view.dart';
 import 'package:weeklet/presentation/screens/categories/widgets/category_icons_view.dart';
 import 'package:weeklet/presentation/screens/categories/widgets/category_name_view.dart';
-import 'package:weeklet/presentation/screens/categories/widgets/selected_icon_view.dart';
+import 'package:weeklet/presentation/screens/categories/widgets/edit_category_form_view/edit_category_form_header.dart';
+import 'package:weeklet/presentation/screens/categories/widgets/selected_icon_view/selected_icon_view.dart';
 import 'package:weeklet/presentation/widgets/common/unsaved_changes_dialog.dart';
 
 class EditCategoryFormView extends StatefulWidget {
@@ -126,7 +127,7 @@ class _EditCategoryFormViewState extends State<EditCategoryFormView> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         spacing: 20,
                         children: [
-                          _FormHeader(onClose: _handleClose),
+                          EditCategoryFormHeader(onClose: _handleClose),
                           CategoryName(controller: _nameController),
                           ValueListenableBuilder(
                             valueListenable: _selectedIconNotifier,
@@ -161,31 +162,4 @@ class _EditCategoryFormViewState extends State<EditCategoryFormView> {
           );
         },
       );
-}
-
-class _FormHeader extends StatelessWidget {
-  const _FormHeader({
-    Key? key,
-    required this.onClose,
-  }) : super(key: key);
-
-  final VoidCallback onClose;
-
-  @override
-  Widget build(BuildContext context) => Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text(
-        'Edit Category',
-        style: context.titleLarge,
-      ),
-      IconButton(
-        onPressed: onClose,
-        icon: Icon(
-          Icons.close,
-          color: context.colorScheme.onSurfaceVariant,
-        ),
-      ),
-    ],
-  );
 }

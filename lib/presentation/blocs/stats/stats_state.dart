@@ -20,17 +20,26 @@ final class StatsLoading extends StatsState {
 final class MonthlyStatsLoaded extends StatsState {
   const MonthlyStatsLoaded({
     required this.stats,
-    required this.month,
+    this.month,
     required this.year,
     this.currentTab = StatsTab.monthly,
     this.touchedIndex = -1,
+    this.evolutionStats,
+    this.availablePeriods = const {},
   });
 
   final MonthlyStats stats;
-  final int month;
+  final int? month;
   final int year;
   final StatsTab currentTab;
   final int touchedIndex;
+  final EvolutionStats? evolutionStats;
+  final Map<int, List<int>> availablePeriods;
+
+  List<int> get availableYears {
+    final years = availablePeriods.keys.toList()..sort((a, b) => b.compareTo(a));
+    return years;
+  }
 
   MonthlyStatsLoaded copyWith({
     MonthlyStats? stats,
@@ -38,16 +47,20 @@ final class MonthlyStatsLoaded extends StatsState {
     int? year,
     StatsTab? currentTab,
     int? touchedIndex,
+    EvolutionStats? evolutionStats,
+    Map<int, List<int>>? availablePeriods,
   }) => MonthlyStatsLoaded(
     stats: stats ?? this.stats,
     month: month ?? this.month,
     year: year ?? this.year,
     currentTab: currentTab ?? this.currentTab,
     touchedIndex: touchedIndex ?? this.touchedIndex,
+    evolutionStats: evolutionStats ?? this.evolutionStats,
+    availablePeriods: availablePeriods ?? this.availablePeriods,
   );
 
   @override
-  List<Object?> get props => [stats, month, year, currentTab, touchedIndex];
+  List<Object?> get props => [stats, month, year, currentTab, touchedIndex, evolutionStats, availablePeriods];
 }
 
 final class StatsError extends StatsState {

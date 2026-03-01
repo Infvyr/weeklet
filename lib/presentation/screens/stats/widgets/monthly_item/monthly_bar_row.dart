@@ -1,0 +1,54 @@
+import 'package:flutter/material.dart';
+import 'package:weeklet/core/extensions/context_extensions.dart';
+
+class MonthlyBarRow extends StatelessWidget {
+  const MonthlyBarRow({
+    super.key,
+    required this.label,
+    required this.amount,
+    required this.maxAmount,
+    required this.color,
+  });
+
+  final String label;
+  final double amount;
+  final double maxAmount;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final value = maxAmount > 0 ? (amount / maxAmount).clamp(0.0, 1.0) : 0.0;
+    final formattedAmount = '${amount.round()} RON';
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                label,
+                style: context.bodySmall?.copyWith(
+                  color: context.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Text(formattedAmount, style: context.bodySmall),
+            ],
+          ),
+          const SizedBox(height: 6),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: value,
+              backgroundColor: context.colorScheme.surfaceContainerHighest,
+              valueColor: AlwaysStoppedAnimation<Color>(color),
+              minHeight: 6,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

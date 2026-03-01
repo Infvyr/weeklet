@@ -33,6 +33,7 @@ class ExpenseFilterBar extends StatelessWidget {
         children: [
           // Month Dropdown
           Expanded(
+            flex: 2,
             child: CommonDropdownButton<int?>(
               items: [null, ...state.availableMonths], // null = "All Months"
               selectedItem: state.selectedMonth,

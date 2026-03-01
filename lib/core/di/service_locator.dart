@@ -25,7 +25,9 @@ import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
 import 'package:weeklet/data/repositories/statistics_repository_impl.dart';
 import 'package:weeklet/domain/repositories/statistics_repository.dart';
+import 'package:weeklet/domain/usecases/stats/get_available_periods_use_case.dart';
 import 'package:weeklet/domain/usecases/stats/get_monthly_stats_use_case.dart';
+import 'package:weeklet/domain/usecases/stats/get_evolution_stats_use_case.dart';
 import 'package:weeklet/data/datasources/local/income_local_data_source.dart';
 import 'package:weeklet/data/models/income_model.dart';
 import 'package:weeklet/data/repositories/income_repository_impl.dart';
@@ -194,9 +196,23 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(
+  sl.registerLazySingleton(
+    () => GetEvolutionStatsUseCase(
+      sl<StatisticsRepository>(),
+    ),
+  );
+
+  sl.registerLazySingleton(
+    () => GetAvailablePeriodsUseCase(
+      sl<StatisticsRepository>(),
+    ),
+  );
+
+  sl.registerLazySingleton(
     () => StatsBloc(
       getMonthlyStatsUseCase: sl<GetMonthlyStatsUseCase>(),
+      getEvolutionStatsUseCase: sl<GetEvolutionStatsUseCase>(),
+      getAvailablePeriodsUseCase: sl<GetAvailablePeriodsUseCase>(),
     ),
   );
 

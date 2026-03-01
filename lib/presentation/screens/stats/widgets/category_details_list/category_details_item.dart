@@ -1,42 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/category_color_utils.dart';
 import 'package:weeklet/domain/entities/statistics.dart';
 
-class CategoryDetailsList extends StatelessWidget {
-  const CategoryDetailsList({
-    super.key,
-    required this.categoryStats,
-  });
-
-  final List<CategoryStats> categoryStats;
-
-  @override
-  Widget build(BuildContext context) {
-    if (categoryStats.isEmpty) return const SizedBox.shrink();
-
-    return Card(
-      color: const Color(0xFF1E222D),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Detalii categorii',
-              style: TextStyle(color: Colors.white70, fontSize: 14),
-            ),
-            const SizedBox(height: 16),
-            ...categoryStats.map((stat) => _CategoryItem(stat: stat)),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _CategoryItem extends StatelessWidget {
-  const _CategoryItem({required this.stat});
+class CategoryDetailsItem extends StatelessWidget {
+  const CategoryDetailsItem({super.key, required this.stat});
 
   final CategoryStats stat;
 
@@ -63,12 +31,12 @@ class _CategoryItem extends StatelessWidget {
               Expanded(
                 child: Text(
                   stat.category.name,
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                  style: context.bodyMedium,
                 ),
               ),
               Text(
-                '${stat.totalAmount.toStringAsFixed(2)} lei',
-                style: const TextStyle(color: Colors.white, fontSize: 14),
+                '${stat.totalAmount.toStringAsFixed(2)} RON',
+                style: context.bodyMedium,
               ),
             ],
           ),
@@ -77,7 +45,7 @@ class _CategoryItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: stat.percentage,
-              backgroundColor: const Color(0xFF2A2E3B),
+              backgroundColor: context.colorScheme.outline,
               valueColor: AlwaysStoppedAnimation<Color>(color),
               minHeight: 6,
             ),
