@@ -23,7 +23,7 @@ class MonthlyItem extends StatelessWidget {
     );
     final balanceColor =
         MonthlySnapshotUtils.isBalancePositive(snapshot.balance)
-        ? context.colorScheme.primary
+        ? context.theme.appBarTheme.backgroundColor
         : Colors.red;
 
     return Padding(

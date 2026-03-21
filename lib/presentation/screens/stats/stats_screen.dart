@@ -8,10 +8,11 @@ import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_state.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_tab.dart';
 import 'package:weeklet/presentation/screens/stats/widgets/category_details_list/category_details_list.dart';
-import 'package:weeklet/presentation/screens/stats/widgets/category_distribution_chart.dart';
-import 'package:weeklet/presentation/screens/stats/widgets/category_evolution_chart.dart';
+import 'package:weeklet/presentation/screens/stats/widgets/modern_donut_chart.dart';
+import 'package:weeklet/presentation/screens/stats/widgets/annual_grouped_bar_chart.dart';
 import 'package:weeklet/presentation/screens/stats/widgets/monthly_expenses_list.dart';
 import 'package:weeklet/presentation/screens/stats/widgets/stats_empty_view.dart';
+import 'package:weeklet/presentation/screens/stats/widgets/stats_error_view.dart';
 import 'package:weeklet/presentation/screens/stats/widgets/stats_filter_bar.dart';
 import 'package:weeklet/presentation/screens/stats/widgets/stats_summary_cards/stats_summary_cards.dart';
 import 'package:weeklet/presentation/screens/stats/widgets/stats_tabs_section.dart';
@@ -51,10 +52,10 @@ class StatsView extends StatelessWidget {
         StatsLoading _ => const Center(
           child: CircularProgressIndicator.adaptive(),
         ),
-        final StatsError error => Center(
-          child: Text(
-            'Error: ${error.message}',
-            style: TextStyle(color: context.colorScheme.error),
+        final StatsError error => StatsErrorView(
+          message: error.message,
+          onRetry: () => context.read<StatsBloc>().add(
+            LoadMonthlyStats(year: DateTime.now().year),
           ),
         ),
         final MonthlyStatsLoaded loaded => CustomScrollView(
@@ -77,8 +78,9 @@ class StatsView extends StatelessWidget {
                       if (loaded.stats.categoryStats.isEmpty)
                         const StatsEmptyView()
                       else ...[
-                        CategoryDistributionChart(
+                        ModernDonutChart(
                           categoryStats: loaded.stats.categoryStats,
+                          totalExpenses: loaded.stats.totalExpenses,
                         ),
                         CategoryDetailsList(
                           categoryStats: loaded.stats.categoryStats,
@@ -89,7 +91,7 @@ class StatsView extends StatelessWidget {
                       if (EvolutionStatsUtils.getSnapshotsWithData(
                         es,
                       ).isNotEmpty) ...[
-                        CategoryEvolutionChart(evolutionStats: es),
+                        AnnualGroupedBarChart(evolutionStats: es),
                         MonthlyExpensesList(evolutionStats: es),
                       ] else
                         const StatsEmptyView(),
@@ -123,7 +125,7 @@ class _StickyFilterHeaderDelegate extends SliverPersistentHeaderDelegate {
     BuildContext context,
     double shrinkOffset,
     bool overlapsContent,
-  ) => Container(
+  ) => ColoredBox(
     color: context.scaffoldBackgroundColor,
     child: child,
   );

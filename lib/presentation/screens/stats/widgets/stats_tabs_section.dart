@@ -16,9 +16,10 @@ class StatsTabsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     decoration: BoxDecoration(
-      color: context.colorScheme.surface,
-      borderRadius: BorderRadius.circular(8),
+      color: context.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+      borderRadius: BorderRadius.circular(24),
     ),
+    padding: const EdgeInsets.all(4),
     child: Row(
       children: [
         Expanded(
@@ -66,15 +67,28 @@ class StatsTabButton extends StatelessWidget {
     child: Container(
       padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
-        color: isSelected ? context.colorScheme.primary : Colors.transparent,
-        borderRadius: BorderRadius.circular(8),
+        color: isSelected
+            ? context.theme.appBarTheme.backgroundColor
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: isSelected
+            ? [
+                BoxShadow(
+                  color: context.theme.appBarTheme.backgroundColor!.withOpacity(
+                    0.3,
+                  ),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : null,
       ),
       child: Center(
         child: Text(
           title,
           style: TextStyle(
             color: isSelected
-                ? context.colorScheme.onPrimary
+                ? Colors.white
                 : context.colorScheme.onSurfaceVariant,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),

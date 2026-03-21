@@ -12,7 +12,7 @@ class StatsBalanceCard extends StatelessWidget {
     width: double.infinity,
     padding: const EdgeInsets.all(24),
     decoration: BoxDecoration(
-      color: context.colorScheme.primary,
+      color: context.theme.appBarTheme.backgroundColor,
       borderRadius: BorderRadius.circular(16),
     ),
     child: Column(
@@ -20,9 +20,9 @@ class StatsBalanceCard extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(
+            const Icon(
               Icons.account_balance_wallet,
-              color: context.colorScheme.onPrimary,
+              color: Colors.white,
               size: 16,
             ),
             const SizedBox(width: 8),
@@ -31,7 +31,7 @@ class StatsBalanceCard extends StatelessWidget {
                 'Monthly Balance',
                 overflow: TextOverflow.ellipsis,
                 style: context.bodySmall?.copyWith(
-                  color: context.colorScheme.onPrimary,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -45,7 +45,7 @@ class StatsBalanceCard extends StatelessWidget {
             isIncome: false,
           ),
           style: context.headlineSmall?.copyWith(
-            color: context.colorScheme.onPrimary,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -53,7 +53,7 @@ class StatsBalanceCard extends StatelessWidget {
         Text(
           'Realized Savings',
           style: context.bodySmall?.copyWith(
-            color: context.colorScheme.onPrimary,
+            color: Colors.white,
           ),
         ),
       ],

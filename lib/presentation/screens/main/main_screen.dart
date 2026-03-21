@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
+import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
+import 'package:weeklet/presentation/blocs/stats/stats_state.dart';
 import 'package:weeklet/presentation/screens/expenses/expenses_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -29,9 +33,17 @@ class _MainScreenState extends State<MainScreen> {
     ),
     bottomNavigationBar: BottomNavigationBar(
       currentIndex: _currentIndex,
-      onTap: (index) => setState(
-        () => _currentIndex = index,
-      ),
+      onTap: (index) {
+        if (index == 1) { // Stats Tab
+          final statsState = context.read<StatsBloc>().state;
+          if (statsState is MonthlyStatsLoaded) {
+            context.read<StatsBloc>().add(LoadMonthlyStats(month: statsState.month, year: statsState.year));
+          } else {
+            context.read<StatsBloc>().add(LoadMonthlyStats(year: DateTime.now().year));
+          }
+        }
+        setState(() => _currentIndex = index);
+      },
       type: BottomNavigationBarType.fixed,
       useLegacyColorScheme: false,
       iconSize: 20,

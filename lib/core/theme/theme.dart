@@ -366,8 +366,8 @@ class AppTheme {
 
     // FloatingActionButton Theme
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: AppColors.darkPrimaryColor,
-      foregroundColor: AppColors.darkOnPrimaryColor,
+      backgroundColor: AppColors.lightPrimaryColor,
+      foregroundColor: AppColors.lightOnPrimaryColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(
           12,

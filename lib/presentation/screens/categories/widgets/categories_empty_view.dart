@@ -1,24 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/presentation/widgets/common/empty_state_view.dart';
 
 class CategoriesEmptyView extends StatelessWidget {
   const CategoriesEmptyView({super.key});
 
   @override
-  Widget build(BuildContext context) => const Center(
-    child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24.0),
-      child: Text.rich(
-        TextSpan(
-          text: "There's no categories.\n",
-          children: [
-            TextSpan(
-              text:
-                  'Add new one by pressing the floating button in the bottom right corner.',
-            ),
-          ],
-        ),
-        textAlign: TextAlign.center,
-      ),
-    ),
+  Widget build(BuildContext context) => const EmptyStateView(
+    icon: Icons.category_outlined,
+    title: 'No categories yet',
+    subtitle: 'Tap + to add your first category',
   );
 }

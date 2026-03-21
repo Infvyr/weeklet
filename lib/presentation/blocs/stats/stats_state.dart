@@ -44,6 +44,7 @@ final class MonthlyStatsLoaded extends StatsState {
   MonthlyStatsLoaded copyWith({
     MonthlyStats? stats,
     int? month,
+    bool clearMonth = false,
     int? year,
     StatsTab? currentTab,
     int? touchedIndex,
@@ -51,7 +52,7 @@ final class MonthlyStatsLoaded extends StatsState {
     Map<int, List<int>>? availablePeriods,
   }) => MonthlyStatsLoaded(
     stats: stats ?? this.stats,
-    month: month ?? this.month,
+    month: clearMonth ? null : (month ?? this.month),
     year: year ?? this.year,
     currentTab: currentTab ?? this.currentTab,
     touchedIndex: touchedIndex ?? this.touchedIndex,

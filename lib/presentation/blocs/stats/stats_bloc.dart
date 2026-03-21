@@ -1,11 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weeklet/domain/entities/statistics.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
 import 'package:weeklet/domain/usecases/stats/get_available_periods_use_case.dart';
 import 'package:weeklet/domain/usecases/stats/get_monthly_stats_use_case.dart';
 import 'package:weeklet/domain/usecases/stats/get_evolution_stats_use_case.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_state.dart';
-import 'package:weeklet/presentation/blocs/stats/stats_tab.dart';
+
 
 class StatsBloc extends Bloc<StatsEvent, StatsState> {
   StatsBloc({
@@ -34,25 +35,19 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     }
 
     try {
-      // Only fetch available periods on initial load to avoid unnecessary queries
-      Map<int, List<int>> availablePeriods = {};
+      // Always fetch available periods so deleted months are removed
+      final availablePeriods = await getAvailablePeriodsUseCase(NoParams());
       int? selectedMonth = event.month;
 
       if (isInitialLoad) {
-        availablePeriods = await getAvailablePeriodsUseCase(NoParams());
-
-        // Smart selection: if no month provided, pick current or last available
         if (event.month == null) {
           final availableMonths = availablePeriods[event.year] ?? [];
           if (availableMonths.contains(DateTime.now().month) &&
               DateTime.now().year == event.year) {
-            // Use current month if available in this year
             selectedMonth = DateTime.now().month;
           } else if (availableMonths.isNotEmpty) {
-            // Use last available month
             selectedMonth = availableMonths.last;
           }
-          // else: keep selectedMonth as null (all months/annual)
         }
       }
 
@@ -61,13 +56,22 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         year: event.year,
       );
       final stats = await getMonthlyStatsUseCase(params);
+      
+      EvolutionStats? evolutionStats;
+      final evolutionMonth = selectedMonth ?? DateTime.now().month;
+      evolutionStats = await getEvolutionStatsUseCase(
+        GetEvolutionStatsParams(month: evolutionMonth, year: event.year)
+      );
 
       if (state case final MonthlyStatsLoaded st) {
         emit(
           st.copyWith(
             stats: stats,
             month: selectedMonth,
+            clearMonth: selectedMonth == null,
             year: event.year,
+            evolutionStats: evolutionStats,
+            availablePeriods: availablePeriods,
           ),
         );
       } else {
@@ -77,14 +81,9 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
             month: selectedMonth,
             year: event.year,
             availablePeriods: availablePeriods,
+            evolutionStats: evolutionStats,
           ),
         );
-      }
-
-      // Reload evolution stats if on annual tab and month is not null
-      if (state case final MonthlyStatsLoaded st
-          when st.currentTab == StatsTab.annual && selectedMonth != null) {
-        await _loadEvolutionStats(selectedMonth, event.year, emit);
       }
     } catch (e) {
       emit(StatsError(e.toString()));
@@ -97,31 +96,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
   ) async {
     if (state case final MonthlyStatsLoaded st) {
       emit(st.copyWith(currentTab: event.tab));
-
-      // Load evolution stats when switching to annual tab if not already loaded
-      // Only load if month is not null (evolution stats are per-month)
-      if (event.tab == StatsTab.annual && st.evolutionStats == null) {
-        if (st.month case final int month) {
-          await _loadEvolutionStats(month, st.year, emit);
-        }
-      }
-    }
-  }
-
-  Future<void> _loadEvolutionStats(
-    int month,
-    int year,
-    Emitter<StatsState> emit,
-  ) async {
-    try {
-      final params = GetEvolutionStatsParams(month: month, year: year);
-      final evolutionStats = await getEvolutionStatsUseCase(params);
-
-      if (state case final MonthlyStatsLoaded st) {
-        emit(st.copyWith(evolutionStats: evolutionStats));
-      }
-    } catch (e) {
-      emit(StatsError(e.toString()));
+      // No need to fetch EvolutionStats here, it's already fetched in LoadMonthlyStats
     }
   }
 

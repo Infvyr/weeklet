@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uuid/uuid.dart';
 import 'package:weeklet/core/di/service_locator.dart' show sl;
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/form_helpers.dart';
 import 'package:weeklet/domain/entities/category.dart';
+import 'package:weeklet/domain/usecases/category/add_category_usecase.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_event.dart';
+import 'package:weeklet/presentation/blocs/category/category_state.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_event.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_state.dart';
@@ -62,7 +65,7 @@ class _AddExpenseFormViewState extends State<AddExpenseFormView> {
     return true;
   }
 
-  void _onSave() {
+  Future<void> _onSave() async {
     final isValid = FormHelpers.validateForm(
       _formKey,
       [_validateDate],
@@ -75,11 +78,54 @@ class _AddExpenseFormViewState extends State<AddExpenseFormView> {
       return;
     }
 
+    String? finalCategoryId = _selectedCategory?.id;
+
+    if (finalCategoryId == null) {
+      final categoryState = context.read<CategoryBloc>().state;
+      if (categoryState is CategoriesLoaded) {
+        final dailyCategory = categoryState.categories
+            .where((c) => c.name.trim().toLowerCase() == 'daily')
+            .firstOrNull;
+
+        if (dailyCategory != null) {
+          finalCategoryId = dailyCategory.id;
+        } else {
+          final newDailyCategory = Category(
+            id: sl<Uuid>().v4(),
+            name: 'Daily',
+            icon: 'home',
+            createdAt: DateTime.now(),
+          );
+          await sl<AddCategoryUseCase>().call(newDailyCategory);
+          finalCategoryId = newDailyCategory.id;
+
+          if (mounted) {
+            context.read<CategoryBloc>().add(const GetAllCategoriesEvent());
+          }
+        }
+      } else {
+        final newDailyCategory = Category(
+          id: sl<Uuid>().v4(),
+          name: 'Daily',
+          icon: 'home',
+          createdAt: DateTime.now(),
+        );
+        await sl<AddCategoryUseCase>().call(newDailyCategory);
+        finalCategoryId = newDailyCategory.id;
+
+        if (mounted) {
+          context.read<CategoryBloc>().add(const GetAllCategoriesEvent());
+        }
+      }
+    }
+
+    if (!mounted) return;
+
     context.read<ExpenseBloc>().add(
       AddExpenseStarted(
         amount: _amountController.text,
         description: _descriptionController.text.trim(),
-        categoryId: _selectedCategory!.id,
+        categoryId: finalCategoryId,
         date: _selectedDate!,
       ),
     );
