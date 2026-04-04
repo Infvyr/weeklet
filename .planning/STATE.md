@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 01-architecture-cleanup plan 02 (ARCH-01, ARCH-02)
-last_updated: "2026-04-04T17:10:06.181Z"
+status: verifying
+stopped_at: Completed 01-architecture-cleanup plan 04 (ARCH-03, ARCH-04)
+last_updated: "2026-04-04T17:24:33.311Z"
 last_activity: 2026-04-04
 progress:
   total_phases: 6
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
   percent: 0
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-04-04)
 
 Phase: 01 (architecture-cleanup) — EXECUTING
 Plan: 4 of 4
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-04-04
 
 Progress: [░░░░░░░░░░] 0%
@@ -55,6 +55,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-architecture-cleanup P01 | 2 | 2 tasks | 4 files |
 | Phase 01 P03 | 9 | 2 tasks | 15 files |
 | Phase 01-architecture-cleanup P02 | 25 | 2 tasks | 8 files |
+| Phase 01-architecture-cleanup P04 | 25 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,9 @@ Recent decisions affecting current work:
 - [Phase 01]: AppConstants.DEFAULT_CURRENCY = 'MDL' is the single source of truth for currency; Phase 4 Settings will replace it with user-configurable value
 - [Phase 01-architecture-cleanup]: AddIncomeUseCase standardized to ArgumentError and UseCase interface, fixing pre-existing inconsistency alongside ARCH-01/02 refactor
 - [Phase 01-architecture-cleanup]: After AddCategoryUseCase API change (void return, UUID internal), widget retrieves Daily category ID via GetAllCategoriesUseCase post-creation
+- [Phase 01-architecture-cleanup]: AppInitializer preloads StatsBloc via LoadMonthlyStats(year: DateTime.now().year) — statistics screen shows data immediately on first visit
+- [Phase 01-architecture-cleanup]: getMonthAbbreviation uses DateFormat('MMM', locale) with LocaleManager — locale-aware for all 3 supported locales; initializeDateFormatting required in tests
+- [Phase 01-architecture-cleanup]: GetExpensesByMonthYearUseCase deleted from disk and DI — was unused dead code since StatsBloc uses GetMonthlyStatsUseCase instead
 
 ### Pending Todos
 
@@ -82,6 +86,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-04T17:10:06.176Z
-Stopped at: Completed 01-architecture-cleanup plan 02 (ARCH-01, ARCH-02)
+Last session: 2026-04-04T17:24:33.305Z
+Stopped at: Completed 01-architecture-cleanup plan 04 (ARCH-03, ARCH-04)
 Resume file: None

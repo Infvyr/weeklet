@@ -12,7 +12,7 @@ Weeklet is a working personal finance app with expenses and categories already s
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Architecture Cleanup** - Fix layer violations, centralize currency, preload stats
+- [x] **Phase 1: Architecture Cleanup** - Fix layer violations, centralize currency, preload stats (completed 2026-04-04)
 - [ ] **Phase 2: Income Screen** - Complete the WIP income screen with modern UI and correct data flow
 - [ ] **Phase 3: Statistics Screen** - Finish statistics modernization with correct totals and annual overview
 - [ ] **Phase 4: Settings Screen** - Build the full settings experience (biometrics, theme, data, legal, language)
@@ -37,7 +37,7 @@ Plans:
 - [x] 01-01-PLAN.md — Test scaffolding (Wave 0): create test/ directory and 4 failing test files covering ARCH-01, ARCH-02, ARCH-04, REL-03
 - [x] 01-02-PLAN.md — Use case refactoring (Wave 1): move validation + UUID generation from BLoCs into AddExpenseUseCase, AddIncomeUseCase, AddCategoryUseCase; update DI
 - [x] 01-03-PLAN.md — Currency centralization (Wave 1): create AppConstants.DEFAULT_CURRENCY, update 14 widget files to reference it
-- [ ] 01-04-PLAN.md — Stats preload + locale months + dead code (Wave 2): AppInitializer preloads StatsBloc, locale-aware month abbreviations, delete GetExpensesByMonthYearUseCase
+- [x] 01-04-PLAN.md — Stats preload + locale months + dead code (Wave 2): AppInitializer preloads StatsBloc, locale-aware month abbreviations, delete GetExpensesByMonthYearUseCase
 
 ### Phase 2: Income Screen
 **Goal**: Users can fully manage income entries with a polished, consistent UI that matches the expense screen
@@ -103,7 +103,7 @@ Note: Phase 4 (Settings) depends only on Phase 1, so it could theoretically run 
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Architecture Cleanup | 3/4 | In Progress|  |
+| 1. Architecture Cleanup | 4/4 | Complete   | 2026-04-04 |
 | 2. Income Screen | 0/? | Not started | - |
 | 3. Statistics Screen | 0/? | Not started | - |
 | 4. Settings Screen | 0/? | Not started | - |
