@@ -126,7 +126,7 @@ class ModernDonutChart extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: color.withOpacity(0.1),
+                        color: color.withValues(alpha: .1),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: isTouched ? color : Colors.transparent,
@@ -203,7 +203,7 @@ class ModernDonutChart extends StatelessWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: .1),
                       blurRadius: 4,
                     ),
                   ],

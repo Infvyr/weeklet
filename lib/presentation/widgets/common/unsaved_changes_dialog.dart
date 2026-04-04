@@ -10,26 +10,26 @@ class UnsavedChangesDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AlertDialog(
-        title: const Text('Discard changes?'),
-        content: const Text(
-          'You have unsaved changes. Are you sure you want to leave without saving?',
+    title: const Text('Discard changes?'),
+    content: const Text(
+      'You have unsaved changes. Are you sure you want to leave without saving?',
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => context.pop(false),
+        child: const Text('Cancel'),
+      ),
+      TextButton(
+        onPressed: () => context.pop(true),
+        style: TextButton.styleFrom(
+          foregroundColor: context.colorScheme.error,
         ),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => context.pop(true),
-            style: TextButton.styleFrom(
-              foregroundColor: context.colorScheme.error,
-            ),
-            child: const Text('Discard'),
-          ),
-        ],
-      );
+        child: const Text('Discard'),
+      ),
+    ],
+  );
 
-  /// Shows the unsaved changes dialog and returns a Future<bool>.
+  /// Shows the unsaved changes dialog and returns a `Future<bool>`.
   ///
   /// Returns `true` if the user wants to discard changes and leave,
   /// returns `false` if they want to stay.

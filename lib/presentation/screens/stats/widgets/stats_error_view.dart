@@ -20,7 +20,7 @@ class StatsErrorView extends StatelessWidget {
         Icon(
           Icons.error_outline_rounded,
           size: 64,
-          color: context.colorScheme.error.withOpacity(0.8),
+          color: context.colorScheme.error.withValues(alpha: .8),
         ),
         const SizedBox(height: 16),
         Text(
@@ -44,7 +44,7 @@ class StatsErrorView extends StatelessWidget {
           icon: const Icon(Icons.refresh),
           label: const Text('Try Again'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: context.colorScheme.primary.withOpacity(0.1),
+            backgroundColor: context.colorScheme.primary.withValues(alpha: .1),
             foregroundColor: context.colorScheme.primary,
             elevation: 0,
           ),

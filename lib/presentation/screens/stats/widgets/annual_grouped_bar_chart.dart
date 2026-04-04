@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
 import 'package:weeklet/domain/entities/statistics.dart';
-import 'package:weeklet/domain/utils/expense_filter_utils.dart';
 import 'package:weeklet/domain/utils/evolution_stats_utils.dart';
+import 'package:weeklet/domain/utils/expense_filter_utils.dart';
 
 class AnnualGroupedBarChart extends StatelessWidget {
   const AnnualGroupedBarChart({
@@ -62,7 +62,7 @@ class AnnualGroupedBarChart extends StatelessWidget {
                     enabled: true,
                     touchTooltipData: BarTouchTooltipData(
                       getTooltipColor: (_) =>
-                          context.colorScheme.onSurface.withOpacity(0.9),
+                          context.colorScheme.onSurface.withValues(alpha: 0.9),
                       tooltipPadding: const EdgeInsets.all(8),
                       tooltipMargin: 8,
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
@@ -157,7 +157,7 @@ class AnnualGroupedBarChart extends StatelessWidget {
                     checkToShowHorizontalLine: (value) =>
                         value > 0 && (interval > 0 && value % interval == 0),
                     getDrawingHorizontalLine: (value) => FlLine(
-                      color: context.colorScheme.outline.withOpacity(0.3),
+                      color: context.colorScheme.outline.withValues(alpha: .3),
                       strokeWidth: 1,
                       dashArray: [4, 4],
                     ),
@@ -215,23 +215,22 @@ class AnnualGroupedBarChart extends StatelessWidget {
     );
   }
 
-  Widget _buildLegendItem(BuildContext context, String title, Color color) {
-    return Row(
-      children: [
-        Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(shape: BoxShape.circle, color: color),
-        ),
-        const SizedBox(width: 8),
-        Text(
-          title,
-          style: context.labelMedium?.copyWith(
-            color: context.colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.bold,
+  Widget _buildLegendItem(BuildContext context, String title, Color color) =>
+      Row(
+        children: [
+          Container(
+            width: 12,
+            height: 12,
+            decoration: BoxDecoration(shape: BoxShape.circle, color: color),
           ),
-        ),
-      ],
-    );
-  }
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: context.labelMedium?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      );
 }

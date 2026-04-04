@@ -16,7 +16,7 @@ class StatsTabsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     decoration: BoxDecoration(
-      color: context.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+      color: context.colorScheme.surfaceContainerHighest.withValues(alpha: .3),
       borderRadius: BorderRadius.circular(24),
     ),
     padding: const EdgeInsets.all(4),
@@ -74,8 +74,8 @@ class StatsTabButton extends StatelessWidget {
         boxShadow: isSelected
             ? [
                 BoxShadow(
-                  color: context.theme.appBarTheme.backgroundColor!.withOpacity(
-                    0.3,
+                  color: context.theme.appBarTheme.backgroundColor!.withValues(
+                    alpha: 0.3,
                   ),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
