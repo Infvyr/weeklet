@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
 import 'package:weeklet/domain/entities/statistics.dart';
@@ -78,7 +79,7 @@ class AnnualGroupedBarChart extends StatelessWidget {
                             TextSpan(
                               text: NumberFormatter.formatCurrencyWithSign(
                                 rod.toY,
-                                'RON',
+                                AppConstants.DEFAULT_CURRENCY,
                                 isIncome: isIncome,
                               ),
                               style: TextStyle(

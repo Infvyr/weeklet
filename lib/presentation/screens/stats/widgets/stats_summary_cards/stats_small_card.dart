@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
 
@@ -55,7 +56,7 @@ class StatsSmallCard extends StatelessWidget {
           Text(
             NumberFormatter.formatCurrencyWithSign(
               amount,
-              'RON',
+              AppConstants.DEFAULT_CURRENCY,
               isIncome: isIncome,
             ),
             overflow: TextOverflow.ellipsis,

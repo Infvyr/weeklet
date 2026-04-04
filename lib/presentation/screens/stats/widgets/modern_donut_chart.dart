@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/category_color_utils.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
@@ -89,7 +90,7 @@ class ModernDonutChart extends StatelessWidget {
                         Text(
                           NumberFormatter.formatCurrencyWithSign(
                             totalExpenses,
-                            'RON',
+                            AppConstants.DEFAULT_CURRENCY,
                             isIncome: false,
                           ),
                           style: context.titleLarge?.copyWith(

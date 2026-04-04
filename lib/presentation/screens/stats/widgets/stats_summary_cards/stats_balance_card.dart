@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
 
@@ -41,7 +42,7 @@ class StatsBalanceCard extends StatelessWidget {
         Text(
           NumberFormatter.formatCurrencyWithSign(
             balance,
-            'RON',
+            AppConstants.DEFAULT_CURRENCY,
             isIncome: false,
           ),
           style: context.headlineSmall?.copyWith(
