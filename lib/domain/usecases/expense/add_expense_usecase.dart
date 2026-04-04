@@ -1,27 +1,59 @@
+import 'package:uuid/uuid.dart';
 import 'package:weeklet/domain/entities/expense.dart';
 import 'package:weeklet/domain/repositories/expense_repository.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
 
-class AddExpenseUseCase implements UseCase<void, Expense> {
-  const AddExpenseUseCase(this.repository);
+class AddExpenseParams {
+  const AddExpenseParams({
+    required this.amount,
+    required this.description,
+    required this.categoryId,
+    required this.date,
+  });
+
+  final String amount;
+  final String description;
+  final String categoryId;
+  final DateTime date;
+}
+
+class AddExpenseUseCase implements UseCase<void, AddExpenseParams> {
+  const AddExpenseUseCase(this.repository, this.uuid);
 
   final ExpenseRepository repository;
+  final Uuid uuid;
 
   @override
-  Future<void> call(Expense params) async {
-    _validateExpense(params);
-    return repository.addExpense(params);
+  Future<void> call(AddExpenseParams params) async {
+    final expense = _buildAndValidate(params);
+    return repository.addExpense(expense);
   }
 
-  void _validateExpense(Expense expense) {
-    if (expense.description.trim().isEmpty) {
+  Expense _buildAndValidate(AddExpenseParams params) {
+    final parsedAmount = double.tryParse(params.amount);
+    if (parsedAmount == null || parsedAmount <= 0) {
+      throw ArgumentError('Expense amount must be a positive number');
+    }
+    if (params.description.trim().isEmpty) {
       throw ArgumentError('Expense description cannot be empty');
     }
-    if (expense.amount <= 0) {
-      throw ArgumentError('Expense amount must be greater than 0');
-    }
-    if (expense.categoryId.trim().isEmpty) {
+    if (params.categoryId.trim().isEmpty) {
       throw ArgumentError('Category cannot be empty');
     }
+    final now = DateTime.now();
+    return Expense(
+      id: uuid.v4(),
+      amount: parsedAmount,
+      description: params.description,
+      categoryId: params.categoryId,
+      createdAt: DateTime(
+        params.date.year,
+        params.date.month,
+        params.date.day,
+        now.hour,
+        now.minute,
+        now.second,
+      ),
+    );
   }
 }

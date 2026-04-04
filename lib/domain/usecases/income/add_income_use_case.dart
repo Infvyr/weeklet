@@ -1,15 +1,44 @@
+import 'package:uuid/uuid.dart';
 import 'package:weeklet/domain/entities/income.dart';
 import 'package:weeklet/domain/repositories/income_repository.dart';
+import 'package:weeklet/domain/usecases/base/use_case.dart';
 
-class AddIncomeUseCase {
-  const AddIncomeUseCase(this.repository);
+class AddIncomeParams {
+  const AddIncomeParams({
+    required this.amount,
+    required this.description,
+    required this.date,
+  });
+
+  final String amount;
+  final String description;
+  final DateTime date;
+}
+
+class AddIncomeUseCase implements UseCase<void, AddIncomeParams> {
+  const AddIncomeUseCase(this.repository, this.uuid);
 
   final IncomeRepository repository;
+  final Uuid uuid;
 
-  Future<void> call(Income params) async {
-    if (params.amount <= 0) {
-      throw Exception('Amount must be greater than 0');
+  @override
+  Future<void> call(AddIncomeParams params) async {
+    final income = _buildAndValidate(params);
+    await repository.addIncome(income);
+  }
+
+  Income _buildAndValidate(AddIncomeParams params) {
+    final parsedAmount = double.tryParse(params.amount);
+    if (parsedAmount == null || parsedAmount <= 0) {
+      throw ArgumentError('Income amount must be a positive number');
     }
-    await repository.addIncome(params);
+    final now = DateTime.now();
+    return Income(
+      id: uuid.v4(),
+      amount: parsedAmount,
+      description: params.description,
+      date: params.date,
+      createdAt: now,
+    );
   }
 }
