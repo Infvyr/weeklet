@@ -1,7 +1,5 @@
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uuid/uuid.dart' show Uuid;
-import 'package:weeklet/domain/entities/income.dart';
 import 'package:weeklet/domain/usecases/income/add_income_use_case.dart';
 import 'package:weeklet/domain/usecases/income/delete_income_use_case.dart';
 import 'package:weeklet/domain/usecases/income/get_incomes_use_case.dart';
@@ -17,7 +15,6 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
     required this.updateIncomeUseCase,
     required this.deleteIncomeUseCase,
     required this.getIncomesUseCase,
-    required this.uuid,
   }) : super(const IncomeInitial()) {
     on<LoadIncomesRequested>(_onLoadIncomes);
     on<AddIncomeStarted>(_onAddIncome);
@@ -31,7 +28,6 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
   final UpdateIncomeUseCase updateIncomeUseCase;
   final DeleteIncomeUseCase deleteIncomeUseCase;
   final GetIncomesUseCase getIncomesUseCase;
-  final Uuid uuid;
 
   void _onClearActionError(
     ClearIncomeActionErrorRequested event,
@@ -100,27 +96,22 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
   ) async {
     if (state case final IncomeSuccess st) {
       try {
-        final parsedAmount = double.tryParse(event.amount);
-        if (parsedAmount == null || parsedAmount <= 0) {
-          emit(
-            st.copyWith(
-              selectedMonth: st.selectedMonth,
-              actionError: 'Please enter a valid amount',
-            ),
-          );
-          return;
-        }
-
-        final now = DateTime.now();
-        final newIncome = Income(
-          id: uuid.v4(),
-          amount: parsedAmount,
-          description: event.description,
-          date: event.date,
-          createdAt: now,
+        await addIncomeUseCase(
+          AddIncomeParams(
+            amount: event.amount,
+            description: event.description,
+            date: event.date,
+          ),
         );
-        await addIncomeUseCase(newIncome);
         add(const LoadIncomesRequested());
+      } on ArgumentError catch (e) {
+        debugPrint('error in _onAddIncome: $e');
+        emit(
+          st.copyWith(
+            selectedMonth: st.selectedMonth,
+            actionError: e.message?.toString() ?? 'Invalid input',
+          ),
+        );
       } catch (e) {
         debugPrint('error in _onAddIncome: $e');
         emit(

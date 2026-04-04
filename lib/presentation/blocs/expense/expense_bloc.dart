@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:uuid/uuid.dart' show Uuid;
-import 'package:weeklet/domain/entities/expense.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
 import 'package:weeklet/domain/usecases/expense/add_expense_usecase.dart';
 import 'package:weeklet/domain/usecases/expense/delete_expense_usecase.dart';
@@ -23,7 +21,6 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
     required this.updateExpenseUseCase,
     required this.deleteExpenseUseCase,
     required this.getExpensesUseCase,
-    required this.uuid,
   }) : super(const ExpenseInitial()) {
     on<LoadExpensesRequested>(_onLoadExpenses);
     on<AddExpenseStarted>(_onAddExpense);
@@ -51,7 +48,6 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
   final UpdateExpenseUseCase updateExpenseUseCase;
   final DeleteExpenseUseCase deleteExpenseUseCase;
   final GetAllExpensesUseCase getExpensesUseCase;
-  final Uuid uuid;
 
   Future<void> _onLoadExpenses(
     LoadExpensesRequested event,
@@ -110,37 +106,23 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
   ) async {
     if (state case final ExpenseSuccess st) {
       try {
-        // Parse and validate amount
-        final parsedAmount = double.tryParse(event.amount);
-        if (parsedAmount == null || parsedAmount <= 0) {
-          emit(
-            st.copyWith(
-              selectedMonth: st.selectedMonth,
-              actionError: 'Please enter a valid amount',
-            ),
-          );
-          return;
-        }
-
-        // Combine selected date with current time for createdAt
-        final now = DateTime.now();
-        final createdAt = DateTime(
-          event.date.year,
-          event.date.month,
-          event.date.day,
-          now.hour,
-          now.minute,
-          now.second,
+        await addExpenseUseCase(
+          AddExpenseParams(
+            amount: event.amount,
+            description: event.description,
+            categoryId: event.categoryId,
+            date: event.date,
+          ),
         );
-        final newExpense = Expense(
-          id: uuid.v4(),
-          amount: parsedAmount,
-          description: event.description,
-          categoryId: event.categoryId,
-          createdAt: createdAt,
-        );
-        await addExpenseUseCase(newExpense);
         add(const LoadExpensesRequested());
+      } on ArgumentError catch (e) {
+        debugPrint('error in _onAddExpense: $e');
+        emit(
+          st.copyWith(
+            selectedMonth: st.selectedMonth,
+            actionError: e.message?.toString() ?? 'Invalid input',
+          ),
+        );
       } catch (e) {
         debugPrint('error in _onAddExpense: $e');
         emit(

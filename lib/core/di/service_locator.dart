@@ -125,6 +125,7 @@ Future<void> init() async {
   sl.registerLazySingleton(
     () => AddCategoryUseCase(
       sl<CategoryRepository>(),
+      sl<Uuid>(),
     ),
   );
   sl.registerLazySingleton(
@@ -152,6 +153,7 @@ Future<void> init() async {
   sl.registerLazySingleton(
     () => AddExpenseUseCase(
       sl<ExpenseRepository>(),
+      sl<Uuid>(),
     ),
   );
   sl.registerLazySingleton(
@@ -179,6 +181,7 @@ Future<void> init() async {
   sl.registerLazySingleton(
     () => AddIncomeUseCase(
       sl<IncomeRepository>(),
+      sl<Uuid>(),
     ),
   );
   sl.registerLazySingleton(
@@ -234,7 +237,6 @@ Future<void> init() async {
       deleteCategoryUseCase: sl<DeleteCategoryUseCase>(),
       getAllCategoriesUseCase: sl<GetAllCategoriesUseCase>(),
       getCategoryByIdUseCase: sl<GetSingleCategoryUseCase>(),
-      uuid: sl<Uuid>(),
     ),
   );
 
@@ -245,7 +247,6 @@ Future<void> init() async {
       updateIncomeUseCase: sl<UpdateIncomeUseCase>(),
       deleteIncomeUseCase: sl<DeleteIncomeUseCase>(),
       getIncomesUseCase: sl<GetIncomesUseCase>(),
-      uuid: sl<Uuid>(),
     ),
   );
 
@@ -256,7 +257,6 @@ Future<void> init() async {
       updateExpenseUseCase: sl<UpdateExpenseUseCase>(),
       deleteExpenseUseCase: sl<DeleteExpenseUseCase>(),
       getExpensesUseCase: sl<GetAllExpensesUseCase>(),
-      uuid: sl<Uuid>(),
     ),
   );
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uuid/uuid.dart' show Uuid;
 import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
 import 'package:weeklet/domain/usecases/category/add_category_usecase.dart';
@@ -18,7 +17,6 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     required this.deleteCategoryUseCase,
     required this.getAllCategoriesUseCase,
     required this.getCategoryByIdUseCase,
-    required this.uuid,
   }) : super(const CategoryLoading()) {
     on<AddCategoryEvent>(_onAddCategory);
     on<UpdateCategoryEvent>(_onUpdateCategory);
@@ -32,7 +30,6 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   final DeleteCategoryUseCase deleteCategoryUseCase;
   final GetAllCategoriesUseCase getAllCategoriesUseCase;
   final GetSingleCategoryUseCase getCategoryByIdUseCase;
-  final Uuid uuid;
 
   Future<void> _onAddCategory(
     AddCategoryEvent event,
@@ -40,13 +37,13 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   ) async {
     emit(const CategoryLoading());
     try {
-      final category = Category(
-        id: uuid.v4(),
-        name: event.name,
-        icon: event.icon,
-        createdAt: DateTime.now(),
+      await addCategoryUseCase(
+        AddCategoryParams(
+          name: event.name,
+          icon: event.icon,
+          createdAt: DateTime.now(),
+        ),
       );
-      await addCategoryUseCase(category);
       emit(
         const CategorySuccess(
           message: 'Category added successfully',

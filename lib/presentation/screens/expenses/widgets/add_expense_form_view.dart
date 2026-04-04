@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uuid/uuid.dart';
 import 'package:weeklet/core/di/service_locator.dart' show sl;
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/form_helpers.dart';
 import 'package:weeklet/domain/entities/category.dart';
+import 'package:weeklet/domain/usecases/base/use_case.dart';
 import 'package:weeklet/domain/usecases/category/add_category_usecase.dart';
+import 'package:weeklet/domain/usecases/category/get_all_categories_usecase.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_event.dart';
 import 'package:weeklet/presentation/blocs/category/category_state.dart';
@@ -90,28 +91,38 @@ class _AddExpenseFormViewState extends State<AddExpenseFormView> {
         if (dailyCategory != null) {
           finalCategoryId = dailyCategory.id;
         } else {
-          final newDailyCategory = Category(
-            id: sl<Uuid>().v4(),
-            name: 'Daily',
-            icon: 'home',
-            createdAt: DateTime.now(),
+          await sl<AddCategoryUseCase>().call(
+            AddCategoryParams(
+              name: 'Daily',
+              icon: 'home',
+              createdAt: DateTime.now(),
+            ),
           );
-          await sl<AddCategoryUseCase>().call(newDailyCategory);
-          finalCategoryId = newDailyCategory.id;
+          final updatedCategories =
+              await sl<GetAllCategoriesUseCase>().call(NoParams());
+          final created = updatedCategories.firstWhere(
+            (c) => c.name.trim().toLowerCase() == 'daily',
+          );
+          finalCategoryId = created.id;
 
           if (mounted) {
             context.read<CategoryBloc>().add(const GetAllCategoriesEvent());
           }
         }
       } else {
-        final newDailyCategory = Category(
-          id: sl<Uuid>().v4(),
-          name: 'Daily',
-          icon: 'home',
-          createdAt: DateTime.now(),
+        await sl<AddCategoryUseCase>().call(
+          AddCategoryParams(
+            name: 'Daily',
+            icon: 'home',
+            createdAt: DateTime.now(),
+          ),
         );
-        await sl<AddCategoryUseCase>().call(newDailyCategory);
-        finalCategoryId = newDailyCategory.id;
+        final updatedCategories =
+            await sl<GetAllCategoriesUseCase>().call(NoParams());
+        final created = updatedCategories.firstWhere(
+          (c) => c.name.trim().toLowerCase() == 'daily',
+        );
+        finalCategoryId = created.id;
 
         if (mounted) {
           context.read<CategoryBloc>().add(const GetAllCategoriesEvent());
