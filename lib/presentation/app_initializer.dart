@@ -6,6 +6,8 @@ import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_event.dart';
 import 'package:weeklet/presentation/blocs/income/income_bloc.dart';
 import 'package:weeklet/presentation/blocs/income/income_event.dart';
+import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
+import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
 
 /// Widget responsible for initializing app data on startup.
 /// This ensures separation of concerns - data loading logic is separate from UI navigation.
@@ -38,6 +40,11 @@ class _AppInitializerState extends State<AppInitializer> {
 
     // Load all categories
     context.read<CategoryBloc>().add(const GetAllCategoriesEvent());
+
+    // Preload stats so the Stats screen shows data immediately without a spinner
+    context.read<StatsBloc>().add(
+      LoadMonthlyStats(year: DateTime.now().year),
+    );
   }
 
   @override

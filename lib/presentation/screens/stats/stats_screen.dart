@@ -28,11 +28,6 @@ class _StatsScreenState extends State<StatsScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<StatsBloc>().add(
-      LoadMonthlyStats(
-        year: DateTime.now().year,
-      ),
-    );
   }
 
   @override
