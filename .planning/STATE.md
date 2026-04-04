@@ -1,0 +1,87 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: executing
+stopped_at: Completed 01-architecture-cleanup plan 02 (ARCH-01, ARCH-02)
+last_updated: "2026-04-04T17:10:06.181Z"
+last_activity: 2026-04-04
+progress:
+  total_phases: 6
+  completed_phases: 0
+  total_plans: 4
+  completed_plans: 3
+  percent: 0
+---
+
+# Project State
+
+## Project Reference
+
+See: .planning/PROJECT.md (updated 2026-04-04)
+
+**Core value:** Users can always see where their money went -- fast entry, accurate totals, no friction.
+**Current focus:** Phase 01 — architecture-cleanup
+
+## Current Position
+
+Phase: 01 (architecture-cleanup) — EXECUTING
+Plan: 4 of 4
+Status: Ready to execute
+Last activity: 2026-04-04
+
+Progress: [░░░░░░░░░░] 0%
+
+## Performance Metrics
+
+**Velocity:**
+
+- Total plans completed: 0
+- Average duration: -
+- Total execution time: 0 hours
+
+**By Phase:**
+
+| Phase | Plans | Total | Avg/Plan |
+|-------|-------|-------|----------|
+| - | - | - | - |
+
+**Recent Trend:**
+
+- Last 5 plans: -
+- Trend: -
+
+*Updated after each plan completion*
+| Phase 01-architecture-cleanup P01 | 2 | 2 tasks | 4 files |
+| Phase 01 P03 | 9 | 2 tasks | 15 files |
+| Phase 01-architecture-cleanup P02 | 25 | 2 tasks | 8 files |
+
+## Accumulated Context
+
+### Decisions
+
+Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- REL-03 (currency consistency) placed in Phase 1 rather than Phase 6 because it is foundational -- 11 widget files have scattered hardcoded currency symbols that all other phases would inherit if not fixed first.
+- Phase 4 (Settings) depends only on Phase 1 but is sequenced after Phases 2-3 for solo execution simplicity.
+- [Phase 01-architecture-cleanup]: Used direct constructor calls in tests (no copyWith) to decouple tests from copyWith API
+- [Phase 01-architecture-cleanup]: LocaleManager().initialize() controls locale in tests without changing getMonthAbbreviation public API
+- [Phase 01]: AppConstants.DEFAULT_CURRENCY = 'MDL' is the single source of truth for currency; Phase 4 Settings will replace it with user-configurable value
+- [Phase 01-architecture-cleanup]: AddIncomeUseCase standardized to ArgumentError and UseCase interface, fixing pre-existing inconsistency alongside ARCH-01/02 refactor
+- [Phase 01-architecture-cleanup]: After AddCategoryUseCase API change (void return, UUID internal), widget retrieves Daily category ID via GetAllCategoriesUseCase post-creation
+
+### Pending Todos
+
+None yet.
+
+### Blockers/Concerns
+
+- No test suite exists -- refactoring in Phase 1 has no automated safety net. Manual verification required.
+- Statistics screen has WIP commits -- Phase 3 may encounter rough edges from incomplete prior work.
+
+## Session Continuity
+
+Last session: 2026-04-04T17:10:06.176Z
+Stopped at: Completed 01-architecture-cleanup plan 02 (ARCH-01, ARCH-02)
+Resume file: None
