@@ -1,539 +1,119 @@
 # Claude Code Rules for Weeklet Project
 
-This document defines rules and conventions for Claude Code when working with the Weeklet Flutter project.
+## Architecture
 
-## Architecture Overview
-
-This project follows **Clean Architecture** with three distinct layers:
-- **Domain Layer** (`lib/domain/`) - Business logic and entities (framework-independent)
-- **Data Layer** (`lib/data/`) - Data sources, models, and repository implementations
-- **Presentation Layer** (`lib/presentation/`) - UI, BLoC state management, and screens
-
-**State Management**: Flutter BLoC pattern
-**Dependency Injection**: GetIt service locator
-**Local Storage**: Hive (NoSQL database)
-
----
-
-## Core Principles
-
-### 1. Separation of Concerns
-
-**ALWAYS** maintain strict layer separation:
-
-- **Widgets** (`lib/presentation/screens/`, `lib/presentation/widgets/`)
-  - Contain ONLY UI code and user interaction handlers
-  - NO business logic, validation, or data manipulation
-  - Dispatch BLoC events for any state changes
-  - Use BlocBuilder/BlocListener to react to state
-
-- **Business Logic** (`lib/domain/usecases/`)
-  - All validation, calculations, and business rules
-  - Pure functions with no UI or framework dependencies
-  - Return success/failure results to BLoC layer
-
-- **Data Layer** (`lib/data/`)
-  - Database operations and external API calls only
-  - Convert between Models (Hive) and Entities (domain)
-  - NO business logic or validation
-
-### 2. Flutter BLoC Pattern
-
-**Event-Driven Architecture**:
-
-```dart
-// User interaction in widget
-onPressed: () => context.read<ExpenseBloc>().add(
-  AddExpenseStarted(amount: amount, description: description)
-)
-
-// BLoC handles event
-Future<void> _onAddExpense(event, emit) async {
-  emit(const ExpenseLoading());
-  try {
-    await addExpenseUseCase(expense);
-    emit(const ExpenseSuccess(...));
-  } catch (e) {
-    emit(ExpenseError(message: e.toString()));
-  }
-}
-
-// Widget reacts to state
-BlocBuilder<ExpenseBloc, ExpenseState>(
-  builder: (context, state) => switch (state) {
-    ExpenseLoading _ => const CircularProgressIndicator(),
-    ExpenseSuccess success => ExpenseList(expenses: success.expenses),
-    ExpenseError error => ErrorView(message: error.message),
-    _ => const SizedBox.shrink(),
-  },
-)
-```
-
-**Rules**:
-- Use **sealed classes** for all Events and States (enables exhaustive pattern matching)
-- Event handlers should be **private** (`_onEventName`)
-- Always emit **loading state** before async operations
-- Emit **success/error states** after operations complete
-- BLoCs should ONLY orchestrate use cases, not contain business logic
-
-### 3. Use Cases Pattern
-
-**Every business operation must have a dedicated use case**:
-
-```dart
-// lib/domain/usecases/expense/add_expense_use_case.dart
-class AddExpenseUseCase implements UseCase<void, Expense> {
-  const AddExpenseUseCase(this.repository);
-
-  final ExpenseRepository repository;
-
-  @override
-  Future<void> call(Expense params) async {
-    // Validation logic here
-    if (params.amount <= 0) {
-      throw Exception('Amount must be greater than 0');
-    }
-    if (params.description.trim().isEmpty) {
-      throw Exception('Description cannot be empty');
-    }
-
-    // Delegate to repository
-    await repository.addExpense(params);
-  }
-}
-```
-
-**Rules**:
-- Implement `UseCase<ReturnType, ParametersType>` base class
-- Place in `lib/domain/usecases/<feature>/`
-- Name pattern: `<Verb><Entity>UseCase` (e.g., `GetCategoryByIdUseCase`)
-- Contain validation and business logic
-- Call repository methods for data operations
-- Throw exceptions for error handling
-
-### 4. Dependency Injection with GetIt
-
-**All dependencies must be registered in** [lib/core/di/service_locator.dart](lib/core/di/service_locator.dart)
-
-**Registration order**:
-1. External dependencies (Hive boxes, utilities)
-2. Data sources (`registerLazySingleton`)
-3. Repositories (`registerLazySingleton`)
-4. Use cases (`registerLazySingleton`)
-5. BLoCs (`registerLazySingleton`)
-
-**Example**:
-```dart
-// 1. Data source
-sl.registerLazySingleton<ExpenseLocalDataSource>(
-  () => ExpenseLocalDataSourceImpl(sl<Box<ExpenseModel>>()),
-);
-
-// 2. Repository
-sl.registerLazySingleton<ExpenseRepository>(
-  () => ExpenseRepositoryImpl(sl<ExpenseLocalDataSource>()),
-);
-
-// 3. Use cases
-sl.registerLazySingleton(() => AddExpenseUseCase(sl<ExpenseRepository>()));
-
-// 4. BLoC with all dependencies
-sl.registerLazySingleton(
-  () => ExpenseBloc(
-    addExpenseUseCase: sl<AddExpenseUseCase>(),
-    updateExpenseUseCase: sl<UpdateExpenseUseCase>(),
-    // ... other use cases
-  ),
-);
-```
-
-**Access in code**:
-```dart
-// Import the service locator
-import 'package:weeklet/core/di/service_locator.dart' as di;
-
-// Access registered instances
-di.sl<ExpenseBloc>().add(const LoadExpensesRequested());
-```
-
-**Rules**:
-- Use `registerLazySingleton` for most services (created on first use)
-- Use `registerSingleton` only for instances created during initialization
-- NEVER instantiate BLoCs, repositories, or use cases directly with `new` or constructors
-- Always inject dependencies through constructor parameters
-
-### 5. Widget Structure
-
-**Widgets should be small, composable, and single-purpose**:
-
-```dart
-// BAD: Monolithic widget with business logic
-class ExpenseItem extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final expense = context.watch<ExpenseBloc>().state.expense;
-    final formattedAmount = '\$${expense.amount.toStringAsFixed(2)}';
-
-    // Business logic in widget - BAD!
-    if (expense.amount > 100) {
-      showWarning();
-    }
-
-    return Row(/* ... lots of nested widgets ... */);
-  }
-}
-
-// GOOD: Composed widgets, no business logic
-class ExpenseItemView extends StatelessWidget {
-  const ExpenseItemView({
-    required this.expense,
-    required this.category,
-  });
-
-  final Expense expense;
-  final Category? category;
-
-  @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      CategoryIconCircle(category: category),
-      Expanded(
-        child: ExpenseDetailsColumn(
-          description: expense.description,
-          categoryName: category?.name ?? 'Unknown',
-        ),
-      ),
-      ExpenseAmountText(amount: expense.amount),
-      ExpenseMenuButton(expense: expense),
-    ],
-  );
-}
-```
-
-**Rules**:
-- Break complex widgets into smaller, reusable components
-- Pass data as **constructor parameters**, not through context.watch in deep widgets
-- NO calculations, formatting, or business logic in widgets
-- Use domain utilities for grouping/filtering (e.g., `ExpenseGrouping.groupByWeek()`)
-- Name widgets descriptively: `<Feature><Purpose>View` (e.g., `ExpenseItemView`, `CategoryIconCircle`)
-- Place reusable widgets in `lib/presentation/widgets/common/`
-- Place feature-specific widgets in `lib/presentation/screens/<feature>/widgets/`
-
-### 6. Data Layer Patterns
-
-**Repository Implementation Pattern**:
-
-```dart
-// Abstract repository in domain layer
-// lib/domain/repositories/expense_repository.dart
-abstract class ExpenseRepository {
-  Future<void> addExpense(Expense expense);
-  Future<List<Expense>> getAllExpenses();
-  Future<Expense?> getExpenseById(String id);
-  Future<void> updateExpense(Expense expense);
-  Future<void> deleteExpense(String id);
-}
-
-// Implementation in data layer
-// lib/data/repositories/expense_repository_impl.dart
-class ExpenseRepositoryImpl implements ExpenseRepository {
-  const ExpenseRepositoryImpl(this.localDataSource);
-
-  final ExpenseLocalDataSource localDataSource;
-
-  @override
-  Future<void> addExpense(Expense expense) async {
-    final model = ExpenseModel.fromEntity(expense);
-    await localDataSource.addExpense(model);
-  }
-
-  @override
-  Future<List<Expense>> getAllExpenses() async {
-    final models = await localDataSource.getAllExpenses();
-    return models.map((model) => model.toEntity()).toList();
-  }
-}
-```
-
-**Model Conversion Pattern**:
-
-```dart
-@HiveType(typeId: 1)
-class ExpenseModel {
-  @HiveField(0)
-  final String id;
-
-  @HiveField(1)
-  final double amount;
-
-  // ... other fields
-
-  // Convert from domain entity
-  factory ExpenseModel.fromEntity(Expense entity) => ExpenseModel(
-    id: entity.id,
-    amount: entity.amount,
-    // ... map all fields
-  );
-
-  // Convert to domain entity
-  Expense toEntity() => Expense(
-    id: id,
-    amount: amount,
-    // ... map all fields
-  );
-}
-```
-
-**Rules**:
-- Repository interfaces MUST be in `lib/domain/repositories/`
-- Repository implementations MUST be in `lib/data/repositories/`
-- Always convert Models ↔ Entities at repository boundary
-- Data sources work with Models, domain layer works with Entities
-- Use Hive TypeAdapters for all models (register in service_locator.dart)
-
-### 7. File Organization
-
-**Naming Conventions**:
-- Files: `snake_case.dart`
-- Classes: `PascalCase`
-- Variables/functions: `camelCase`
-- Constants: `camelCase` or `SCREAMING_SNAKE_CASE` for compile-time constants
-- Private members: prefix with `_`
-
-**Directory Structure for New Features**:
+Clean Architecture with Flutter BLoC, GetIt DI, and Hive local storage.
 
 ```
 lib/
-├── domain/
-│   ├── entities/
-│   │   └── feature_name.dart
-│   ├── repositories/
-│   │   └── feature_name_repository.dart
-│   └── usecases/
-│       └── feature_name/
-│           ├── add_feature_name_use_case.dart
-│           ├── get_feature_name_use_case.dart
-│           └── delete_feature_name_use_case.dart
-├── data/
-│   ├── models/
-│   │   └── feature_name_model.dart
-│   ├── datasources/
-│   │   └── local/
-│   │       └── feature_name_local_data_source.dart
-│   └── repositories/
-│       └── feature_name_repository_impl.dart
-└── presentation/
-    ├── blocs/
-    │   └── feature_name/
-    │       ├── feature_name_bloc.dart
-    │       ├── feature_name_event.dart
-    │       └── feature_name_state.dart
-    └── screens/
-        └── feature_name/
-            ├── feature_name_screen.dart
-            └── widgets/
-                ├── feature_name_item_view.dart
-                └── feature_name_list_view.dart
+├── core/        # DI, router, theme, extensions, utils
+├── domain/      # entities, repository interfaces, use cases, domain utils
+├── data/        # Hive models, data sources, repository implementations
+└── presentation/ # BLoC, screens, widgets
 ```
 
-### 8. State Management Patterns
+### Layer Separation Rules
 
-**Loading States**:
-```dart
-BlocBuilder<ExpenseBloc, ExpenseState>(
-  builder: (context, state) => switch (state) {
-    ExpenseLoading _ => const Center(
-      child: CircularProgressIndicator.adaptive(),
-    ),
-    ExpenseSuccess success => ExpenseContent(data: success.expenses),
-    ExpenseError error => ErrorView(message: error.message),
-    _ => const SizedBox.shrink(),
-  },
-)
-```
+**Widgets** — UI and user interaction only:
+- Dispatch BLoC events; never call repositories or use cases directly
+- Never contain validation, calculations, or formatting logic
+- Use `NumberFormatter` for amounts, domain utils for grouping — no raw logic
+- Receive data as constructor parameters; don't dig into BLoC state deep in the tree
 
-**Multiple BLoC Dependencies**:
-```dart
-@override
-Widget build(BuildContext context) {
-  final expenseState = context.watch<ExpenseBloc>().state;
-  final categoryState = context.watch<CategoryBloc>().state;
+**BLoC** — orchestration only:
+- Call use cases, never repositories directly
+- Manage filter/pagination state (`selectedYear`, `selectedMonth`, etc.)
+- Emit loading → success/failure; catch use case exceptions into error states
+- No business rules or data formatting
 
-  return switch ((expenseState, categoryState)) {
-    (ExpenseLoading _, _) || (_, CategoryLoading _) =>
-      const LoadingView(),
+**Use Cases** — all business logic:
+- Validate inputs and throw exceptions on failure
+- Call repository methods for data operations
+- No UI, no Hive, no Flutter dependencies
 
-    (final ExpenseSuccess expSuccess, final CategoriesLoaded catLoaded) =>
-      ContentView(
-        expenses: expSuccess.expenses,
-        categories: catLoaded.categories,
-      ),
+**Repositories** — data abstraction only:
+- Convert Models ↔ Entities; this is the only place this happens
+- Delegate storage to data sources; no business logic
 
-    _ => const SizedBox.shrink(),
-  };
-}
-```
-
-**Form Validation**:
-- Use case layer for business validation
-- Widget layer for UI validation (TextFormField validators)
-- Show validation errors via BLoC error states
-
-### 9. Common Utilities
-
-**Available Extensions** (in `lib/core/extensions/`):
-- `context.theme` - Access theme data
-- `context.colorScheme` - Access color scheme
-- `context.textTheme` - Access text theme
-- `context.screenWidth` / `context.screenHeight` - Screen dimensions
-- `context.showSnackBar(message)` - Show snackbar
-- DateTime extensions for date manipulation
-
-**Domain Utilities** (in `lib/domain/utils/`):
-- `ExpenseGrouping.groupByWeek(expenses)` - Group expenses by ISO week
-- `ExpenseGrouping.groupByDay(expenses)` - Group expenses by day
-- Use these for data presentation, NOT custom widget logic
-
-### 10. Error Handling
-
-**Pattern**:
-```dart
-// In use case
-if (params.amount <= 0) {
-  throw Exception('Amount must be greater than 0');
-}
-
-// In BLoC
-try {
-  await useCase(params);
-  emit(const FeatureSuccess(message: 'Operation successful'));
-} catch (e) {
-  emit(FeatureError(message: e.toString()));
-}
-
-// In widget
-BlocListener<FeatureBloc, FeatureState>(
-  listener: (context, state) {
-    if (state is FeatureError) {
-      context.showSnackBar(state.message);
-    }
-    if (state is FeatureSuccess) {
-      context.showSnackBar(state.message);
-      Navigator.pop(context);
-    }
-  },
-  child: /* ... */,
-)
-```
-
-**Rules**:
-- Use cases throw exceptions for validation/business errors
-- BLoC catches exceptions and emits error states
-- Widgets listen to error states and show UI feedback
-- Use `BlocListener` for side effects (navigation, snackbars)
-- Use `BlocBuilder` for UI updates
-
-### 11. Testing Strategy
-
-When writing tests:
-- **Unit tests** for use cases (test business logic in isolation)
-- **Widget tests** for UI components (test rendering and interactions)
-- **BLoC tests** for state management (test event → state transitions)
-- Mock repositories and data sources using test doubles
-- Use `mockito` or `mocktail` for mocking
+**Data Sources** — storage only:
+- Work with Hive Models exclusively; no entity conversion
 
 ---
 
-## Quick Checklist for New Features
+## Rules & Conventions
 
-- [ ] Create domain entity in `lib/domain/entities/`
-- [ ] Create repository interface in `lib/domain/repositories/`
-- [ ] Create use cases in `lib/domain/usecases/<feature>/`
-- [ ] Create Hive model in `lib/data/models/` with `fromEntity/toEntity`
-- [ ] Create data source in `lib/data/datasources/local/`
-- [ ] Implement repository in `lib/data/repositories/`
-- [ ] Create BLoC (events, states, bloc) in `lib/presentation/blocs/<feature>/`
-- [ ] Register all dependencies in [lib/core/di/service_locator.dart](lib/core/di/service_locator.dart)
-- [ ] Create screen in `lib/presentation/screens/<feature>/`
-- [ ] Create widgets in `lib/presentation/screens/<feature>/widgets/`
-- [ ] Add route in `lib/core/router/` if needed
-- [ ] Provide BLoC in [lib/app.dart](lib/app.dart) MultiBlocProvider
+### Use Cases
+- Every business operation needs a dedicated use case in `lib/domain/usecases/<feature>/`
+- Implement `UseCase<ReturnType, Params>` from `lib/domain/usecases/base/use_case.dart`
+- File naming: `add_expense_usecase.dart` (single word `usecase`, no underscore)
+- Class naming: `AddExpenseUseCase`, `GetSingleCategoryUseCase`
+- Throw exceptions for validation errors — BLoC catches them
 
----
+### Data Layer
+- **Data sources** work with Models only (Hive operations, no conversion)
+- **Repositories** do all Model ↔ Entity conversion — nowhere else
+- `StatisticsRepository` is composite: takes `ExpenseRepository`, `IncomeRepository`, `CategoryRepository`
 
-## Anti-Patterns to Avoid
+### BLoC
+- Sealed classes + `final class` subtypes for events and states
+- Event handlers are private: `_onAddExpense`
+- Success states carry filter state: `selectedYear`, `selectedMonth`, `availableYears`, `availableMonths`, `allExpenses`, `filteredExpenses`
+- `actionError` field on success states for CRUD failures that don't leave the screen — use `copyWith(actionError: e.toString())`
+- State class names: `ExpenseInitial`, `ExpenseLoading`, `ExpenseSuccess`, `ExpenseFailure` (not `ExpenseError`)
 
-### DON'T: Business Logic in Widgets
-```dart
-// BAD
-class ExpenseForm extends StatelessWidget {
-  void _submit() {
-    if (amount <= 0) {  // Validation in widget
-      showError('Invalid amount');
-      return;
-    }
-    // Direct repository access in widget
-    repository.addExpense(expense);
-  }
-}
-```
+### Dependency Injection
+- All registrations in [lib/core/di/service_locator.dart](lib/core/di/service_locator.dart)
+- Registration order: Hive init → box singletons → utilities → data sources → repositories → use cases → BLoCs
+- `StatsBloc` is registered before other BLoCs
+- Always use `sl<Type>()` — never `new` or constructor calls for services
+- `registerSingleton` for Hive boxes, `registerLazySingleton` for everything else
 
-### DON'T: Direct Repository Access in BLoC
-```dart
-// BAD
-class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
-  Future<void> _onAddExpense(event, emit) async {
-    // Direct repository call without use case
-    await repository.addExpense(expense);
-  }
-}
-```
+### Widgets
+- Use `NumberFormatter` for all amount display — never format raw doubles in widgets
+- Use domain utils for grouping: `ExpenseGrouping`, `IncomeGrouping`, `ExpenseFilterUtils`
+- Use `export.dart` barrel files in widget subdirectories
 
-### DON'T: Creating BLoCs with Constructors
-```dart
-// BAD
-BlocProvider(
-  create: (_) => ExpenseBloc(
-    addExpenseUseCase: AddExpenseUseCase(...),  // Manual instantiation
-  ),
-)
-
-// GOOD
-BlocProvider.value(
-  value: di.sl<ExpenseBloc>(),  // Use GetIt service locator
-)
-```
-
-### DON'T: Mixing Layers
-```dart
-// BAD - Data model in presentation layer
-class ExpenseListView extends StatelessWidget {
-  final List<ExpenseModel> expenses;  // Should be List<Expense> (entity)
-}
-
-// BAD - Hive box in widget
-class CategoryScreen extends StatelessWidget {
-  void _loadData() {
-    final box = Hive.box<CategoryModel>('categories');  // Data access in UI
-  }
-}
-```
+### App Initialization
+- `AppInitializer` (`lib/presentation/app_initializer.dart`) triggers initial data loads in `initState`
+- Add new BLoC initial events there if data is needed on startup
 
 ---
 
-## Summary
+## Available Utilities
 
-**Golden Rules**:
-1. **Widgets = UI only** - No business logic, validation, or data access
-2. **Use Cases = Business logic** - All validation and rules
-3. **BLoCs = Orchestration** - Connect UI events to use cases
-4. **Repositories = Data abstraction** - Hide implementation details
-5. **GetIt = Dependency provider** - No manual instantiation
-6. **Sealed classes** - Type-safe events and states
-7. **Model ↔ Entity conversion** - At repository boundary only
+**Context extensions** (`lib/core/extensions/context_extensions.dart`): `context.theme`, `context.colorScheme`, `context.textTheme`, `context.screenWidth/Height`, `context.isDarkMode`, `context.push()`, `context.pop()`, `context.showSnackBar()`, `context.showErrorSnackBar()`, `context.showSuccessSnackBar()`, `context.showCustomDialog()`, `context.unfocus()`, `context.locale`
 
-When in doubt, follow the existing patterns in:
-- [lib/presentation/screens/expenses/](lib/presentation/screens/expenses/) for screen structure
-- [lib/presentation/blocs/expense/](lib/presentation/blocs/expense/) for BLoC patterns
-- [lib/domain/usecases/expense/](lib/domain/usecases/expense/) for use case examples
-- [lib/core/di/service_locator.dart](lib/core/di/service_locator.dart) for dependency injection
+**FormValidators** (`lib/core/utils/form_validators.dart`): `required`, `amountFormat`, `minLength`, `maxLength`, `compose([...])`
+
+**NumberFormatter** (`lib/core/utils/number_formatter.dart`): `formatCurrency`, `formatCurrencyWithSign`
+
+**Domain utils** (`lib/domain/utils/`): `ExpenseGrouping.groupByWeek/Day`, `IncomeGrouping.groupByWeek/Day`, `ExpenseFilterUtils.extractAvailableYears/Months`, `IncomeFilterUtils`
+
+**Routes** (`lib/core/router/app_routes.dart`): `home`, `expensesScreen`, `incomeScreen`, `categoriesScreen`, `addCategoryScreen`, `statsScreen`, `settingsScreen`
+
+---
+
+## New Feature Checklist
+
+- [ ] Entity in `lib/domain/entities/`
+- [ ] Repository interface in `lib/domain/repositories/`
+- [ ] Use cases in `lib/domain/usecases/<feature>/`
+- [ ] Hive model in `lib/data/models/` with `fromEntity`/`toEntity`
+- [ ] Data source in `lib/data/datasources/local/`
+- [ ] Repository impl in `lib/data/repositories/`
+- [ ] BLoC (events, states, bloc) in `lib/presentation/blocs/<feature>/`
+- [ ] Register adapter, boxes, data source, repo, use cases, BLoC in `service_locator.dart`
+- [ ] Screen + widgets in `lib/presentation/screens/<feature>/`
+- [ ] Route in `app_routes.dart` if needed
+- [ ] `BlocProvider.value(value: sl<FeatureBloc>())` in [lib/app.dart](lib/app.dart)
+- [ ] Initial load event in `app_initializer.dart` if needed
+
+---
+
+## Reference Patterns
+
+Follow existing code for concrete examples:
+- Screen structure → [lib/presentation/screens/expenses/](lib/presentation/screens/expenses/)
+- BLoC patterns → [lib/presentation/blocs/expense/](lib/presentation/blocs/expense/)
+- Use case examples → [lib/domain/usecases/expense/](lib/domain/usecases/expense/)
+- DI registration → [lib/core/di/service_locator.dart](lib/core/di/service_locator.dart)
