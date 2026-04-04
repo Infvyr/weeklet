@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
 import 'package:weeklet/domain/utils/income_filter_utils.dart';
@@ -8,7 +9,7 @@ class IncomeTotalCard extends StatelessWidget {
     super.key,
     required this.total,
     this.selectedMonth,
-    this.currencySymbol = 'lei',
+    this.currencySymbol = AppConstants.DEFAULT_CURRENCY,
   });
 
   final double total;

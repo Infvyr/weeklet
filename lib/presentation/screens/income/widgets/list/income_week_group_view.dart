@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
 import 'package:weeklet/domain/entities/income.dart';
 import 'package:weeklet/domain/utils/income_grouping.dart';
@@ -11,7 +12,7 @@ class IncomeWeekGroupView extends StatelessWidget {
     super.key,
     required this.weekNumber,
     required this.incomes,
-    this.currencySymbol = 'lei',
+    this.currencySymbol = AppConstants.DEFAULT_CURRENCY,
   });
 
   final int weekNumber;

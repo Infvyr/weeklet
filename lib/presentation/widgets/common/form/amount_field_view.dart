@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter/widgets.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/utils/form_validators.dart';
 import 'package:weeklet/presentation/widgets/input_view.dart';
 import 'package:weeklet/presentation/widgets/label_view.dart';
@@ -15,7 +16,7 @@ class AmountFieldView extends StatelessWidget {
     spacing: 8,
     children: [
       const LabelView(
-        text: 'Amount (MDL)', // TODO: set currency based on user preference
+        text: 'Amount (${AppConstants.DEFAULT_CURRENCY})',
       ),
       InputView(
         controller: controller,

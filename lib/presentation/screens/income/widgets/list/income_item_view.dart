@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/di/service_locator.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
@@ -15,7 +16,7 @@ class IncomeItemView extends StatelessWidget {
   const IncomeItemView({
     super.key,
     required this.income,
-    this.currencySymbol = 'lei',
+    this.currencySymbol = AppConstants.DEFAULT_CURRENCY,
   });
 
   final Income income;

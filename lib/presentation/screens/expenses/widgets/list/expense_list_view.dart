@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/domain/entities/expense.dart';
 import 'package:weeklet/domain/utils/expense_grouping.dart';
@@ -10,7 +11,7 @@ class ExpenseListView extends StatelessWidget {
     super.key,
     required this.expenses,
     required this.categories,
-    this.currencySymbol = 'MDL',
+    this.currencySymbol = AppConstants.DEFAULT_CURRENCY,
   });
 
   final List<Expense> expenses;

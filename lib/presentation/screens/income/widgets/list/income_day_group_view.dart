@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/date_time_extensions.dart';
 import 'package:weeklet/domain/entities/income.dart';
 import 'package:weeklet/presentation/screens/income/widgets/list/income_item_view.dart';
@@ -9,7 +10,7 @@ class IncomeDayGroupView extends StatelessWidget {
     super.key,
     required this.date,
     required this.incomes,
-    this.currencySymbol = 'lei',
+    this.currencySymbol = AppConstants.DEFAULT_CURRENCY,
   });
 
   final DateTime date;

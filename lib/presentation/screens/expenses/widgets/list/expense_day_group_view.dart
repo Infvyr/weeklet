@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/date_time_extensions.dart';
 import 'package:weeklet/core/extensions/list_extensions.dart';
 import 'package:weeklet/domain/entities/category.dart';
@@ -12,7 +13,7 @@ class ExpenseDayGroupView extends StatelessWidget {
     required this.date,
     required this.expenses,
     required this.categories,
-    this.currencySymbol = 'MDL',
+    this.currencySymbol = AppConstants.DEFAULT_CURRENCY,
   });
 
   final DateTime date;
