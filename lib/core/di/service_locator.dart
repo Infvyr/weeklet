@@ -18,7 +18,6 @@ import 'package:weeklet/domain/usecases/category/update_category_usecase.dart';
 import 'package:weeklet/domain/usecases/expense/add_expense_usecase.dart';
 import 'package:weeklet/domain/usecases/expense/delete_expense_usecase.dart';
 import 'package:weeklet/domain/usecases/expense/get_all_expenses_usecase.dart';
-import 'package:weeklet/domain/usecases/expense/get_expenses_by_month_year_usecase.dart';
 import 'package:weeklet/domain/usecases/expense/update_expense_usecase.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
@@ -163,11 +162,6 @@ Future<void> init() async {
   );
   sl.registerLazySingleton(
     () => UpdateExpenseUseCase(
-      sl<ExpenseRepository>(),
-    ),
-  );
-  sl.registerLazySingleton(
-    () => GetExpensesByMonthYearUseCase(
       sl<ExpenseRepository>(),
     ),
   );

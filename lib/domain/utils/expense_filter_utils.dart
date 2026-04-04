@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart' show DateFormat;
+import 'package:weeklet/core/utils/locale_manager.dart';
 import 'package:weeklet/domain/entities/expense.dart';
 
 /// Utility class for extracting and managing expense filter options.
@@ -21,22 +23,6 @@ class ExpenseFilterUtils {
     'October',
     'November',
     'December',
-  ];
-
-  /// Abbreviated Romanian month names indexed by month number (1-12)
-  static const List<String> kMonthAbbreviations = [
-    'Ian',
-    'Feb',
-    'Mar',
-    'Apr',
-    'Mai',
-    'Iun',
-    'Iul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
   ];
 
   /// Extracts unique years from expenses, sorted descending (newest first).
@@ -84,14 +70,19 @@ class ExpenseFilterUtils {
     return kMonthNames[month - 1];
   }
 
-  /// Gets the abbreviated Romanian month name for a given month number (1-12).
+  /// Gets the locale-aware abbreviated month name for a given month number (1-12).
   ///
-  /// Returns the 3-letter Romanian abbreviation (e.g., "Ian", "Feb", "Oct").
+  /// Returns the abbreviated month name for the current device locale
+  /// (e.g., 'Jan' for en_US, 'ian.' for ro_RO, 'янв.' for ru_RU).
+  /// Relies on [LocaleManager] having set [Intl.defaultLocale] at startup.
   /// Throws [RangeError] if month is not between 1-12.
   static String getMonthAbbreviation(int month) {
     if (month < 1 || month > 12) {
       throw RangeError.range(month, 1, 12, 'month');
     }
-    return kMonthAbbreviations[month - 1];
+    final locale = LocaleManager().currentLocaleString;
+    // Use locale as explicit argument — LocaleManager.initialize sets
+    // Intl.defaultLocale which registers the locale for intl formatting.
+    return DateFormat('MMM', locale).format(DateTime(2000, month, 1));
   }
 }
