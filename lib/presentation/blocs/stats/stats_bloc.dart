@@ -56,10 +56,15 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         year: event.year,
       );
       final stats = await getMonthlyStatsUseCase(params);
-      
-      final evolutionStats = await getEvolutionStatsUseCase(
-        GetEvolutionStatsParams(year: event.year),
-      );
+
+      final currentState =
+          state is MonthlyStatsLoaded ? state as MonthlyStatsLoaded : null;
+      final shouldRefetchEvolution = currentState?.year != event.year;
+      final evolutionStats = shouldRefetchEvolution
+          ? await getEvolutionStatsUseCase(
+              GetEvolutionStatsParams(year: event.year),
+            )
+          : currentState!.evolutionStats;
 
       if (state case final MonthlyStatsLoaded st) {
         emit(
