@@ -73,24 +73,17 @@ expected: |
   After editing an expense on the home screen, the Statistics screen should
   show updated totals — "Monthly Balance", "Monthly Expenses", and
   "Monthly Income" should reflect the edited amount immediately.
-result: issue
-reported: "when I edit an expense on home screen the stat 'Monthly Balance' does not immediately change it"
-severity: major
+result: pass
+note: "Issue found and fixed inline — commit ffca5c7 adds StatsBloc sync to ExpenseBloc CRUD handlers"
 
 ## Summary
 
 total: 8
-passed: 7
-issues: 1
+passed: 8
+issues: 0
 pending: 0
 skipped: 0
 
 ## Gaps
 
-- truth: "Stats screen totals update immediately after an expense is edited from the home screen"
-  status: failed
-  reason: "User reported: editing an expense on home screen does not immediately update Monthly Balance on Stats screen"
-  severity: major
-  test: 8
-  artifacts: []
-  missing: []
+[none — issue fixed inline: commit ffca5c7]
