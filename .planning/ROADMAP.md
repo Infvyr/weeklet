@@ -48,8 +48,11 @@ Plans:
   2. Income screen visual style (cards, typography, spacing, icons) is consistent with the modernized expense screen
   3. User can add, edit, and delete an income entry and return to the list without stale or missing data
   4. Income totals entered on the income screen are accurately reflected on the statistics screen
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 2 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — String fixes + StatsBloc sync (Wave 1): replace Romanian strings with English, add LoadMonthlyStats dispatch to 3 IncomeBloc CRUD handlers
+- [ ] 02-02-PLAN.md — Human verification checkpoint (Wave 2): verify INC-01 through INC-04 in running app
 
 ### Phase 3: Statistics Screen
 **Goal**: Users can view accurate, complete financial statistics with a modern UI -- monthly summaries and annual category breakdowns
@@ -104,7 +107,7 @@ Note: Phase 4 (Settings) depends only on Phase 1, so it could theoretically run 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Architecture Cleanup | 4/4 | Complete   | 2026-04-04 |
-| 2. Income Screen | 0/? | Not started | - |
+| 2. Income Screen | 0/2 | Not started | - |
 | 3. Statistics Screen | 0/? | Not started | - |
 | 4. Settings Screen | 0/? | Not started | - |
 | 5. Data Export | 0/? | Not started | - |
