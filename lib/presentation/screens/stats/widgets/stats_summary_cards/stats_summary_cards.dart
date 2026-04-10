@@ -7,9 +7,11 @@ class StatsSummaryCards extends StatelessWidget {
   const StatsSummaryCards({
     super.key,
     required this.stats,
+    required this.isAnnual,
   });
 
   final MonthlyStats stats;
+  final bool isAnnual;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -18,27 +20,29 @@ class StatsSummaryCards extends StatelessWidget {
         children: [
           Expanded(
             child: StatsSmallCard(
-              title: 'Monthly Income',
+              title: isAnnual ? 'Annual Income' : 'Monthly Income',
               amount: stats.totalIncome,
               percentage: stats.incomeGrowthPercentage,
               isIncome: true,
+              isAnnual: isAnnual,
               icon: Icons.trending_up,
             ),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: StatsSmallCard(
-              title: 'Monthly Expenses',
+              title: isAnnual ? 'Annual Expenses' : 'Monthly Expenses',
               amount: stats.totalExpenses,
               percentage: stats.expenseGrowthPercentage,
               isIncome: false,
+              isAnnual: isAnnual,
               icon: Icons.attach_money,
             ),
           ),
         ],
       ),
       const SizedBox(height: 16),
-      StatsBalanceCard(balance: stats.balance),
+      StatsBalanceCard(balance: stats.balance, isAnnual: isAnnual),
     ],
   );
 }

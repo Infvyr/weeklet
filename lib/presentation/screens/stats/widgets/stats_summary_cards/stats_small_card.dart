@@ -10,6 +10,7 @@ class StatsSmallCard extends StatelessWidget {
     required this.amount,
     required this.percentage,
     required this.isIncome,
+    required this.isAnnual,
     required this.icon,
   });
 
@@ -17,6 +18,7 @@ class StatsSmallCard extends StatelessWidget {
   final double amount;
   final double percentage;
   final bool isIncome;
+  final bool isAnnual;
   final IconData icon;
 
   @override
@@ -74,9 +76,9 @@ class StatsSmallCard extends StatelessWidget {
               const SizedBox(width: 4),
               Flexible(
                 child: Text(
-                  '${(percentage * 100).abs().toStringAsFixed(1)}% vs last month',
+                  '${(percentage * 100).abs().toStringAsFixed(1)}% ${isAnnual ? 'vs last year' : 'vs last month'}',
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: percentageColor, fontSize: 10),
+                  style: context.bodySmall?.copyWith(color: percentageColor),
                 ),
               ),
             ],

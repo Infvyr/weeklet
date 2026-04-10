@@ -67,7 +67,10 @@ class StatsView extends StatelessWidget {
                 child: Column(
                   spacing: 16,
                   children: [
-                    StatsSummaryCards(stats: loaded.stats),
+                    StatsSummaryCards(
+                      stats: loaded.stats,
+                      isAnnual: loaded.month == null,
+                    ),
                     StatsTabsSection(currentTab: loaded.currentTab),
                     if (loaded.currentTab == StatsTab.monthly) ...[
                       if (loaded.stats.categoryStats.isEmpty)
@@ -126,6 +129,6 @@ class _StickyFilterHeaderDelegate extends SliverPersistentHeaderDelegate {
   );
 
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
-      true;
+  bool shouldRebuild(covariant _StickyFilterHeaderDelegate oldDelegate) =>
+      false;
 }

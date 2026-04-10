@@ -4,9 +4,14 @@ import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
 
 class StatsBalanceCard extends StatelessWidget {
-  const StatsBalanceCard({super.key, required this.balance});
+  const StatsBalanceCard({
+    super.key,
+    required this.balance,
+    required this.isAnnual,
+  });
 
   final double balance;
+  final bool isAnnual;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -29,7 +34,7 @@ class StatsBalanceCard extends StatelessWidget {
             const SizedBox(width: 8),
             Flexible(
               child: Text(
-                'Monthly Balance',
+                isAnnual ? 'Annual Balance' : 'Monthly Balance',
                 overflow: TextOverflow.ellipsis,
                 style: context.bodySmall?.copyWith(
                   color: Colors.white,
