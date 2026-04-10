@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weeklet/domain/entities/statistics.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
 import 'package:weeklet/domain/usecases/stats/get_available_periods_use_case.dart';
 import 'package:weeklet/domain/usecases/stats/get_monthly_stats_use_case.dart';
@@ -57,10 +56,8 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
       );
       final stats = await getMonthlyStatsUseCase(params);
       
-      EvolutionStats? evolutionStats;
-      final evolutionMonth = selectedMonth ?? DateTime.now().month;
-      evolutionStats = await getEvolutionStatsUseCase(
-        GetEvolutionStatsParams(month: evolutionMonth, year: event.year)
+      final evolutionStats = await getEvolutionStatsUseCase(
+        GetEvolutionStatsParams(year: event.year),
       );
 
       if (state case final MonthlyStatsLoaded st) {
@@ -86,7 +83,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         );
       }
     } catch (e) {
-      emit(StatsError(e.toString()));
+      emit(StatsFailure(e.toString()));
     }
   }
 

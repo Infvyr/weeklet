@@ -64,8 +64,8 @@ final class MonthlyStatsLoaded extends StatsState {
   List<Object?> get props => [stats, month, year, currentTab, touchedIndex, evolutionStats, availablePeriods];
 }
 
-final class StatsError extends StatsState {
-  const StatsError(this.message);
+final class StatsFailure extends StatsState {
+  const StatsFailure(this.message);
 
   final String message;
 

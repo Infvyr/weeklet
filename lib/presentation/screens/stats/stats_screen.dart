@@ -47,7 +47,7 @@ class StatsView extends StatelessWidget {
         StatsLoading _ => const Center(
           child: CircularProgressIndicator.adaptive(),
         ),
-        final StatsError error => StatsErrorView(
+        final StatsFailure error => StatsErrorView(
           message: error.message,
           onRetry: () => context.read<StatsBloc>().add(
             LoadMonthlyStats(year: DateTime.now().year),
