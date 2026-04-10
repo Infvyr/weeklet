@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/category_color_utils.dart';
+import 'package:weeklet/core/utils/number_formatter.dart';
 import 'package:weeklet/domain/entities/statistics.dart';
 
 class CategoryDetailsItem extends StatelessWidget {
@@ -35,7 +37,10 @@ class CategoryDetailsItem extends StatelessWidget {
                 ),
               ),
               Text(
-                '${stat.totalAmount.toStringAsFixed(2)} RON',
+                NumberFormatter.formatCurrency(
+                  stat.totalAmount,
+                  AppConstants.DEFAULT_CURRENCY,
+                ),
                 style: context.bodyMedium,
               ),
             ],

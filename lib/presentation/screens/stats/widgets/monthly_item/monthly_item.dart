@@ -52,16 +52,14 @@ class MonthlyItem extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          // Venit row with label
           MonthlyBarRow(
-            label: 'Venit',
+            label: 'Income',
             amount: snapshot.totalIncome,
             maxAmount: maxIncome,
             color: context.successColor,
           ),
-          // Cheltuieli row with label
           MonthlyBarRow(
-            label: 'Cheltuieli',
+            label: 'Expenses',
             amount: snapshot.totalExpenses,
             maxAmount: maxIncome,
             color: context.colorScheme.error,

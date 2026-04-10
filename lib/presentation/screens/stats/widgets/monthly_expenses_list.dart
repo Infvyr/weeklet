@@ -36,10 +36,9 @@ class MonthlyExpensesList extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Total cheltuieli pe lună',
+              'Monthly Breakdown',
               style: context.bodySmall?.copyWith(
                 color: context.colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 16),
