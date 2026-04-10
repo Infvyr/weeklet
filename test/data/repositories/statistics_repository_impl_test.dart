@@ -3,7 +3,6 @@ import 'package:weeklet/data/repositories/statistics_repository_impl.dart';
 import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/domain/entities/expense.dart';
 import 'package:weeklet/domain/entities/income.dart';
-import 'package:weeklet/domain/entities/statistics.dart';
 import 'package:weeklet/domain/repositories/category_repository.dart';
 import 'package:weeklet/domain/repositories/expense_repository.dart';
 import 'package:weeklet/domain/repositories/income_repository.dart';
