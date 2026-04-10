@@ -26,6 +26,7 @@ final class MonthlyStatsLoaded extends StatsState {
     this.touchedIndex = -1,
     this.evolutionStats,
     this.availablePeriods = const {},
+    this.actionError,
   });
 
   final MonthlyStats stats;
@@ -35,6 +36,7 @@ final class MonthlyStatsLoaded extends StatsState {
   final int touchedIndex;
   final EvolutionStats? evolutionStats;
   final Map<int, List<int>> availablePeriods;
+  final String? actionError;
 
   List<int> get availableYears {
     final years = availablePeriods.keys.toList()..sort((a, b) => b.compareTo(a));
@@ -50,6 +52,8 @@ final class MonthlyStatsLoaded extends StatsState {
     int? touchedIndex,
     EvolutionStats? evolutionStats,
     Map<int, List<int>>? availablePeriods,
+    String? actionError,
+    bool clearActionError = false,
   }) => MonthlyStatsLoaded(
     stats: stats ?? this.stats,
     month: clearMonth ? null : (month ?? this.month),
@@ -58,10 +62,20 @@ final class MonthlyStatsLoaded extends StatsState {
     touchedIndex: touchedIndex ?? this.touchedIndex,
     evolutionStats: evolutionStats ?? this.evolutionStats,
     availablePeriods: availablePeriods ?? this.availablePeriods,
+    actionError: clearActionError ? null : (actionError ?? this.actionError),
   );
 
   @override
-  List<Object?> get props => [stats, month, year, currentTab, touchedIndex, evolutionStats, availablePeriods];
+  List<Object?> get props => [
+    stats,
+    month,
+    year,
+    currentTab,
+    touchedIndex,
+    evolutionStats,
+    availablePeriods,
+    actionError,
+  ];
 }
 
 final class StatsFailure extends StatsState {
