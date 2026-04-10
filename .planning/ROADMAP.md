@@ -51,8 +51,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — String fixes + StatsBloc sync (Wave 1): replace Romanian strings with English, add LoadMonthlyStats dispatch to 3 IncomeBloc CRUD handlers
-- [ ] 02-02-PLAN.md — Human verification checkpoint (Wave 2): verify INC-01 through INC-04 in running app
+- [x] 02-01-PLAN.md — String fixes + StatsBloc sync (Wave 1): replace Romanian strings with English, add LoadMonthlyStats dispatch to 3 IncomeBloc CRUD handlers
+- [x] 02-02-PLAN.md — Human verification checkpoint (Wave 2): verify INC-01 through INC-04 in running app
 
 ### Phase 3: Statistics Screen
 **Goal**: Users can view accurate, complete financial statistics with a modern UI -- monthly summaries and annual category breakdowns
@@ -63,8 +63,13 @@ Plans:
   2. Monthly expense and income totals displayed on the statistics screen match the sum of entries visible on their respective list screens
   3. Annual overview shows a full 12-month expense and income breakdown by category for the selected year
   4. Statistics screen loads without redundant Hive reads -- getEvolutionStats fetches incomes and categories once, not per-iteration
-**Plans**: TBD
+**Plans**: 3 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 03-01-PLAN.md — Repository + BLoC pipeline (Wave 1): 12-month iteration, hoisted Hive reads, StatsFailure rename, drop month from GetEvolutionStatsParams
+- [ ] 03-02-PLAN.md — Widget polish (Wave 2): dynamic Annual/Monthly card labels, vs last year badge, currency fixes, Romanian string fixes, shouldRebuild=false
+- [ ] 03-03-PLAN.md — Human verification checkpoint (Wave 3): verify STAT-01 through STAT-04 in running app
 
 ### Phase 4: Settings Screen
 **Goal**: Users can configure app behavior -- security, appearance, data management, legal info, and language -- from a dedicated settings screen
@@ -108,7 +113,7 @@ Note: Phase 4 (Settings) depends only on Phase 1, so it could theoretically run 
 |-------|----------------|--------|-----------|
 | 1. Architecture Cleanup | 4/4 | Complete   | 2026-04-04 |
 | 2. Income Screen | 0/2 | Not started | - |
-| 3. Statistics Screen | 0/? | Not started | - |
+| 3. Statistics Screen | 0/3 | Not started | - |
 | 4. Settings Screen | 0/? | Not started | - |
 | 5. Data Export | 0/? | Not started | - |
 | 6. Release Polish | 0/? | Not started | - |
