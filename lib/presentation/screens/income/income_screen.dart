@@ -77,7 +77,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Venituri'),
+        title: const Text('My Income'),
         centerTitle: true,
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(60),

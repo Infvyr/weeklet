@@ -27,8 +27,8 @@ class IncomeTotalCard extends StatelessWidget {
       isIncome: true,
     );
     final label = selectedMonth != null
-        ? 'Total venituri luna $monthName'
-        : 'Total venituri';
+        ? 'Total income for $monthName'
+        : 'Total income';
 
     return SizedBox(
       width: double.infinity,
