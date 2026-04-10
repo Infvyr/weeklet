@@ -67,9 +67,9 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 03-01-PLAN.md — Repository + BLoC pipeline (Wave 1): 12-month iteration, hoisted Hive reads, StatsFailure rename, drop month from GetEvolutionStatsParams
-- [ ] 03-02-PLAN.md — Widget polish (Wave 2): dynamic Annual/Monthly card labels, vs last year badge, currency fixes, Romanian string fixes, shouldRebuild=false
-- [ ] 03-03-PLAN.md — Human verification checkpoint (Wave 3): verify STAT-01 through STAT-04 in running app
+- [x] 03-01-PLAN.md — Repository + BLoC pipeline (Wave 1): 12-month iteration, hoisted Hive reads, StatsFailure rename, drop month from GetEvolutionStatsParams
+- [x] 03-02-PLAN.md — Widget polish (Wave 2): dynamic Annual/Monthly card labels, vs last year badge, currency fixes, Romanian string fixes, shouldRebuild=false
+- [x] 03-03-PLAN.md — Human verification checkpoint (Wave 3): verify STAT-01 through STAT-04 in running app
 
 ### Phase 4: Settings Screen
 **Goal**: Users can configure app behavior -- security, appearance, data management, legal info, and language -- from a dedicated settings screen
