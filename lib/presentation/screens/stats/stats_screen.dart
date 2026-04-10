@@ -17,18 +17,8 @@ import 'package:weeklet/presentation/screens/stats/widgets/stats_filter_bar.dart
 import 'package:weeklet/presentation/screens/stats/widgets/stats_summary_cards/stats_summary_cards.dart';
 import 'package:weeklet/presentation/screens/stats/widgets/stats_tabs_section.dart';
 
-class StatsScreen extends StatefulWidget {
+class StatsScreen extends StatelessWidget {
   const StatsScreen({super.key});
-
-  @override
-  State<StatsScreen> createState() => _StatsScreenState();
-}
-
-class _StatsScreenState extends State<StatsScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) => const StatsView();
