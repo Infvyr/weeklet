@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
 import 'package:weeklet/domain/usecases/stats/get_available_periods_use_case.dart';
@@ -83,6 +84,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         );
       }
     } catch (e) {
+      debugPrint('error in _onLoadMonthlyStats: $e');
       emit(StatsFailure(e.toString()));
     }
   }
