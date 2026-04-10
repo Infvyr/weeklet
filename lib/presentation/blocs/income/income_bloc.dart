@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weeklet/core/di/service_locator.dart';
 import 'package:weeklet/domain/usecases/income/add_income_use_case.dart';
 import 'package:weeklet/domain/usecases/income/delete_income_use_case.dart';
 import 'package:weeklet/domain/usecases/income/get_incomes_use_case.dart';
 import 'package:weeklet/domain/usecases/income/update_income_use_case.dart';
 import 'package:weeklet/domain/utils/income_filter_utils.dart';
+import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
+import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
 
 import 'income_event.dart';
 import 'income_state.dart';
@@ -104,6 +107,7 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
           ),
         );
         add(const LoadIncomesRequested());
+        sl<StatsBloc>().add(LoadMonthlyStats(year: DateTime.now().year));
       } on ArgumentError catch (e) {
         debugPrint('error in _onAddIncome: $e');
         emit(
@@ -132,6 +136,7 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
       try {
         await updateIncomeUseCase(event.income);
         add(const LoadIncomesRequested());
+        sl<StatsBloc>().add(LoadMonthlyStats(year: DateTime.now().year));
       } catch (e) {
         emit(
           st.copyWith(
@@ -151,6 +156,7 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
       try {
         await deleteIncomeUseCase(event.id);
         add(const LoadIncomesRequested());
+        sl<StatsBloc>().add(LoadMonthlyStats(year: DateTime.now().year));
       } catch (e) {
         emit(
           st.copyWith(
