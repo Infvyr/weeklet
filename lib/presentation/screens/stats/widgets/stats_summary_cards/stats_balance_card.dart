@@ -48,7 +48,7 @@ class StatsBalanceCard extends StatelessWidget {
           NumberFormatter.formatCurrencyWithSign(
             balance,
             AppConstants.DEFAULT_CURRENCY,
-            isIncome: false,
+            isIncome: balance >= 0,
           ),
           style: context.headlineSmall?.copyWith(
             color: Colors.white,
