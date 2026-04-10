@@ -5,15 +5,13 @@ import 'package:weeklet/domain/usecases/base/use_case.dart';
 
 class GetEvolutionStatsParams extends Equatable {
   const GetEvolutionStatsParams({
-    required this.month,
     required this.year,
   });
 
-  final int month;
   final int year;
 
   @override
-  List<Object> get props => [month, year];
+  List<Object> get props => [year];
 }
 
 class GetEvolutionStatsUseCase
@@ -24,5 +22,5 @@ class GetEvolutionStatsUseCase
 
   @override
   Future<EvolutionStats> call(GetEvolutionStatsParams params) =>
-      repository.getEvolutionStats(params.month, params.year);
+      repository.getEvolutionStats(params.year);
 }

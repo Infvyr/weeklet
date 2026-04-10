@@ -160,63 +160,49 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
   }
 
   @override
-  Future<EvolutionStats> getEvolutionStats(int month, int year) async {
+  Future<EvolutionStats> getEvolutionStats(int year) async {
     final snapshots = <MonthlySnapshot>[];
 
-    // Loop from 5 months back to current month (6 months total)
-    for (int i = 5; i >= 0; i--) {
-      var m = month - i;
-      var y = year;
+    // Hoist outside loop — D-12
+    final allIncomes = await incomeRepository.getIncomes();
+    final allCategories = await categoryRepository.getAllCategories();
 
-      // Handle month wrapping
-      while (m <= 0) {
-        m += 12;
-        y -= 1;
-      }
-
-      // Get expenses and incomes for this month
-      final monthExpenses = await expenseRepository.getExpensesByMonthYear(m, y);
-      final allIncomes = await incomeRepository.getIncomes();
+    // Fixed Jan–Dec iteration — D-01
+    for (int m = 1; m <= 12; m++) {
+      final monthExpenses =
+          await expenseRepository.getExpensesByMonthYear(m, year);
       final monthIncomes = allIncomes
-          .where((inc) => inc.date.month == m && inc.date.year == y)
+          .where((inc) => inc.date.month == m && inc.date.year == year)
           .toList();
 
-      // Calculate totals
-      final totalIncome = monthIncomes.fold(0.0, (sum, inc) => sum + inc.amount);
-      final totalExpenses = monthExpenses.fold(0.0, (sum, exp) => sum + exp.amount);
+      final totalIncome =
+          monthIncomes.fold(0.0, (sum, inc) => sum + inc.amount);
+      final totalExpenses =
+          monthExpenses.fold(0.0, (sum, exp) => sum + exp.amount);
       final balance = totalIncome - totalExpenses;
 
-      // Build category breakdown
-      final allCategories = await categoryRepository.getAllCategories();
       final categoryStats = <CategoryStats>[];
-
       for (final category in allCategories) {
-        final categoryExpenses = monthExpenses.where(
-          (e) => e.categoryId == category.id,
-        );
-        final categoryTotal = categoryExpenses.fold(
-          0.0,
-          (sum, e) => sum + e.amount,
-        );
-
+        final categoryTotal = monthExpenses
+            .where((e) => e.categoryId == category.id)
+            .fold(0.0, (sum, e) => sum + e.amount);
         if (categoryTotal > 0) {
           categoryStats.add(
             CategoryStats(
               category: category,
               totalAmount: categoryTotal,
-              percentage: totalExpenses > 0 ? categoryTotal / totalExpenses : 0.0,
+              percentage:
+                  totalExpenses > 0 ? categoryTotal / totalExpenses : 0.0,
             ),
           );
         }
       }
-
-      // Sort by amount descending
       categoryStats.sort((a, b) => b.totalAmount.compareTo(a.totalAmount));
 
       snapshots.add(
         MonthlySnapshot(
           month: m,
-          year: y,
+          year: year,
           totalIncome: totalIncome,
           totalExpenses: totalExpenses,
           balance: balance,
