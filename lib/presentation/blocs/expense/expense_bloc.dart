@@ -1,12 +1,15 @@
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:weeklet/core/di/service_locator.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
 import 'package:weeklet/domain/usecases/expense/add_expense_usecase.dart';
 import 'package:weeklet/domain/usecases/expense/delete_expense_usecase.dart';
 import 'package:weeklet/domain/usecases/expense/get_all_expenses_usecase.dart';
 import 'package:weeklet/domain/usecases/expense/update_expense_usecase.dart';
 import 'package:weeklet/domain/utils/expense_filter_utils.dart';
+import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
+import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
 
 import 'expense_event.dart';
 import 'expense_state.dart';
@@ -115,6 +118,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
           ),
         );
         add(const LoadExpensesRequested());
+        sl<StatsBloc>().add(LoadMonthlyStats(year: DateTime.now().year));
       } on ArgumentError catch (e) {
         debugPrint('error in _onAddExpense: $e');
         emit(
@@ -143,6 +147,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
       try {
         await updateExpenseUseCase(event.expense);
         add(const LoadExpensesRequested());
+        sl<StatsBloc>().add(LoadMonthlyStats(year: DateTime.now().year));
       } catch (e) {
         emit(
           st.copyWith(
@@ -162,6 +167,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
       try {
         await deleteExpenseUseCase(event.id);
         add(const LoadExpensesRequested());
+        sl<StatsBloc>().add(LoadMonthlyStats(year: DateTime.now().year));
       } catch (e) {
         emit(
           st.copyWith(
