@@ -78,7 +78,7 @@ class EvolutionStats extends Equatable {
     required this.snapshots,
   });
 
-  final List<MonthlySnapshot> snapshots; // 6 items, oldest → newest
+  final List<MonthlySnapshot> snapshots; // 12 items, Jan → Dec
 
   @override
   List<Object> get props => [snapshots];
