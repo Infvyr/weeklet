@@ -14,6 +14,7 @@ import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
 import 'package:weeklet/presentation/blocs/income/income_bloc.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_bloc.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_state.dart';
+import 'package:weeklet/presentation/blocs/export/export_bloc.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
 
 import 'core/router/app_routes.dart';
@@ -30,6 +31,7 @@ class WeekletApp extends StatelessWidget {
       BlocProvider<ExpenseBloc>.value(value: sl<ExpenseBloc>()),
       BlocProvider<IncomeBloc>.value(value: sl<IncomeBloc>()),
       BlocProvider<StatsBloc>.value(value: sl<StatsBloc>()),
+      BlocProvider<ExportBloc>.value(value: sl<ExportBloc>()),
     ],
     child: BlocBuilder<SettingsBloc, SettingsState>(
       buildWhen: (prev, curr) {

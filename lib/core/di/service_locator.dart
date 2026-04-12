@@ -47,6 +47,9 @@ import 'package:weeklet/domain/usecases/income/add_income_use_case.dart';
 import 'package:weeklet/domain/usecases/income/delete_income_use_case.dart';
 import 'package:weeklet/domain/usecases/income/get_incomes_use_case.dart';
 import 'package:weeklet/domain/usecases/income/update_income_use_case.dart';
+import 'package:weeklet/domain/usecases/export/export_expenses_usecase.dart';
+import 'package:weeklet/domain/usecases/export/export_income_usecase.dart';
+import 'package:weeklet/presentation/blocs/export/export_bloc.dart';
 import 'package:weeklet/presentation/blocs/income/income_bloc.dart';
 
 final sl = GetIt.instance;
@@ -267,6 +270,10 @@ Future<void> init() async {
     ),
   );
 
+  // DOMAIN layer - UseCases (Export)
+  sl.registerLazySingleton(ExportExpensesUseCase.new);
+  sl.registerLazySingleton(ExportIncomeUseCase.new);
+
   // Settings BLoC — registered BEFORE other BLoCs per CLAUDE.md rule
   sl.registerLazySingleton(BiometricService.new);
 
@@ -321,6 +328,14 @@ Future<void> init() async {
       updateExpenseUseCase: sl<UpdateExpenseUseCase>(),
       deleteExpenseUseCase: sl<DeleteExpenseUseCase>(),
       getExpensesUseCase: sl<GetAllExpensesUseCase>(),
+    ),
+  );
+
+  // Export
+  sl.registerLazySingleton(
+    () => ExportBloc(
+      exportExpensesUseCase: sl<ExportExpensesUseCase>(),
+      exportIncomeUseCase: sl<ExportIncomeUseCase>(),
     ),
   );
 }
