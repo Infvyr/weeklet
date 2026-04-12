@@ -2,6 +2,7 @@ import 'dart:ui' show PlatformDispatcher;
 
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weeklet/core/di/service_locator.dart' show sl;
 import 'package:weeklet/core/services/biometric_service.dart';
 import 'package:weeklet/core/utils/locale_manager.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
@@ -12,6 +13,14 @@ import 'package:weeklet/domain/usecases/settings/save_biometric_enabled_usecase.
 import 'package:weeklet/domain/usecases/settings/save_currency_usecase.dart';
 import 'package:weeklet/domain/usecases/settings/save_locale_usecase.dart';
 import 'package:weeklet/domain/usecases/settings/save_theme_usecase.dart';
+import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
+import 'package:weeklet/presentation/blocs/category/category_event.dart';
+import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
+import 'package:weeklet/presentation/blocs/expense/expense_event.dart';
+import 'package:weeklet/presentation/blocs/income/income_bloc.dart';
+import 'package:weeklet/presentation/blocs/income/income_event.dart';
+import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
+import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
 
 import 'settings_event.dart';
 import 'settings_state.dart';
@@ -203,8 +212,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     if (state case final SettingsLoaded st) {
       try {
         await resetAllDataUseCase(NoParams());
-        // Reload all BLoCs — SettingsBloc reloads itself,
-        // other BLoCs reloaded from AppInitializer or screen re-entry
+        // Sync all data BLoCs so screens update immediately without restart
+        sl<ExpenseBloc>().add(const LoadExpensesRequested());
+        sl<IncomeBloc>().add(const LoadIncomesRequested());
+        sl<CategoryBloc>().add(const GetAllCategoriesEvent());
+        sl<StatsBloc>().add(LoadMonthlyStats(year: DateTime.now().year));
         add(const LoadSettingsRequested());
       } catch (e) {
         debugPrint('error in _onResetAllData: $e');
