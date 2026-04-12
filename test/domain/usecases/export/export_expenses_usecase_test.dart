@@ -65,7 +65,7 @@ void main() {
     late ExportExpensesUseCase useCase;
 
     setUp(() {
-      useCase = ExportExpensesUseCase();
+      useCase = const ExportExpensesUseCase();
     });
 
     test('returns a pdf file path when given a non-empty expense list',

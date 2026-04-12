@@ -64,7 +64,7 @@ void main() {
     late ExportIncomeUseCase useCase;
 
     setUp(() {
-      useCase = ExportIncomeUseCase();
+      useCase = const ExportIncomeUseCase();
     });
 
     test('returns a pdf file path when given a non-empty income list', () async {
