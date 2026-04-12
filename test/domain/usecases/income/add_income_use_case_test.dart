@@ -19,6 +19,9 @@ class _StubIncomeRepository implements IncomeRepository {
 
   @override
   Future<void> deleteIncome(String id) async {}
+
+  @override
+  Future<void> clearAll() async {}
 }
 
 void main() {

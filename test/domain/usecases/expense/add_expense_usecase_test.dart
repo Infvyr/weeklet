@@ -22,6 +22,9 @@ class _StubExpenseRepository implements ExpenseRepository {
 
   @override
   Future<void> updateExpense(Expense expense) async {}
+
+  @override
+  Future<void> clearAll() async {}
 }
 
 void main() {

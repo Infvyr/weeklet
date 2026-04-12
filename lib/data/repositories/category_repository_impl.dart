@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:weeklet/data/datasources/local/category_local_datasource.dart';
 import 'package:weeklet/data/models/category_model.dart';
 import 'package:weeklet/domain/entities/category.dart';
@@ -33,5 +34,15 @@ class CategoryRepositoryImpl implements CategoryRepository {
   Future<Category?> getCategoryById(String id) async {
     final model = await localDataSource.getCategoryById(id);
     return model?.toEntity();
+  }
+
+  @override
+  Future<void> clearAll() async {
+    try {
+      await localDataSource.clearAll();
+    } catch (e) {
+      debugPrint('[CategoryRepositoryImpl.clearAll] error: $e');
+      rethrow;
+    }
   }
 }

@@ -62,4 +62,14 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<void> clearAll() async {
+    try {
+      await localDataSource.clearAll();
+    } catch (e) {
+      debugPrint('[ExpenseRepositoryImpl.clearAll] error: $e');
+      rethrow;
+    }
+  }
 }

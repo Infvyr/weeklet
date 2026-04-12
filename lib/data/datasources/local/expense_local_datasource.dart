@@ -8,6 +8,7 @@ abstract class ExpenseLocalDataSource {
   Future<void> updateExpense(ExpenseModel expense);
   Future<List<ExpenseModel>> getExpensesByMonthYear(int month, int year);
   Future<List<ExpenseModel>> getAllExpenses();
+  Future<void> clearAll();
 }
 
 class ExpenseLocalDataSourceImpl implements ExpenseLocalDataSource {
@@ -67,6 +68,16 @@ class ExpenseLocalDataSourceImpl implements ExpenseLocalDataSource {
       return expenseBox.values.toList();
     } catch (e) {
       debugPrint('[ExpenseLocalDataSourceImpl.getAllExpenses] error: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> clearAll() async {
+    try {
+      await expenseBox.clear();
+    } catch (e) {
+      debugPrint('[ExpenseLocalDataSourceImpl.clearAll] error: $e');
       rethrow;
     }
   }

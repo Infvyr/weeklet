@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:weeklet/data/datasources/local/income_local_data_source.dart';
 import 'package:weeklet/data/models/income_model.dart';
 import 'package:weeklet/domain/entities/income.dart';
@@ -29,5 +30,15 @@ class IncomeRepositoryImpl implements IncomeRepository {
   Future<List<Income>> getIncomes() async {
     final models = await localDataSource.getIncomes();
     return models.map((model) => model.toEntity()).toList();
+  }
+
+  @override
+  Future<void> clearAll() async {
+    try {
+      await localDataSource.clearAll();
+    } catch (e) {
+      debugPrint('[IncomeRepositoryImpl.clearAll] error: $e');
+      rethrow;
+    }
   }
 }

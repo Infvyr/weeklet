@@ -26,6 +26,9 @@ class _FakeExpenseRepository implements ExpenseRepository {
 
   @override
   Future<List<Expense>> getAllExpenses() async => [];
+
+  @override
+  Future<void> clearAll() async {}
 }
 
 class _FakeIncomeRepository implements IncomeRepository {
@@ -45,6 +48,9 @@ class _FakeIncomeRepository implements IncomeRepository {
 
   @override
   Future<void> deleteIncome(String id) async {}
+
+  @override
+  Future<void> clearAll() async {}
 }
 
 class _FakeCategoryRepository implements CategoryRepository {
@@ -67,6 +73,9 @@ class _FakeCategoryRepository implements CategoryRepository {
 
   @override
   Future<Category?> getCategoryById(String id) async => null;
+
+  @override
+  Future<void> clearAll() async {}
 }
 
 // ---------------------------------------------------------------------------

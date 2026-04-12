@@ -6,4 +6,5 @@ abstract class ExpenseRepository {
   Future<void> updateExpense(Expense expense);
   Future<List<Expense>> getExpensesByMonthYear(int month, int year);
   Future<List<Expense>> getAllExpenses();
+  Future<void> clearAll();
 }

@@ -5,4 +5,5 @@ abstract class IncomeRepository {
   Future<List<Income>> getIncomes();
   Future<void> updateIncome(Income income);
   Future<void> deleteIncome(String id);
+  Future<void> clearAll();
 }

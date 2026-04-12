@@ -4,12 +4,22 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:weeklet/data/datasources/local/category_local_datasource.dart';
 import 'package:weeklet/data/datasources/local/expense_local_datasource.dart';
+import 'package:weeklet/data/datasources/local/settings_local_data_source.dart';
 import 'package:weeklet/data/models/category_model.dart';
 import 'package:weeklet/data/models/expense_model.dart';
 import 'package:weeklet/data/repositories/category_repository_impl.dart';
 import 'package:weeklet/data/repositories/expense_repository_impl.dart';
+import 'package:weeklet/data/repositories/settings_repository_impl.dart';
 import 'package:weeklet/domain/repositories/category_repository.dart';
 import 'package:weeklet/domain/repositories/expense_repository.dart';
+import 'package:weeklet/domain/repositories/settings_repository.dart';
+import 'package:weeklet/domain/usecases/settings/clear_preferences_usecase.dart';
+import 'package:weeklet/domain/usecases/settings/get_settings_usecase.dart';
+import 'package:weeklet/domain/usecases/settings/reset_all_data_usecase.dart';
+import 'package:weeklet/domain/usecases/settings/save_biometric_enabled_usecase.dart';
+import 'package:weeklet/domain/usecases/settings/save_currency_usecase.dart';
+import 'package:weeklet/domain/usecases/settings/save_locale_usecase.dart';
+import 'package:weeklet/domain/usecases/settings/save_theme_usecase.dart';
 import 'package:weeklet/domain/usecases/category/add_category_usecase.dart';
 import 'package:weeklet/domain/usecases/category/delete_category_usecase.dart';
 import 'package:weeklet/domain/usecases/category/get_all_categories_usecase.dart';
@@ -70,6 +80,10 @@ Future<void> init() async {
   sl.registerSingleton<Box<ExpenseModel>>(expenseBox);
   sl.registerSingleton<Box<IncomeModel>>(incomeBox);
 
+  // Settings box (Box<dynamic> — no adapter needed, primitives stored natively)
+  final settingsBox = await Hive.openBox<dynamic>('settings');
+  sl.registerSingleton<Box<dynamic>>(settingsBox);
+
   sl.registerLazySingleton(
     () => const Uuid(),
   );
@@ -91,6 +105,11 @@ Future<void> init() async {
     () => IncomeLocalDataSourceImpl(
       sl<Box<IncomeModel>>(),
     ),
+  );
+
+  // Settings DataSource
+  sl.registerLazySingleton<SettingsLocalDataSource>(
+    () => SettingsLocalDataSourceImpl(sl<Box<dynamic>>()),
   );
 
   // DATA layer - Repositories
@@ -118,6 +137,11 @@ Future<void> init() async {
       incomeRepository: sl<IncomeRepository>(),
       categoryRepository: sl<CategoryRepository>(),
     ),
+  );
+
+  // Settings Repository
+  sl.registerLazySingleton<SettingsRepository>(
+    () => SettingsRepositoryImpl(sl<SettingsLocalDataSource>()),
   );
 
   // DOMAIN layer - UseCases (Category)
@@ -212,6 +236,36 @@ Future<void> init() async {
       sl<StatisticsRepository>(),
     ),
   );
+
+  // DOMAIN layer - UseCases (Settings)
+  sl.registerLazySingleton(
+    () => GetSettingsUseCase(sl<SettingsRepository>()),
+  );
+  sl.registerLazySingleton(
+    () => SaveThemeUseCase(sl<SettingsRepository>()),
+  );
+  sl.registerLazySingleton(
+    () => SaveLocaleUseCase(sl<SettingsRepository>()),
+  );
+  sl.registerLazySingleton(
+    () => SaveCurrencyUseCase(sl<SettingsRepository>()),
+  );
+  sl.registerLazySingleton(
+    () => SaveBiometricEnabledUseCase(sl<SettingsRepository>()),
+  );
+  sl.registerLazySingleton(
+    () => ClearPreferencesUseCase(sl<SettingsRepository>()),
+  );
+  sl.registerLazySingleton(
+    () => ResetAllDataUseCase(
+      expenseRepository: sl<ExpenseRepository>(),
+      incomeRepository: sl<IncomeRepository>(),
+      categoryRepository: sl<CategoryRepository>(),
+      settingsRepository: sl<SettingsRepository>(),
+    ),
+  );
+
+  // SettingsBloc registration — see Plan 02
 
   sl.registerLazySingleton(
     () => StatsBloc(

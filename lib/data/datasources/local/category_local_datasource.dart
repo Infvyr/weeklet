@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:weeklet/data/models/category_model.dart';
 
@@ -7,6 +8,7 @@ abstract class CategoryLocalDataSource {
   Future<void> updateCategory(CategoryModel model);
   Future<List<CategoryModel>> getAllCategories();
   Future<CategoryModel?> getCategoryById(String id);
+  Future<void> clearAll();
 }
 
 class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
@@ -35,4 +37,14 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
   @override
   Future<CategoryModel?> getCategoryById(String id) async =>
       categoryBox.get(id);
+
+  @override
+  Future<void> clearAll() async {
+    try {
+      await categoryBox.clear();
+    } catch (e) {
+      debugPrint('[CategoryLocalDataSourceImpl.clearAll] error: $e');
+      rethrow;
+    }
+  }
 }

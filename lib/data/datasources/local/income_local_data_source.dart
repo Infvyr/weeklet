@@ -7,6 +7,7 @@ abstract class IncomeLocalDataSource {
   Future<void> updateIncome(IncomeModel income);
   Future<void> deleteIncome(String id);
   Future<List<IncomeModel>> getIncomes();
+  Future<void> clearAll();
 }
 
 class IncomeLocalDataSourceImpl implements IncomeLocalDataSource {
@@ -50,6 +51,16 @@ class IncomeLocalDataSourceImpl implements IncomeLocalDataSource {
       return incomeBox.values.toList();
     } catch (e) {
       debugPrint('[IncomeLocalDataSourceImpl.getIncomes] error: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> clearAll() async {
+    try {
+      await incomeBox.clear();
+    } catch (e) {
+      debugPrint('[IncomeLocalDataSourceImpl.clearAll] error: $e');
       rethrow;
     }
   }
