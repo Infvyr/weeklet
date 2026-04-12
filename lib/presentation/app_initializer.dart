@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklet/core/di/service_locator.dart' show sl;
@@ -67,6 +69,10 @@ class _AppInitializerState extends State<AppInitializer> {
   }
 
   void _onResume() {
+    // Biometric gate only applies on mobile platforms — local_auth does not
+    // reliably support macOS/desktop in debug/simulator builds.
+    if (!Platform.isIOS && !Platform.isAndroid) return;
+
     // Check biometric state from DI (not context — this is a lifecycle callback,
     // context.read may not be available depending on widget tree state)
     final settingsState = sl<SettingsBloc>().state;
