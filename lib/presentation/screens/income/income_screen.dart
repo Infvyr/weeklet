@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/domain/utils/income_grouping.dart';
+import 'package:weeklet/presentation/blocs/export/export_bloc.dart';
+import 'package:weeklet/presentation/blocs/export/export_event.dart';
+import 'package:weeklet/presentation/blocs/export/export_state.dart';
 import 'package:weeklet/presentation/blocs/income/income_bloc.dart';
 import 'package:weeklet/presentation/blocs/income/income_event.dart';
 import 'package:weeklet/presentation/blocs/income/income_state.dart';
+import 'package:weeklet/presentation/blocs/settings/settings_bloc.dart';
+import 'package:weeklet/presentation/blocs/settings/settings_state.dart';
 import 'package:weeklet/presentation/screens/income/widgets/add_income_form_view.dart';
 import 'package:weeklet/presentation/screens/income/widgets/income_filter_bar.dart';
 import 'package:weeklet/presentation/screens/income/widgets/income_total_card.dart';
@@ -70,88 +76,160 @@ class _IncomeScreenState extends State<IncomeScreen> {
     });
   }
 
+  void _onExportTapped() {
+    final incomeState = context.read<IncomeBloc>().state;
+    if (incomeState is! IncomeSuccess) return;
+
+    if (incomeState.selectedMonth == null) {
+      context.showSnackBar('Please select a specific month to export.');
+      return;
+    }
+
+    final settingsState = context.read<SettingsBloc>().state;
+    final currencySymbol = settingsState is SettingsLoaded
+        ? settingsState.currencySymbol
+        : 'MDL';
+
+    context.read<ExportBloc>().add(
+      ExportIncomeStarted(
+        incomes: incomeState.filteredIncomes,
+        currencySymbol: currencySymbol,
+        year: incomeState.selectedYear,
+        month: incomeState.selectedMonth!,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final incomeState = context.watch<IncomeBloc>().state;
 
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('My Income'),
-        centerTitle: true,
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(60),
-          child: IncomeFilterBar(),
-        ),
-      ),
-      body: switch (incomeState) {
-        IncomeLoading _ => const Center(
-          child: CircularProgressIndicator.adaptive(),
-        ),
-
-        IncomeFailure _ => Center(
-          child: Column(
-            mainAxisAlignment: .center,
-            children: [
-              Icon(
-                Icons.error_outline,
-                size: 48,
-                color: context.colorScheme.error,
-              ),
-              const SizedBox(height: 16),
-              Text('Failed to load income', style: context.bodyLarge),
-              const SizedBox(height: 8),
-              TextButton(
-                onPressed: () => context.read<IncomeBloc>().add(
-                  const LoadIncomesRequested(),
-                ),
-                child: const Text('Retry'),
-              ),
-            ],
+    return BlocListener<ExportBloc, ExportState>(
+      listener: (context, exportState) async {
+        if (exportState is ExportSuccess) {
+          final exportBloc = context.read<ExportBloc>();
+          await SharePlus.instance.share(
+            ShareParams(
+              files: [XFile(exportState.filePath)],
+              subject: exportState.subject,
+              sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1),
+            ),
+          );
+          if (!mounted) return;
+          exportBloc.add(const ResetExportRequested());
+        } else if (exportState is ExportFailure) {
+          context.showErrorSnackBar(
+            'Failed to generate PDF. Please try again.',
+          );
+          context.read<ExportBloc>().add(const ResetExportRequested());
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Text('My Income'),
+          centerTitle: true,
+          actions: [
+            BlocBuilder<ExportBloc, ExportState>(
+              builder: (context, exportState) {
+                if (exportState is ExportInProgress) {
+                  return const SizedBox(
+                    width: 44,
+                    height: 44,
+                    child: Center(
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator.adaptive(
+                          strokeWidth: 2,
+                          semanticsLabel: 'Generating PDF\u2026',
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                return IconButton(
+                  icon: const Icon(Icons.picture_as_pdf),
+                  tooltip: 'Export as PDF',
+                  onPressed: _onExportTapped,
+                );
+              },
+            ),
+          ],
+          bottom: const PreferredSize(
+            preferredSize: Size.fromHeight(60),
+            child: IncomeFilterBar(),
           ),
         ),
+        body: switch (incomeState) {
+          IncomeLoading _ => const Center(
+            child: CircularProgressIndicator.adaptive(),
+          ),
 
-        final IncomeSuccess success => RefreshIndicator.adaptive(
-          onRefresh: _onRefresh,
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            padding: const EdgeInsets.all(16.0),
+          IncomeFailure _ => Center(
             child: Column(
+              mainAxisAlignment: .center,
               children: [
-                IncomeTotalCard(
-                  total: IncomeGrouping.calculateTotal(
-                    success.filteredIncomes,
-                  ),
-                  selectedMonth: success.selectedMonth,
+                Icon(
+                  Icons.error_outline,
+                  size: 48,
+                  color: context.colorScheme.error,
                 ),
                 const SizedBox(height: 16),
-                IncomeListView(incomes: success.filteredIncomes),
+                Text('Failed to load income', style: context.bodyLarge),
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () => context.read<IncomeBloc>().add(
+                    const LoadIncomesRequested(),
+                  ),
+                  child: const Text('Retry'),
+                ),
               ],
             ),
           ),
-        ),
 
-        _ => const SizedBox.shrink(),
-      },
-      floatingActionButton: AnimatedContainer(
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
-        width: _isAtBottom ? context.screenWidth - 32 : 56,
-        height: _isAtBottom ? 48 : 56,
-        child: AnimatedSlide(
+          final IncomeSuccess success => RefreshIndicator.adaptive(
+            onRefresh: _onRefresh,
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  IncomeTotalCard(
+                    total: IncomeGrouping.calculateTotal(
+                      success.filteredIncomes,
+                    ),
+                    selectedMonth: success.selectedMonth,
+                  ),
+                  const SizedBox(height: 16),
+                  IncomeListView(incomes: success.filteredIncomes),
+                ],
+              ),
+            ),
+          ),
+
+          _ => const SizedBox.shrink(),
+        },
+        floatingActionButton: AnimatedContainer(
           duration: const Duration(milliseconds: 400),
-          offset: Offset.zero,
-          child: FloatingActionButton.extended(
-            onPressed: _showAddIncomeSheet,
-            icon: Transform.translate(
-              offset: _isAtBottom ? Offset.zero : const Offset(6, 0),
-              child: const Icon(Icons.add),
+          curve: Curves.easeInOut,
+          width: _isAtBottom ? context.screenWidth - 32 : 56,
+          height: _isAtBottom ? 48 : 56,
+          child: AnimatedSlide(
+            duration: const Duration(milliseconds: 400),
+            offset: Offset.zero,
+            child: FloatingActionButton.extended(
+              onPressed: _showAddIncomeSheet,
+              icon: Transform.translate(
+                offset: _isAtBottom ? Offset.zero : const Offset(6, 0),
+                child: const Icon(Icons.add),
+              ),
+              label: Visibility(
+                visible: _isAtBottom,
+                child: const Text('Add Income'),
+              ),
+              tooltip: _isAtBottom ? '' : 'Add new income',
             ),
-            label: Visibility(
-              visible: _isAtBottom,
-              child: const Text('Add Income'),
-            ),
-            tooltip: _isAtBottom ? '' : 'Add new income',
           ),
         ),
       ),
