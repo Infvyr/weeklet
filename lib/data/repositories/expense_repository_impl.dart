@@ -21,9 +21,9 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
   }
 
   @override
-  Future<void> deleteExpense(String id) {
+  Future<void> deleteExpense(String id) async {
     try {
-      return localDataSource.deleteExpense(id);
+      await localDataSource.deleteExpense(id);
     } catch (e) {
       debugPrint('[ExpenseRepositoryImpl.deleteExpense] error: $e');
       rethrow;

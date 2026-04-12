@@ -114,7 +114,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       listener: (context, state) {
         if (state is SettingsLoaded && state.actionError != null) {
           context.showErrorSnackBar(state.actionError!);
-          context.read<SettingsBloc>().add(const LoadSettingsRequested());
         }
       },
       builder: (context, state) {

@@ -19,9 +19,16 @@ class ResetAllDataUseCase implements UseCase<void, NoParams> {
 
   @override
   Future<void> call(NoParams params) async {
-    await expenseRepository.clearAll();
-    await incomeRepository.clearAll();
-    await categoryRepository.clearAll();
-    await settingsRepository.clearAll();
+    // Run all clears in parallel; eagerError: false ensures all are attempted
+    // even if one fails, preventing a partial-clear split state.
+    await Future.wait(
+      [
+        expenseRepository.clearAll(),
+        incomeRepository.clearAll(),
+        categoryRepository.clearAll(),
+        settingsRepository.clearAll(),
+      ],
+      eagerError: false,
+    );
   }
 }

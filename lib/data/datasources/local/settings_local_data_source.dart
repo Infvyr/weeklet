@@ -39,8 +39,11 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
         defaultValue: false,
       ) as bool;
 
+      final themeMode = themeIndex >= 0 && themeIndex < ThemeMode.values.length
+          ? ThemeMode.values[themeIndex]
+          : ThemeMode.system;
       return Settings(
-        themeMode: ThemeMode.values[themeIndex],
+        themeMode: themeMode,
         locale: localeCode != null ? _localeFromCode(localeCode) : null,
         currencySymbol: currencySymbol,
         biometricEnabled: biometricEnabled,
