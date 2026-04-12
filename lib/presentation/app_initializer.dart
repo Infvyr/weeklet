@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weeklet/core/di/service_locator.dart' show sl;
+import 'package:weeklet/core/services/biometric_service.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_event.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_event.dart';
 import 'package:weeklet/presentation/blocs/income/income_bloc.dart';
 import 'package:weeklet/presentation/blocs/income/income_event.dart';
+import 'package:weeklet/presentation/blocs/settings/settings_bloc.dart';
+import 'package:weeklet/presentation/blocs/settings/settings_event.dart';
+import 'package:weeklet/presentation/blocs/settings/settings_state.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
 
-/// Widget responsible for initializing app data on startup.
-/// This ensures separation of concerns - data loading logic is separate from UI navigation.
+/// Widget responsible for initializing app data on startup and managing
+/// the biometric gate overlay on foreground resume.
 class AppInitializer extends StatefulWidget {
   const AppInitializer({
     super.key,
@@ -24,14 +29,28 @@ class AppInitializer extends StatefulWidget {
 }
 
 class _AppInitializerState extends State<AppInitializer> {
+  late final AppLifecycleListener _lifecycleListener;
+  bool _isLocked = false;
+
   @override
   void initState() {
     super.initState();
-    // Trigger initial data loading when app starts
+    _lifecycleListener = AppLifecycleListener(
+      onResume: _onResume,
+    );
     _initializeAppData();
   }
 
+  @override
+  void dispose() {
+    _lifecycleListener.dispose();
+    super.dispose();
+  }
+
   void _initializeAppData() {
+    // Load settings FIRST — MaterialApp reads theme/locale from SettingsBloc
+    context.read<SettingsBloc>().add(const LoadSettingsRequested());
+
     // Load all expenses
     context.read<ExpenseBloc>().add(const LoadExpensesRequested());
 
@@ -47,6 +66,79 @@ class _AppInitializerState extends State<AppInitializer> {
     );
   }
 
+  void _onResume() {
+    // Check biometric state from DI (not context — this is a lifecycle callback,
+    // context.read may not be available depending on widget tree state)
+    final settingsState = sl<SettingsBloc>().state;
+    if (settingsState is SettingsLoaded && settingsState.biometricEnabled) {
+      if (mounted) {
+        setState(() => _isLocked = true);
+      }
+    }
+  }
+
+  Future<void> _unlock() async {
+    final authenticated = await sl<BiometricService>().authenticate(
+      reason: 'Authenticate to access Weeklet.',
+    );
+    if (authenticated && mounted) {
+      setState(() => _isLocked = false);
+    }
+    // If not authenticated: overlay stays, user can tap "Try Again"
+  }
+
   @override
-  Widget build(BuildContext context) => widget.child;
+  Widget build(BuildContext context) => Stack(
+    children: [
+      widget.child,
+      if (_isLocked) _BiometricGateOverlay(onTryAgain: _unlock),
+    ],
+  );
+}
+
+/// Full-screen biometric gate overlay.
+///
+/// Cannot be dismissed by back gesture (absorbs all input via [Scaffold]).
+/// Shows app icon, heading, body text, and "Try Again" button.
+class _BiometricGateOverlay extends StatelessWidget {
+  const _BiometricGateOverlay({required this.onTryAgain});
+
+  final VoidCallback onTryAgain;
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    body: SafeArea(
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(48.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // App icon placeholder — 64x64 dp as per UI-SPEC
+              const FlutterLogo(size: 64.0),
+              const SizedBox(height: 24.0),
+              Text(
+                'Authenticate to continue',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8.0),
+              Text(
+                'Use Face ID or fingerprint to access Weeklet.',
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32.0),
+              FilledButton(
+                onPressed: onTryAgain,
+                child: const Text('Try Again'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
 }
