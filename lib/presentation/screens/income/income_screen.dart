@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
@@ -105,18 +107,27 @@ class _IncomeScreenState extends State<IncomeScreen> {
     final incomeState = context.watch<IncomeBloc>().state;
 
     return BlocListener<ExportBloc, ExportState>(
-      listener: (context, exportState) async {
+      listenWhen: (_, s) =>
+          (s is ExportSuccess &&
+              s.exportType == ExportType.income) ||
+          s is ExportFailure,
+      listener: (context, exportState) {
         if (exportState is ExportSuccess) {
           final exportBloc = context.read<ExportBloc>();
-          await SharePlus.instance.share(
-            ShareParams(
-              files: [XFile(exportState.filePath)],
-              subject: exportState.subject,
-              sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1),
-            ),
+          unawaited(
+            SharePlus.instance
+                .share(
+                  ShareParams(
+                    files: [XFile(exportState.filePath)],
+                    subject: exportState.subject,
+                    sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1),
+                  ),
+                )
+                .then((_) {
+                  if (!mounted) return;
+                  exportBloc.add(const ResetExportRequested());
+                }),
           );
-          if (!mounted) return;
-          exportBloc.add(const ResetExportRequested());
         } else if (exportState is ExportFailure) {
           context.showErrorSnackBar(
             'Failed to generate PDF. Please try again.',

@@ -41,6 +41,7 @@ class ExportBloc extends Bloc<ExportEvent, ExportState> {
         ExportSuccess(
           filePath: filePath,
           subject: 'Weeklet Expense Report \u2014 $monthName',
+          exportType: ExportType.expenses,
         ),
       );
     } catch (e) {
@@ -69,6 +70,7 @@ class ExportBloc extends Bloc<ExportEvent, ExportState> {
         ExportSuccess(
           filePath: filePath,
           subject: 'Weeklet Income Report \u2014 $monthName',
+          exportType: ExportType.income,
         ),
       );
     } catch (e) {
