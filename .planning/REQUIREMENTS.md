@@ -23,14 +23,14 @@
 
 ### Settings Screen
 
-- [ ] **SET-01**: User can enable or disable biometric authentication (Face ID / Touch ID) via a toggle
-- [ ] **SET-02**: User can select app theme from Light, Dark, or System default
-- [ ] **SET-03**: User can clear cache to free storage space (with confirmation)
-- [ ] **SET-04**: User can reset all app data via a destructive action with confirmation dialog
-- [ ] **SET-05**: User can open the privacy policy (webview or static page)
-- [ ] **SET-06**: User can open the terms and conditions (webview or static page)
-- [ ] **SET-07**: User can view the current app version number in the About section
-- [ ] **SET-08**: User can select display language (Romanian / Russian / System default)
+- [x] **SET-01**: User can enable or disable biometric authentication (Face ID / Touch ID) via a toggle
+- [x] **SET-02**: User can select app theme from Light, Dark, or System default
+- [x] **SET-03**: User can clear cache to free storage space (with confirmation)
+- [x] **SET-04**: User can reset all app data via a destructive action with confirmation dialog
+- [x] **SET-05**: User can open the privacy policy (webview or static page)
+- [x] **SET-06**: User can open the terms and conditions (webview or static page)
+- [x] **SET-07**: User can view the current app version number in the About section
+- [x] **SET-08**: User can select display language (Romanian / Russian / System default)
 
 ### Data Export
 
@@ -105,14 +105,14 @@ Deferred to next milestone.
 | STAT-02 | Phase 3 | Pending |
 | STAT-03 | Phase 3 | Pending |
 | STAT-04 | Phase 3 | Pending |
-| SET-01 | Phase 4 | Pending |
-| SET-02 | Phase 4 | Pending |
-| SET-03 | Phase 4 | Pending |
-| SET-04 | Phase 4 | Pending |
-| SET-05 | Phase 4 | Pending |
-| SET-06 | Phase 4 | Pending |
-| SET-07 | Phase 4 | Pending |
-| SET-08 | Phase 4 | Pending |
+| SET-01 | Phase 4 | Complete |
+| SET-02 | Phase 4 | Complete |
+| SET-03 | Phase 4 | Complete |
+| SET-04 | Phase 4 | Complete |
+| SET-05 | Phase 4 | Complete |
+| SET-06 | Phase 4 | Complete |
+| SET-07 | Phase 4 | Complete |
+| SET-08 | Phase 4 | Complete |
 | EXP-01 | Phase 5 | Pending |
 | EXP-02 | Phase 5 | Pending |
 | REL-01 | Phase 6 | Pending |

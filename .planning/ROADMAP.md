@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Architecture Cleanup** - Fix layer violations, centralize currency, preload stats (completed 2026-04-04)
 - [ ] **Phase 2: Income Screen** - Complete the WIP income screen with modern UI and correct data flow
 - [ ] **Phase 3: Statistics Screen** - Finish statistics modernization with correct totals and annual overview
-- [ ] **Phase 4: Settings Screen** - Build the full settings experience (biometrics, theme, data, legal, language)
+- [x] **Phase 4: Settings Screen** - Build the full settings experience (biometrics, theme, data, legal, language) (completed 2026-04-12)
 - [ ] **Phase 5: Data Export** - PDF export for expense and income records
 - [ ] **Phase 6: Release Polish** - App icon, splash screen, final pre-release quality pass
 
@@ -85,9 +85,9 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 04-01-PLAN.md — Platform config + settings data layer (packages, iOS/Android, entity, repo, 7 use cases, DI)
-- [ ] 04-02-PLAN.md — SettingsBloc + app shell integration (BLoC, BiometricService, MaterialApp dynamic theme/locale, gate overlay)
-- [ ] 04-03-PLAN.md — Settings screen UI (all 5 sections, selection sheets, dialogs, legal screens, human verification)
+- [x] 04-01-PLAN.md — Platform config + settings data layer (packages, iOS/Android, entity, repo, 7 use cases, DI)
+- [x] 04-02-PLAN.md — SettingsBloc + app shell integration (BLoC, BiometricService, MaterialApp dynamic theme/locale, gate overlay)
+- [x] 04-03-PLAN.md — Settings screen UI (all 5 sections, selection sheets, dialogs, legal screens, human verification)
 
 ### Phase 5: Data Export
 **Goal**: Users can generate and share formatted PDF reports of their financial data
@@ -119,6 +119,6 @@ Note: Phase 4 (Settings) depends only on Phase 1, so it could theoretically run 
 | 1. Architecture Cleanup | 4/4 | Complete   | 2026-04-04 |
 | 2. Income Screen | 0/2 | Not started | - |
 | 3. Statistics Screen | 0/3 | Not started | - |
-| 4. Settings Screen | 0/? | Not started | - |
+| 4. Settings Screen | 3/3 | Complete   | 2026-04-12 |
 | 5. Data Export | 0/? | Not started | - |
 | 6. Release Polish | 0/? | Not started | - |
