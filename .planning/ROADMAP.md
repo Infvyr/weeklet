@@ -81,8 +81,13 @@ Plans:
   3. User can clear cache (with confirmation) and reset all data (with destructive confirmation dialog) from the settings screen
   4. User can view privacy policy, terms and conditions, and the current app version number from the settings screen
   5. User can change the display language to Romanian, Russian, or System default, and the change applies across all screens
-**Plans**: TBD
+**Plans**: 3 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 04-01-PLAN.md — Platform config + settings data layer (packages, iOS/Android, entity, repo, 7 use cases, DI)
+- [ ] 04-02-PLAN.md — SettingsBloc + app shell integration (BLoC, BiometricService, MaterialApp dynamic theme/locale, gate overlay)
+- [ ] 04-03-PLAN.md — Settings screen UI (all 5 sections, selection sheets, dialogs, legal screens, human verification)
 
 ### Phase 5: Data Export
 **Goal**: Users can generate and share formatted PDF reports of their financial data
