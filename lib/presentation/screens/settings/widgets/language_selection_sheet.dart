@@ -40,15 +40,22 @@ class LanguageSelectionSheet extends StatelessWidget {
             ),
           ),
           const Divider(height: 1.0),
-          ..._options.map(
-            (option) => RadioListTile<Locale?>(
-              value: option.locale,
-              groupValue: currentLocale,
-              title: Text(option.label),
-              onChanged: (value) {
-                context.read<SettingsBloc>().add(LocaleChanged(value));
-                Navigator.of(context).pop();
-              },
+          RadioGroup<Locale?>(
+            groupValue: currentLocale,
+            onChanged: (value) {
+              context.read<SettingsBloc>().add(LocaleChanged(value));
+              Navigator.of(context).pop();
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: _options
+                  .map(
+                    (option) => RadioListTile<Locale?>(
+                      value: option.locale,
+                      title: Text(option.label),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
         ],

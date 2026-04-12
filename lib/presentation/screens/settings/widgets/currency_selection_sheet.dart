@@ -42,17 +42,24 @@ class CurrencySelectionSheet extends StatelessWidget {
             ),
           ),
           const Divider(height: 1.0),
-          ..._options.map(
-            (option) => RadioListTile<String>(
-              value: option.symbol,
-              groupValue: currentSymbol,
-              title: Text(option.label),
-              onChanged: (value) {
-                if (value != null) {
-                  context.read<SettingsBloc>().add(CurrencyChanged(value));
-                  Navigator.of(context).pop();
-                }
-              },
+          RadioGroup<String>(
+            groupValue: currentSymbol,
+            onChanged: (value) {
+              if (value != null) {
+                context.read<SettingsBloc>().add(CurrencyChanged(value));
+                Navigator.of(context).pop();
+              }
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: _options
+                  .map(
+                    (option) => RadioListTile<String>(
+                      value: option.symbol,
+                      title: Text(option.label),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
         ],

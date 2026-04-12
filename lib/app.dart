@@ -49,27 +49,27 @@ class WeekletApp extends StatelessWidget {
             ? settingsState.locale
             : LocaleManager().currentLocale;
 
-        return AppInitializer(
-          child: MaterialApp(
-            title: 'Weeklet',
-            debugShowCheckedModeBanner: false,
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: themeMode,
-            onGenerateRoute: AppRoutes.onGenerateRoute,
-            initialRoute: AppRoutes.home,
-            builder: (context, child) => ScrollConfiguration(
+        return MaterialApp(
+          title: 'Weeklet',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: themeMode,
+          onGenerateRoute: AppRoutes.onGenerateRoute,
+          initialRoute: AppRoutes.home,
+          builder: (context, child) => AppInitializer(
+            child: ScrollConfiguration(
               behavior: WeekletScrollBehavior(),
               child: child!,
             ),
-            locale: locale,
-            supportedLocales: LocaleManager.supportedLocales,
-            localizationsDelegates: const [
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
           ),
+          locale: locale,
+          supportedLocales: LocaleManager.supportedLocales,
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
         );
       },
     ),

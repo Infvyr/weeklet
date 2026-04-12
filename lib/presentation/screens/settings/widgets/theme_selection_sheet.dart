@@ -34,39 +34,32 @@ class ThemeSelectionSheet extends StatelessWidget {
             ),
           ),
           const Divider(height: 1.0),
-          RadioListTile<ThemeMode>(
-            value: ThemeMode.system,
+          RadioGroup<ThemeMode>(
             groupValue: currentTheme,
-            title: const Text('System default'),
-            subtitle: const Text('Follows device setting'),
             onChanged: (value) {
               if (value != null) {
                 context.read<SettingsBloc>().add(ThemeChanged(value));
                 Navigator.of(context).pop();
               }
             },
-          ),
-          RadioListTile<ThemeMode>(
-            value: ThemeMode.light,
-            groupValue: currentTheme,
-            title: const Text('Light'),
-            onChanged: (value) {
-              if (value != null) {
-                context.read<SettingsBloc>().add(ThemeChanged(value));
-                Navigator.of(context).pop();
-              }
-            },
-          ),
-          RadioListTile<ThemeMode>(
-            value: ThemeMode.dark,
-            groupValue: currentTheme,
-            title: const Text('Dark'),
-            onChanged: (value) {
-              if (value != null) {
-                context.read<SettingsBloc>().add(ThemeChanged(value));
-                Navigator.of(context).pop();
-              }
-            },
+            child: const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RadioListTile<ThemeMode>(
+                  value: ThemeMode.system,
+                  title: Text('System default'),
+                  subtitle: Text('Follows device setting'),
+                ),
+                RadioListTile<ThemeMode>(
+                  value: ThemeMode.light,
+                  title: Text('Light'),
+                ),
+                RadioListTile<ThemeMode>(
+                  value: ThemeMode.dark,
+                  title: Text('Dark'),
+                ),
+              ],
+            ),
           ),
         ],
       ),
