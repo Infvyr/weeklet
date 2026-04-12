@@ -86,6 +86,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  Widget _buildCard(List<Widget> tiles) {
+    final children = <Widget>[];
+    for (var i = 0; i < tiles.length; i++) {
+      children.add(tiles[i]);
+      if (i < tiles.length - 1) {
+        children.add(const Divider(height: 1, indent: 56));
+      }
+    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Material(
+        color: context.colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        clipBehavior: Clip.antiAlias,
+        child: Column(children: children),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
@@ -100,9 +119,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       },
       builder: (context, state) {
         if (state is SettingsInitial || state is SettingsLoading) {
-          return const Center(
-            child: CircularProgressIndicator.adaptive(),
-          );
+          return const Center(child: CircularProgressIndicator.adaptive());
         }
 
         if (state is SettingsFailure) {
@@ -142,106 +159,112 @@ class _SettingsScreenState extends State<SettingsScreen> {
         };
 
         return ListView(
+          padding: const EdgeInsets.only(bottom: 32.0),
           children: [
-            // ─── SECTION 1: Security ──────────────────────────────────────
+            // ─── Security ─────────────────────────────────────────────────
             const SettingsSectionHeader(title: 'Security'),
-            SettingsTile(
-              leading: const Icon(Icons.fingerprint),
-              title: 'Biometric Authentication',
-              subtitle: state.biometricEnabled
-                  ? 'Enabled — Face ID / Touch ID required on resume'
-                  : 'Disabled',
-              trailing: Switch.adaptive(
-                value: state.biometricEnabled,
-                onChanged: (value) => context
-                    .read<SettingsBloc>()
-                    .add(BiometricToggled(enabled: value)),
-              ),
-            ),
-            const Divider(indent: 16.0),
-
-            // ─── SECTION 2: Appearance ────────────────────────────────────
-            const SettingsSectionHeader(title: 'Appearance'),
-            SettingsTile(
-              leading: const Icon(Icons.palette_outlined),
-              title: 'Theme',
-              subtitle: themeLabel,
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => ThemeSelectionSheet.show(context),
-            ),
-            SettingsTile(
-              leading: const Icon(Icons.language),
-              title: 'Language',
-              subtitle: languageLabel,
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => LanguageSelectionSheet.show(context),
-            ),
-            SettingsTile(
-              leading: const Icon(Icons.attach_money),
-              title: 'Currency',
-              subtitle: state.currencySymbol,
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => CurrencySelectionSheet.show(context),
-            ),
-            const Divider(indent: 16.0),
-
-            // ─── SECTION 3: Data ──────────────────────────────────────────
-            const SettingsSectionHeader(title: 'Data'),
-            SettingsTile(
-              leading: const Icon(Icons.settings_backup_restore),
-              title: 'Clear Preferences',
-              subtitle: 'Resets theme, language, and currency to defaults',
-              onTap: _showClearPreferencesDialog,
-            ),
-            SettingsTile(
-              leading: Icon(
-                Icons.delete_forever,
-                color: context.colorScheme.error,
-              ),
-              title: 'Reset All Data',
-              subtitle:
-                  'Permanently deletes all expenses, income, and categories',
-              trailing: Icon(
-                Icons.warning_amber_rounded,
-                color: context.colorScheme.error,
-                size: 18.0,
-              ),
-              onTap: _showResetAllDataDialog,
-            ),
-            const Divider(indent: 16.0),
-
-            // ─── SECTION 4: Legal ─────────────────────────────────────────
-            const SettingsSectionHeader(title: 'Legal'),
-            SettingsTile(
-              leading: const Icon(Icons.privacy_tip_outlined),
-              title: 'Privacy Policy',
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => Navigator.of(
-                context,
-              ).pushNamed(AppRoutes.privacyPolicyScreen),
-            ),
-            SettingsTile(
-              leading: const Icon(Icons.gavel_outlined),
-              title: 'Terms & Conditions',
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () =>
-                  Navigator.of(context).pushNamed(AppRoutes.termsScreen),
-            ),
-            const Divider(indent: 16.0),
-
-            // ─── SECTION 5: About ─────────────────────────────────────────
-            const SettingsSectionHeader(title: 'About'),
-            SettingsTile(
-              leading: const Icon(Icons.info_outline),
-              title: 'App Version',
-              trailing: Text(
-                _version.isEmpty ? '...' : _version,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+            _buildCard([
+              SettingsTile(
+                leading: const Icon(Icons.fingerprint),
+                title: 'Biometric Authentication',
+                subtitle: state.biometricEnabled
+                    ? 'Enabled — Face ID / Touch ID required on resume'
+                    : 'Disabled',
+                trailing: Switch.adaptive(
+                  value: state.biometricEnabled,
+                  onChanged: (value) => context
+                      .read<SettingsBloc>()
+                      .add(BiometricToggled(enabled: value)),
                 ),
               ),
-            ),
-            const SizedBox(height: 32.0),
+            ]),
+
+            // ─── Appearance ───────────────────────────────────────────────
+            const SettingsSectionHeader(title: 'Appearance'),
+            _buildCard([
+              SettingsTile(
+                leading: const Icon(Icons.palette_outlined),
+                title: 'Theme',
+                subtitle: themeLabel,
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => ThemeSelectionSheet.show(context),
+              ),
+              SettingsTile(
+                leading: const Icon(Icons.language),
+                title: 'Language',
+                subtitle: languageLabel,
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => LanguageSelectionSheet.show(context),
+              ),
+              SettingsTile(
+                leading: const Icon(Icons.attach_money),
+                title: 'Currency',
+                subtitle: state.currencySymbol,
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => CurrencySelectionSheet.show(context),
+              ),
+            ]),
+
+            // ─── Data ─────────────────────────────────────────────────────
+            const SettingsSectionHeader(title: 'Data'),
+            _buildCard([
+              SettingsTile(
+                leading: const Icon(Icons.settings_backup_restore),
+                title: 'Clear Preferences',
+                subtitle: 'Resets theme, language, and currency to defaults',
+                onTap: _showClearPreferencesDialog,
+              ),
+              SettingsTile(
+                leading: Icon(
+                  Icons.delete_forever,
+                  color: context.colorScheme.error,
+                ),
+                title: 'Reset All Data',
+                subtitle:
+                    'Permanently deletes all expenses, income, and categories',
+                trailing: Icon(
+                  Icons.warning_amber_rounded,
+                  color: context.colorScheme.error,
+                  size: 18.0,
+                ),
+                onTap: _showResetAllDataDialog,
+              ),
+            ]),
+
+            // ─── Legal ────────────────────────────────────────────────────
+            const SettingsSectionHeader(title: 'Legal'),
+            _buildCard([
+              SettingsTile(
+                leading: const Icon(Icons.privacy_tip_outlined),
+                title: 'Privacy Policy',
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(
+                  context,
+                ).pushNamed(AppRoutes.privacyPolicyScreen),
+              ),
+              SettingsTile(
+                leading: const Icon(Icons.gavel_outlined),
+                title: 'Terms & Conditions',
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () =>
+                    Navigator.of(context).pushNamed(AppRoutes.termsScreen),
+              ),
+            ]),
+
+            // ─── About ────────────────────────────────────────────────────
+            const SettingsSectionHeader(title: 'About'),
+            _buildCard([
+              SettingsTile(
+                leading: const Icon(Icons.info_outline),
+                title: 'App Version',
+                trailing: Text(
+                  _version.isEmpty ? '...' : _version,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ]),
           ],
         );
       },
