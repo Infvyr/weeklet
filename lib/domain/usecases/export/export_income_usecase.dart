@@ -305,6 +305,7 @@ class ExportIncomeUseCase implements UseCase<String, ExportIncomeParams> {
 
     final bytes = await doc.save();
     final dir = await getTemporaryDirectory();
+    await Directory(dir.path).create(recursive: true);
     final filePath = '${dir.path}/weeklet_income_${monthLower}_$year.pdf';
     final file = File(filePath);
     await file.writeAsBytes(bytes);
