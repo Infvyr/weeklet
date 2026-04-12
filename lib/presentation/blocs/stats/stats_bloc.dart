@@ -59,7 +59,11 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
 
       final currentState =
           state is MonthlyStatsLoaded ? state as MonthlyStatsLoaded : null;
-      final shouldRefetchEvolution = currentState?.year != event.year;
+      // Re-fetch evolution when year changes OR when all data was cleared
+      // (e.g. reset all data) — detected by empty available periods.
+      final dataWasCleared = availablePeriods.isEmpty;
+      final shouldRefetchEvolution =
+          currentState?.year != event.year || dataWasCleared;
       final evolutionStats = shouldRefetchEvolution
           ? await getEvolutionStatsUseCase(
               GetEvolutionStatsParams(year: event.year),
