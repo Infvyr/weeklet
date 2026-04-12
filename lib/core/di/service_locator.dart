@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:weeklet/core/services/biometric_service.dart';
 import 'package:weeklet/data/datasources/local/category_local_datasource.dart';
 import 'package:weeklet/data/datasources/local/expense_local_datasource.dart';
 import 'package:weeklet/data/datasources/local/settings_local_data_source.dart';
@@ -31,6 +32,7 @@ import 'package:weeklet/domain/usecases/expense/get_all_expenses_usecase.dart';
 import 'package:weeklet/domain/usecases/expense/update_expense_usecase.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
+import 'package:weeklet/presentation/blocs/settings/settings_bloc.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
 import 'package:weeklet/data/repositories/statistics_repository_impl.dart';
 import 'package:weeklet/domain/repositories/statistics_repository.dart';
@@ -265,7 +267,21 @@ Future<void> init() async {
     ),
   );
 
-  // SettingsBloc registration — see Plan 02
+  // Settings BLoC — registered BEFORE other BLoCs per CLAUDE.md rule
+  sl.registerLazySingleton(BiometricService.new);
+
+  sl.registerLazySingleton(
+    () => SettingsBloc(
+      getSettingsUseCase: sl<GetSettingsUseCase>(),
+      saveThemeUseCase: sl<SaveThemeUseCase>(),
+      saveLocaleUseCase: sl<SaveLocaleUseCase>(),
+      saveCurrencyUseCase: sl<SaveCurrencyUseCase>(),
+      saveBiometricEnabledUseCase: sl<SaveBiometricEnabledUseCase>(),
+      clearPreferencesUseCase: sl<ClearPreferencesUseCase>(),
+      resetAllDataUseCase: sl<ResetAllDataUseCase>(),
+      biometricService: sl<BiometricService>(),
+    ),
+  );
 
   sl.registerLazySingleton(
     () => StatsBloc(
