@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
+import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_state.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_event.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_state.dart';
+import 'package:weeklet/presentation/blocs/export/export_bloc.dart';
+import 'package:weeklet/presentation/blocs/export/export_event.dart';
+import 'package:weeklet/presentation/blocs/export/export_state.dart';
+import 'package:weeklet/presentation/blocs/settings/settings_bloc.dart';
+import 'package:weeklet/presentation/blocs/settings/settings_state.dart';
 import 'package:weeklet/presentation/screens/expenses/widgets/add_expense_form_view.dart';
 import 'package:weeklet/presentation/screens/expenses/widgets/expense_filter_bar.dart';
 import 'package:weeklet/presentation/screens/expenses/widgets/list/expense_list_view.dart';
@@ -70,82 +77,160 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     });
   }
 
+  void _onExportTapped() {
+    final expenseState = context.read<ExpenseBloc>().state;
+    if (expenseState is! ExpenseSuccess) return;
+
+    if (expenseState.selectedMonth == null) {
+      context.showSnackBar('Please select a specific month to export.');
+      return;
+    }
+
+    final categoryState = context.read<CategoryBloc>().state;
+    final categories = categoryState is CategoriesLoaded
+        ? categoryState.categories
+        : <Category>[];
+
+    final settingsState = context.read<SettingsBloc>().state;
+    final currencySymbol = settingsState is SettingsLoaded
+        ? settingsState.currencySymbol
+        : 'MDL';
+
+    context.read<ExportBloc>().add(
+      ExportExpensesStarted(
+        expenses: expenseState.filteredExpenses,
+        categories: categories,
+        currencySymbol: currencySymbol,
+        year: expenseState.selectedYear,
+        month: expenseState.selectedMonth!,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final expenseState = context.watch<ExpenseBloc>().state;
     final categoryState = context.watch<CategoryBloc>().state;
 
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('My Expenses'),
-        centerTitle: true,
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(60),
-          child: ExpenseFilterBar(),
-        ),
-      ),
-      body: switch ((expenseState, categoryState)) {
-        (ExpenseLoading _, _) || (_, CategoryLoading _) => const Center(
-          child: CircularProgressIndicator.adaptive(),
-        ),
-
-        (ExpenseFailure _, _) => Center(
-          child: Column(
-            mainAxisAlignment: .center,
-            children: [
-              Icon(
-                Icons.error_outline,
-                size: 48,
-                color: context.colorScheme.error,
-              ),
-              const SizedBox(height: 16),
-              Text('Failed to load expenses', style: context.bodyLarge),
-              const SizedBox(height: 8),
-              TextButton(
-                onPressed: () => context.read<ExpenseBloc>().add(
-                  const LoadExpensesRequested(),
-                ),
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
-        ),
-
-        (final ExpenseSuccess success, final CategoriesLoaded catLoaded) =>
-          RefreshIndicator.adaptive(
-            onRefresh: _onRefresh,
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              padding: const EdgeInsets.all(16.0),
-              child: ExpenseListView(
-                expenses: success.filteredExpenses,
-                categories: catLoaded.categories,
-              ),
+    return BlocListener<ExportBloc, ExportState>(
+      listener: (context, exportState) async {
+        if (exportState is ExportSuccess) {
+          final exportBloc = context.read<ExportBloc>();
+          await SharePlus.instance.share(
+            ShareParams(
+              files: [XFile(exportState.filePath)],
+              subject: exportState.subject,
+              sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1),
             ),
-          ),
-
-        _ => const SizedBox.shrink(),
+          );
+          if (!mounted) return;
+          exportBloc.add(const ResetExportRequested());
+        } else if (exportState is ExportFailure) {
+          context.showErrorSnackBar(
+            'Failed to generate PDF. Please try again.',
+          );
+          context.read<ExportBloc>().add(const ResetExportRequested());
+        }
       },
-      floatingActionButton: AnimatedContainer(
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
-        width: _isAtBottom ? context.screenWidth - 32 : 56,
-        height: _isAtBottom ? 48 : 56,
-        child: AnimatedSlide(
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Text('My Expenses'),
+          centerTitle: true,
+          actions: [
+            BlocBuilder<ExportBloc, ExportState>(
+              builder: (context, exportState) {
+                if (exportState is ExportInProgress) {
+                  return const SizedBox(
+                    width: 44,
+                    height: 44,
+                    child: Center(
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator.adaptive(
+                          strokeWidth: 2,
+                          semanticsLabel: 'Generating PDF\u2026',
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                return IconButton(
+                  icon: const Icon(Icons.picture_as_pdf),
+                  tooltip: 'Export as PDF',
+                  onPressed: _onExportTapped,
+                );
+              },
+            ),
+          ],
+          bottom: const PreferredSize(
+            preferredSize: Size.fromHeight(60),
+            child: ExpenseFilterBar(),
+          ),
+        ),
+        body: switch ((expenseState, categoryState)) {
+          (ExpenseLoading _, _) || (_, CategoryLoading _) => const Center(
+            child: CircularProgressIndicator.adaptive(),
+          ),
+
+          (ExpenseFailure _, _) => Center(
+            child: Column(
+              mainAxisAlignment: .center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 48,
+                  color: context.colorScheme.error,
+                ),
+                const SizedBox(height: 16),
+                Text('Failed to load expenses', style: context.bodyLarge),
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () => context.read<ExpenseBloc>().add(
+                    const LoadExpensesRequested(),
+                  ),
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          ),
+
+          (final ExpenseSuccess success, final CategoriesLoaded catLoaded) =>
+            RefreshIndicator.adaptive(
+              onRefresh: _onRefresh,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                padding: const EdgeInsets.all(16.0),
+                child: ExpenseListView(
+                  expenses: success.filteredExpenses,
+                  categories: catLoaded.categories,
+                ),
+              ),
+            ),
+
+          _ => const SizedBox.shrink(),
+        },
+        floatingActionButton: AnimatedContainer(
           duration: const Duration(milliseconds: 400),
-          offset: Offset.zero,
-          child: FloatingActionButton.extended(
-            onPressed: _showAddExpenseSheet,
-            icon: Transform.translate(
-              offset: _isAtBottom ? Offset.zero : const Offset(6, 0),
-              child: const Icon(Icons.add),
+          curve: Curves.easeInOut,
+          width: _isAtBottom ? context.screenWidth - 32 : 56,
+          height: _isAtBottom ? 48 : 56,
+          child: AnimatedSlide(
+            duration: const Duration(milliseconds: 400),
+            offset: Offset.zero,
+            child: FloatingActionButton.extended(
+              onPressed: _showAddExpenseSheet,
+              icon: Transform.translate(
+                offset: _isAtBottom ? Offset.zero : const Offset(6, 0),
+                child: const Icon(Icons.add),
+              ),
+              label: Visibility(
+                visible: _isAtBottom,
+                child: const Text('Add Expense'),
+              ),
+              tooltip: _isAtBottom ? '' : 'Add new expense',
             ),
-            label: Visibility(
-              visible: _isAtBottom,
-              child: const Text('Add Expense'),
-            ),
-            tooltip: _isAtBottom ? '' : 'Add new expense',
           ),
         ),
       ),
