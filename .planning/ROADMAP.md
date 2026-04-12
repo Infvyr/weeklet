@@ -97,7 +97,13 @@ Plans:
   1. User can export expense records as a formatted PDF that opens correctly in a standard PDF viewer
   2. User can export income records as a formatted PDF that opens correctly in a standard PDF viewer
   3. Exported PDFs contain accurate totals that match the amounts displayed in the app
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — Test scaffolding (Wave 0): create failing test stubs for ExportExpensesUseCase and ExportIncomeUseCase
+- [ ] 05-02-PLAN.md — Domain + BLoC layer (Wave 1): add pdf/share_plus packages, implement both export use cases, create ExportBloc, register in DI and app.dart
+- [ ] 05-03-PLAN.md — Screen integration (Wave 2): wire export icon button and BlocListener into ExpensesScreen and IncomeScreen
+- [ ] 05-04-PLAN.md — Human verification checkpoint (Wave 3): verify EXP-01 and EXP-02 in running app
 
 ### Phase 6: Release Polish
 **Goal**: The app has professional launch assets and is ready for App Store and Google Play submission
@@ -119,6 +125,6 @@ Note: Phase 4 (Settings) depends only on Phase 1, so it could theoretically run 
 | 1. Architecture Cleanup | 4/4 | Complete   | 2026-04-04 |
 | 2. Income Screen | 0/2 | Not started | - |
 | 3. Statistics Screen | 0/3 | Not started | - |
-| 4. Settings Screen | 3/3 | Complete   | 2026-04-12 |
-| 5. Data Export | 0/? | Not started | - |
+| 4. Settings Screen | 3/3 | Complete    | 2026-04-12 |
+| 5. Data Export | 0/4 | Not started | - |
 | 6. Release Polish | 0/? | Not started | - |
