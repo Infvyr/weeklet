@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 3: Statistics Screen** - Finish statistics modernization with correct totals and annual overview
 - [x] **Phase 4: Settings Screen** - Build the full settings experience (biometrics, theme, data, legal, language) (completed 2026-04-12)
 - [x] **Phase 5: Data Export** - PDF export for expense and income records (completed 2026-04-12)
-- [ ] **Phase 6: Release Polish** - App icon, splash screen, final pre-release quality pass
+- [x] **Phase 6: Release Polish** - App icon, splash screen, final pre-release quality pass (completed 2026-04-24)
 
 ## Phase Details
 
@@ -115,8 +115,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — Source icon provision + pubspec.yaml config + run both generators (Wave 1)
-- [ ] 06-02-PLAN.md — Human visual verification of icon and splash on iOS/Android + optional white-flash fix (Wave 2)
+- [x] 06-01-PLAN.md — Source icon provision + pubspec.yaml config + run both generators (Wave 1)
+- [x] 06-02-PLAN.md — Human visual verification of icon and splash on iOS/Android + optional white-flash fix (Wave 2)
 
 ## Progress
 
@@ -131,4 +131,4 @@ Note: Phase 4 (Settings) depends only on Phase 1, so it could theoretically run 
 | 3. Statistics Screen | 0/3 | Not started | - |
 | 4. Settings Screen | 3/3 | Complete    | 2026-04-12 |
 | 5. Data Export | 4/4 | Complete   | 2026-04-12 |
-| 6. Release Polish | 0/2 | Not started | - |
+| 6. Release Polish | 2/2 | Complete    | 2026-04-24 |
