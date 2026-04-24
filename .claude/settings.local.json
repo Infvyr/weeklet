@@ -13,7 +13,11 @@
       "Bash(flutter run:*)",
       "Bash(*)",
       "Bash(flutter pub get:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Skill(gsd:ui-phase)",
+      "Skill(gsd:code-review)",
+      "WebSearch",
+      "Skill(gsd:discuss-phase)"
     ]
   }
 }

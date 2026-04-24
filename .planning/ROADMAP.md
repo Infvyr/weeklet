@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 2: Income Screen** - Complete the WIP income screen with modern UI and correct data flow
 - [ ] **Phase 3: Statistics Screen** - Finish statistics modernization with correct totals and annual overview
 - [x] **Phase 4: Settings Screen** - Build the full settings experience (biometrics, theme, data, legal, language) (completed 2026-04-12)
-- [ ] **Phase 5: Data Export** - PDF export for expense and income records
+- [x] **Phase 5: Data Export** - PDF export for expense and income records (completed 2026-04-12)
 - [ ] **Phase 6: Release Polish** - App icon, splash screen, final pre-release quality pass
 
 ## Phase Details
@@ -100,10 +100,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 05-01-PLAN.md — Test scaffolding (Wave 0): create failing test stubs for ExportExpensesUseCase and ExportIncomeUseCase
-- [ ] 05-02-PLAN.md — Domain + BLoC layer (Wave 1): add pdf/share_plus packages, implement both export use cases, create ExportBloc, register in DI and app.dart
-- [ ] 05-03-PLAN.md — Screen integration (Wave 2): wire export icon button and BlocListener into ExpensesScreen and IncomeScreen
-- [ ] 05-04-PLAN.md — Human verification checkpoint (Wave 3): verify EXP-01 and EXP-02 in running app
+- [x] 05-01-PLAN.md — Test scaffolding (Wave 0): create failing test stubs for ExportExpensesUseCase and ExportIncomeUseCase
+- [x] 05-02-PLAN.md — Domain + BLoC layer (Wave 1): add pdf/share_plus packages, implement both export use cases, create ExportBloc, register in DI and app.dart
+- [x] 05-03-PLAN.md — Screen integration (Wave 2): wire export icon button and BlocListener into ExpensesScreen and IncomeScreen
+- [x] 05-04-PLAN.md — Human verification checkpoint (Wave 3): verify EXP-01 and EXP-02 in running app
 
 ### Phase 6: Release Polish
 **Goal**: The app has professional launch assets and is ready for App Store and Google Play submission
@@ -112,7 +112,11 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. App launcher icon displays correctly on both iOS and Android home screens -- no default Flutter icon visible
   2. Native splash screen displays on cold launch for both iOS and Android -- no blank white screen before app renders
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — Source icon provision + pubspec.yaml config + run both generators (Wave 1)
+- [ ] 06-02-PLAN.md — Human visual verification of icon and splash on iOS/Android + optional white-flash fix (Wave 2)
 
 ## Progress
 
@@ -126,5 +130,5 @@ Note: Phase 4 (Settings) depends only on Phase 1, so it could theoretically run 
 | 2. Income Screen | 0/2 | Not started | - |
 | 3. Statistics Screen | 0/3 | Not started | - |
 | 4. Settings Screen | 3/3 | Complete    | 2026-04-12 |
-| 5. Data Export | 0/4 | Not started | - |
-| 6. Release Polish | 0/? | Not started | - |
+| 5. Data Export | 4/4 | Complete   | 2026-04-12 |
+| 6. Release Polish | 0/2 | Not started | - |

@@ -123,6 +123,16 @@ None - all refactored code is fully wired.
 - Pre-existing ARCH violation in add_expense_form_view.dart (widget calling use case directly instead of dispatching BLoC event) was patched but not fully resolved — this is documented as a known concern.
 - Ready for Plan 03 (stats preloading in AppInitializer).
 
+## Self-Check: PASSED
+
+- FOUND: lib/domain/usecases/expense/add_expense_usecase.dart
+- FOUND: lib/domain/usecases/income/add_income_use_case.dart
+- FOUND: lib/domain/usecases/category/add_category_usecase.dart
+- FOUND: .planning/phases/01-architecture-cleanup/01-02-SUMMARY.md
+- FOUND commit 7a86d66 (Task 1)
+- FOUND commit 613babd (Task 2)
+- FOUND commit b9e2dde (metadata)
+
 ---
 *Phase: 01-architecture-cleanup*
 *Completed: 2026-04-04*
