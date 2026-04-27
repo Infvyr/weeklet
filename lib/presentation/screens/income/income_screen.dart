@@ -95,7 +95,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
     final settingsState = context.read<SettingsBloc>().state;
     final currencySymbol = settingsState is SettingsLoaded
         ? settingsState.currencySymbol
-        : 'MDL';
+        : AppConstants.DEFAULT_CURRENCY;
 
     context.read<ExportBloc>().add(
       ExportIncomeStarted(
