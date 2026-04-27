@@ -72,6 +72,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
             year: event.year,
             evolutionStats: evolutionStats,
             availablePeriods: availablePeriods,
+            touchedIndex: -1,
           ),
         );
       } else {
