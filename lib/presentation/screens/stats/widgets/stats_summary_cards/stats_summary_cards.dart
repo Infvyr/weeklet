@@ -8,10 +8,12 @@ class StatsSummaryCards extends StatelessWidget {
     super.key,
     required this.stats,
     required this.isAnnual,
+    required this.currencySymbol,
   });
 
   final MonthlyStats stats;
   final bool isAnnual;
+  final String currencySymbol;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -26,6 +28,7 @@ class StatsSummaryCards extends StatelessWidget {
               isIncome: true,
               isAnnual: isAnnual,
               icon: Icons.trending_up,
+              currencySymbol: currencySymbol,
             ),
           ),
           const SizedBox(width: 16),
@@ -37,12 +40,17 @@ class StatsSummaryCards extends StatelessWidget {
               isIncome: false,
               isAnnual: isAnnual,
               icon: Icons.attach_money,
+              currencySymbol: currencySymbol,
             ),
           ),
         ],
       ),
       const SizedBox(height: 16),
-      StatsBalanceCard(balance: stats.balance, isAnnual: isAnnual),
+      StatsBalanceCard(
+        balance: stats.balance,
+        isAnnual: isAnnual,
+        currencySymbol: currencySymbol,
+      ),
     ],
   );
 }

@@ -11,6 +11,7 @@ import 'package:weeklet/presentation/blocs/export/export_state.dart';
 import 'package:weeklet/presentation/blocs/income/income_bloc.dart';
 import 'package:weeklet/presentation/blocs/income/income_event.dart';
 import 'package:weeklet/presentation/blocs/income/income_state.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_bloc.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_state.dart';
 import 'package:weeklet/presentation/screens/income/widgets/add_income_form_view.dart';
@@ -105,6 +106,10 @@ class _IncomeScreenState extends State<IncomeScreen> {
   @override
   Widget build(BuildContext context) {
     final incomeState = context.watch<IncomeBloc>().state;
+    final settingsState = context.watch<SettingsBloc>().state;
+    final currencySymbol = settingsState is SettingsLoaded
+        ? settingsState.currencySymbol
+        : AppConstants.DEFAULT_CURRENCY;
 
     return BlocListener<ExportBloc, ExportState>(
       listenWhen: (_, s) =>
@@ -211,9 +216,13 @@ class _IncomeScreenState extends State<IncomeScreen> {
                       success.filteredIncomes,
                     ),
                     selectedMonth: success.selectedMonth,
+                    currencySymbol: currencySymbol,
                   ),
                   const SizedBox(height: 16),
-                  IncomeListView(incomes: success.filteredIncomes),
+                  IncomeListView(
+                    incomes: success.filteredIncomes,
+                    currencySymbol: currencySymbol,
+                  ),
                 ],
               ),
             ),

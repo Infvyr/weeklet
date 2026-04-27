@@ -1,7 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/category_color_utils.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
@@ -15,10 +14,12 @@ class ModernDonutChart extends StatelessWidget {
     super.key,
     required this.categoryStats,
     required this.totalExpenses,
+    required this.currencySymbol,
   });
 
   final List<CategoryStats> categoryStats;
   final double totalExpenses;
+  final String currencySymbol;
 
   @override
   Widget build(BuildContext context) => BlocBuilder<StatsBloc, StatsState>(
@@ -90,7 +91,7 @@ class ModernDonutChart extends StatelessWidget {
                         Text(
                           NumberFormatter.formatCurrencyWithSign(
                             totalExpenses,
-                            AppConstants.DEFAULT_CURRENCY,
+                            currencySymbol,
                             isIncome: false,
                           ),
                           style: context.titleLarge?.copyWith(

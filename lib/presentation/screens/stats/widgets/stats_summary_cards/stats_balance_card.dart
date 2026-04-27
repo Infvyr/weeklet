@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
 
@@ -8,10 +7,12 @@ class StatsBalanceCard extends StatelessWidget {
     super.key,
     required this.balance,
     required this.isAnnual,
+    required this.currencySymbol,
   });
 
   final double balance;
   final bool isAnnual;
+  final String currencySymbol;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -47,7 +48,7 @@ class StatsBalanceCard extends StatelessWidget {
         Text(
           NumberFormatter.formatCurrencyWithSign(
             balance,
-            AppConstants.DEFAULT_CURRENCY,
+            currencySymbol,
             isIncome: balance >= 0,
           ),
           style: context.headlineSmall?.copyWith(

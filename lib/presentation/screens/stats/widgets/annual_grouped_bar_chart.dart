@@ -1,6 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
 import 'package:weeklet/domain/entities/statistics.dart';
@@ -11,9 +10,11 @@ class AnnualGroupedBarChart extends StatelessWidget {
   const AnnualGroupedBarChart({
     super.key,
     required this.evolutionStats,
+    required this.currencySymbol,
   });
 
   final EvolutionStats evolutionStats;
+  final String currencySymbol;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +80,7 @@ class AnnualGroupedBarChart extends StatelessWidget {
                             TextSpan(
                               text: NumberFormatter.formatCurrencyWithSign(
                                 rod.toY,
-                                AppConstants.DEFAULT_CURRENCY,
+                                currencySymbol,
                                 isIncome: isIncome,
                               ),
                               style: TextStyle(
