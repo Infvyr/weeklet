@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/category_color_utils.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
 import 'package:weeklet/domain/entities/statistics.dart';
 
 class CategoryDetailsItem extends StatelessWidget {
-  const CategoryDetailsItem({super.key, required this.stat});
+  const CategoryDetailsItem({
+    super.key,
+    required this.stat,
+    required this.currencySymbol,
+  });
 
   final CategoryStats stat;
+  final String currencySymbol;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +43,7 @@ class CategoryDetailsItem extends StatelessWidget {
               Text(
                 NumberFormatter.formatCurrency(
                   stat.totalAmount,
-                  AppConstants.DEFAULT_CURRENCY,
+                  currencySymbol,
                 ),
                 style: context.bodyMedium,
               ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
 
@@ -10,19 +9,21 @@ class MonthlyBarRow extends StatelessWidget {
     required this.amount,
     required this.maxAmount,
     required this.color,
+    required this.currencySymbol,
   });
 
   final String label;
   final double amount;
   final double maxAmount;
   final Color color;
+  final String currencySymbol;
 
   @override
   Widget build(BuildContext context) {
     final value = maxAmount > 0 ? (amount / maxAmount).clamp(0.0, 1.0) : 0.0;
     final formattedAmount = NumberFormatter.formatCurrency(
       amount,
-      AppConstants.DEFAULT_CURRENCY,
+      currencySymbol,
     );
 
     return Padding(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
 
@@ -12,6 +11,7 @@ class StatsSmallCard extends StatelessWidget {
     required this.isIncome,
     required this.isAnnual,
     required this.icon,
+    required this.currencySymbol,
   });
 
   final String title;
@@ -20,6 +20,7 @@ class StatsSmallCard extends StatelessWidget {
   final bool isIncome;
   final bool isAnnual;
   final IconData icon;
+  final String currencySymbol;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +59,7 @@ class StatsSmallCard extends StatelessWidget {
           Text(
             NumberFormatter.formatCurrencyWithSign(
               amount,
-              AppConstants.DEFAULT_CURRENCY,
+              currencySymbol,
               isIncome: isIncome,
             ),
             overflow: TextOverflow.ellipsis,
