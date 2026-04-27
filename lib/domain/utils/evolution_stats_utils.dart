@@ -36,16 +36,15 @@ class EvolutionStatsUtils {
         .reduce((a, b) => a > b ? a : b);
   }
 
-  /// Gets the maximum total (income + expenses) across all snapshots
-  /// Used for chart scaling in bar charts
+  /// Gets the maximum of income or expenses across all snapshots.
+  /// Used for chart scaling in bar charts so neither series overflows the axis.
   static double getMaxTotal(EvolutionStats evolutionStats) {
     if (evolutionStats.snapshots.isEmpty) return 0;
     double max = 0;
     for (final snapshot in evolutionStats.snapshots) {
-      double monthMax = snapshot.totalIncome;
-      for (final catStat in snapshot.categoryStats) {
-        monthMax += catStat.totalAmount;
-      }
+      final monthMax = snapshot.totalIncome > snapshot.totalExpenses
+          ? snapshot.totalIncome
+          : snapshot.totalExpenses;
       if (monthMax > max) max = monthMax;
     }
     // Add 10% padding for better visualization
