@@ -71,13 +71,17 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
 
   Future<void> _onRefresh() async {
     if (!mounted) return;
-    context.read<ExpenseBloc>().add(const LoadExpensesRequested());
+    final bloc = context.read<ExpenseBloc>();
+    bloc.add(const LoadExpensesRequested());
 
-    await Future.doWhile(() async {
-      if (!mounted) return false;
-      final state = context.read<ExpenseBloc>().state;
-      return state is! ExpenseSuccess && state is! ExpenseFailure;
-    });
+    await bloc.stream
+        .firstWhere(
+          (s) => s is ExpenseSuccess || s is ExpenseFailure,
+        )
+        .timeout(
+          const Duration(seconds: 10),
+          onTimeout: () => bloc.state,
+        );
   }
 
   void _onExportTapped() {

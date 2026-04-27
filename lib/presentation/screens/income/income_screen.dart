@@ -70,13 +70,17 @@ class _IncomeScreenState extends State<IncomeScreen> {
 
   Future<void> _onRefresh() async {
     if (!mounted) return;
-    context.read<IncomeBloc>().add(const LoadIncomesRequested());
+    final bloc = context.read<IncomeBloc>();
+    bloc.add(const LoadIncomesRequested());
 
-    await Future.doWhile(() async {
-      if (!mounted) return false;
-      final state = context.read<IncomeBloc>().state;
-      return state is! IncomeSuccess && state is! IncomeFailure;
-    });
+    await bloc.stream
+        .firstWhere(
+          (s) => s is IncomeSuccess || s is IncomeFailure,
+        )
+        .timeout(
+          const Duration(seconds: 10),
+          onTimeout: () => bloc.state,
+        );
   }
 
   void _onExportTapped() {
