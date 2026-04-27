@@ -43,7 +43,7 @@ class StatsView extends StatelessWidget {
       ),
       body: BlocBuilder<StatsBloc, StatsState>(
       builder: (context, state) => switch (state) {
-        StatsLoading _ => const Center(
+        StatsLoading _ || StatsInitial _ => const Center(
           child: CircularProgressIndicator.adaptive(),
         ),
         final StatsFailure error => StatsErrorView(
@@ -111,7 +111,6 @@ class StatsView extends StatelessWidget {
             ),
           ],
         ),
-        _ => const SizedBox.shrink(),
       },
     ),
   );
