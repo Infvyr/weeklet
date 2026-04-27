@@ -57,18 +57,11 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
       );
       final stats = await getMonthlyStatsUseCase(params);
 
-      final currentState =
-          state is MonthlyStatsLoaded ? state as MonthlyStatsLoaded : null;
-      // Re-fetch evolution when year changes OR when all data was cleared
-      // (e.g. reset all data) — detected by empty available periods.
-      final dataWasCleared = availablePeriods.isEmpty;
-      final shouldRefetchEvolution =
-          currentState?.year != event.year || dataWasCleared;
-      final evolutionStats = shouldRefetchEvolution
-          ? await getEvolutionStatsUseCase(
-              GetEvolutionStatsParams(year: event.year),
-            )
-          : currentState!.evolutionStats;
+      // Always re-fetch evolution so CRUD changes (add/delete expense or income)
+      // are reflected immediately in the annual bar chart.
+      final evolutionStats = await getEvolutionStatsUseCase(
+        GetEvolutionStatsParams(year: event.year),
+      );
 
       if (state case final MonthlyStatsLoaded st) {
         emit(
