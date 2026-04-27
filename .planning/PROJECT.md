@@ -8,77 +8,86 @@ Weeklet is a Flutter app for simple personal finance management. Users track wee
 
 Users can always see where their money went — fast entry, accurate totals, no friction.
 
-## Requirements
+## Current State
 
-### Validated
+**v1.0 shipped 2026-04-27.** All 25 v1 requirements complete. App is ready for public App Store and Google Play submission.
 
-- ✓ Expense tracking — add, edit, delete; weekly grouping by category; monthly totals — existing
-- ✓ Category management — create, edit, delete with icon/color picker — existing
-- ✓ Multi-language support — Romanian (ro), Russian (ru), system locale as default — existing
-- ✓ Material 3 design with automatic light/dark theme — existing
-- ✓ Local-first storage via Hive — no network/cloud dependency — existing
-- ✓ Clean Architecture: BLoC + GetIt DI + Hive — established pattern — existing
-- ✓ Validation and UUID generation in use cases (not BLoCs) — ARCH-01, ARCH-02 — validated in Phase 01
-- ✓ Currency consistency — AppConstants.DEFAULT_CURRENCY = 'MDL'; zero scattered literals — REL-03 — validated in Phase 01, reactive propagation closed in Phase 07
-- ✓ StatsBloc preloaded in AppInitializer; locale-aware month abbreviations — ARCH-03, ARCH-04 — validated in Phase 01
+### What Ships in v1.0
 
-### Active
+- Expense tracking — add, edit, delete; weekly grouping by category; monthly totals
+- Category management — create, edit, delete with icon/color picker
+- Income screen — full CRUD with weekly grouping, stats sync, UI matching expense screen
+- Statistics screen — monthly and annual breakdowns; correct totals; chart refreshes on CRUD
+- Settings screen — biometric auth, theme (light/dark/system), language (ro/ru/system), cache clear, full data reset, privacy policy, terms, app version
+- PDF export — expense and income PDF generation via share sheet
+- Branded launcher icon (#1447E6) and native splash screen — iOS and Android
+- Currency reactive — user-selected symbol propagated from `SettingsBloc` to all screens and widgets
+- Multi-language: Romanian, Russian, system default
 
-- [ ] Income screen modernization — component refresh and data sync fixes
-- [ ] Statistics screen completion — UI modernization, correct data display, annual category overview
-- [ ] Settings screen full design — biometric auth (Face/Touch ID), theme switching (light/dark/system), data management (clear cache, clear all data), legal (privacy policy, terms), localization (language), about (app version)
-- [ ] Data export — expenses and income as CSV and PDF
-- ✓ App icon & splash screen — branded #1447E6 icon + native splash on iOS/Android — REL-01, REL-02 — validated in Phase 06
+### Architecture (v1.0 Baseline)
 
-### Out of Scope
+- Flutter 3.41.1 (pinned via FVM), Dart ^3.11.0
+- Clean Architecture: BLoC + GetIt DI + Hive local storage
+- Validation and UUID generation in use cases (not BLoCs)
+- `AppConstants.DEFAULT_CURRENCY` — single source of truth for currency symbol
+- `StatsBloc` preloaded in `AppInitializer` — instant stats on navigation
+- Locale-aware month abbreviations via `intl`
 
-- Cloud sync / backend — local-first is a core product constraint; no network infrastructure planned
-- Budget limits per category — valuable; deferred to next milestone
-- Recurring transactions — deferred to next milestone
-- Web target — only iOS and Android are primary targets
-- Test suite — acknowledged gap; deferred (no tests exist today)
+---
 
-## Context
+## Next Milestone Goals
 
-- Target users: Romanian and Russian speakers; UI language follows system locale with ro/ru explicit support
-- Statistics screen has a performance issue: `getEvolutionStats` runs 12 redundant Hive reads per load (calls `getIncomes()` and `getAllCategories()` inside a 6-iteration loop)
-- Phase 01 complete — architecture baseline established: validation in use cases, UUID in use cases, StatsBloc preloaded, locale-aware month labels, DEFAULT_CURRENCY constant
-- Phase 07 complete (2026-04-27) — Milestone v1.0 audit gaps closed: REL-03 (reactive currency threading through all screens/widgets) and STAT-03 (annual bar chart always refreshes after CRUD) both verified on device
-- App is targeting public release on App Store and Google Play
+*(To be defined — run `/gsd-new-milestone`)*
+
+Carry-forward deferred items from v1:
+- **QUAL-01/02** — Unit + BLoC tests (test stubs exist; no implementation tests shipped)
+- **BUDG-01/02** — Monthly spending limits per category
+- **AUTO-01** — Recurring transactions
+- **EXP-03/04** — CSV export (expense + income)
+
+---
 
 ## Constraints
 
-- **Tech stack:** Flutter 3.41.1 (pinned via FVM); Dart ^3.11.0; no Flutter upgrades during this milestone
+- **Tech stack:** Flutter 3.41.1 (pinned via FVM); Dart ^3.11.0
 - **Architecture:** Clean Architecture with BLoC must be maintained; layer separation is non-negotiable
 - **Storage:** Hive only; no SQLite migration, no network calls
 - **Platform:** iOS and Android primary; macOS/Linux/Windows folders present but not target platforms
-- **Release:** Targeting public App Store / Play Store — requires proper icon, splash, localization completeness, stability
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Local-first with Hive | Simplicity — no backend infrastructure, no auth, no sync | — Pending |
-| BLoC for all state management | Established pattern, enforced by CLAUDE.md | — Pending |
-| Romanian + Russian + system locale | Core user base; `intl` already a dependency | — Pending |
-| Settings screen modeled on screenshot | User provided exact reference design (dark, grouped sections, icons) | — Pending |
+| Local-first with Hive | Simplicity — no backend infrastructure, no auth, no sync | Validated — shipped |
+| BLoC for all state management | Established pattern, enforced by CLAUDE.md | Validated — shipped |
+| Romanian + Russian + system locale | Core user base; `intl` already a dependency | Validated — shipped |
+| `AppConstants.DEFAULT_CURRENCY` | Single source of truth; eliminates scattered string literals | Validated — Phase 1 |
+| `StatsBloc` preloaded in `AppInitializer` | Instant stats screen — no spinner on navigation | Validated — Phase 1 |
+| Settings screen modeled on screenshot | User provided exact reference design (dark, grouped sections, icons) | Validated — Phase 4 |
+
+## Out of Scope
+
+- Cloud sync / backend — local-first is a core product constraint; no network infrastructure planned
+- Web target — only iOS and Android are primary targets
+- Multi-currency — single currency per user; currency is a display setting, not multi-currency accounting
+- Onboarding flow — not needed for personal-use launch; revisit if user acquisition becomes a goal
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
-**After each phase transition** (via `/gsd:transition`):
+**After each phase transition** (via `/gsd-next`):
 1. Requirements invalidated? → Move to Out of Scope with reason
 2. Requirements validated? → Move to Validated with phase reference
 3. New requirements emerged? → Add to Active
 4. Decisions to log? → Add to Key Decisions
 5. "What This Is" still accurate? → Update if drifted
 
-**After each milestone** (via `/gsd:complete-milestone`):
+**After each milestone** (via `/gsd-complete-milestone`):
 1. Full review of all sections
 2. Core Value check — still the right priority?
 3. Audit Out of Scope — reasons still valid?
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-24 after Phase 06 (release-polish) completion — milestone v1.0 complete*
+*Last updated: 2026-04-27 — v1.0 milestone complete and archived*

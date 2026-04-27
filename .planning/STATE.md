@@ -2,90 +2,37 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: milestone_complete
-stopped_at: Phase 4 context updated (post-execution)
-last_updated: "2026-04-27T17:27:47.843Z"
-last_activity: 2026-04-27 -- Phase 07 execution started
+status: archived
+stopped_at: v1.0 milestone archived 2026-04-27
+last_updated: "2026-04-27"
+last_activity: 2026-04-27 -- v1.0 milestone complete and archived
 progress:
   total_phases: 7
   completed_phases: 7
   total_plans: 21
-  completed_plans: 18
+  completed_plans: 21
   percent: 100
 ---
 
 # Project State
 
-## Project Reference
+**Status:** v1.0 archived — ready for next milestone  
+**Last Updated:** 2026-04-27
 
-See: .planning/PROJECT.md (updated 2026-04-04)
+## Milestone v1.0 — Complete
 
-**Core value:** Users can always see where their money went -- fast entry, accurate totals, no friction.
-**Current focus:** Phase 07 — integration-gap-closure
+- **Phases:** 7/7 complete
+- **Plans:** 21/21 complete
+- **Requirements:** 25/25 complete
+- **Git tag:** v1.0
+- **Archived:** `.planning/milestones/v1.0-ROADMAP.md`, `.planning/milestones/v1.0-REQUIREMENTS.md`
 
-## Current Position
+## Next Action
 
-Phase: 07
-Plan: Not started
-Status: Milestone complete
-Last activity: 2026-04-27
+Run `/gsd-new-milestone` to start v2 requirements and roadmap definition.
 
-Progress: [█████████░] 86%
-
-## Performance Metrics
-
-**Velocity:**
-
-- Total plans completed: 3
-- Average duration: -
-- Total execution time: 0 hours
-
-**By Phase:**
-
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 07 | 3 | - | - |
-
-**Recent Trend:**
-
-- Last 5 plans: -
-- Trend: -
-
-*Updated after each plan completion*
-| Phase 01-architecture-cleanup P01 | 2 | 2 tasks | 4 files |
-| Phase 01 P03 | 9 | 2 tasks | 15 files |
-| Phase 01-architecture-cleanup P02 | 25 | 2 tasks | 8 files |
-| Phase 01-architecture-cleanup P04 | 25 | 2 tasks | 6 files |
-
-## Accumulated Context
-
-### Decisions
-
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
-
-- REL-03 (currency consistency) placed in Phase 1 rather than Phase 6 because it is foundational -- 11 widget files have scattered hardcoded currency symbols that all other phases would inherit if not fixed first.
-- Phase 4 (Settings) depends only on Phase 1 but is sequenced after Phases 2-3 for solo execution simplicity.
-- [Phase 01-architecture-cleanup]: Used direct constructor calls in tests (no copyWith) to decouple tests from copyWith API
-- [Phase 01-architecture-cleanup]: LocaleManager().initialize() controls locale in tests without changing getMonthAbbreviation public API
-- [Phase 01]: AppConstants.DEFAULT_CURRENCY = 'MDL' is the single source of truth for currency; Phase 4 Settings will replace it with user-configurable value
-- [Phase 01-architecture-cleanup]: AddIncomeUseCase standardized to ArgumentError and UseCase interface, fixing pre-existing inconsistency alongside ARCH-01/02 refactor
-- [Phase 01-architecture-cleanup]: After AddCategoryUseCase API change (void return, UUID internal), widget retrieves Daily category ID via GetAllCategoriesUseCase post-creation
-- [Phase 01-architecture-cleanup]: AppInitializer preloads StatsBloc via LoadMonthlyStats(year: DateTime.now().year) — statistics screen shows data immediately on first visit
-- [Phase 01-architecture-cleanup]: getMonthAbbreviation uses DateFormat('MMM', locale) with LocaleManager — locale-aware for all 3 supported locales; initializeDateFormatting required in tests
-- [Phase 01-architecture-cleanup]: GetExpensesByMonthYearUseCase deleted from disk and DI — was unused dead code since StatsBloc uses GetMonthlyStatsUseCase instead
-
-### Pending Todos
-
-None yet.
-
-### Blockers/Concerns
-
-- No test suite exists -- refactoring in Phase 1 has no automated safety net. Manual verification required.
-- Statistics screen has WIP commits -- Phase 3 may encounter rough edges from incomplete prior work.
-
-## Session Continuity
-
-Last session: --stopped-at
-Stopped at: Phase 4 context updated (post-execution)
-Resume file: --resume-file
+Carry-forward deferred items:
+- QUAL-01/02 — unit + BLoC tests
+- BUDG-01/02 — monthly spending limits
+- AUTO-01 — recurring transactions
+- EXP-03/04 — CSV export
