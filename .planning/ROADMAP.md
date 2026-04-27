@@ -130,9 +130,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — Currency propagation: thread currencySymbol from SettingsBloc to 3 call sites and add param to 6 stats widgets (Wave 1)
-- [ ] 07-02-PLAN.md — Stats evolution fix: relax shouldRefetchEvolution guard in stats_bloc.dart to re-fetch evolution on CRUD (Wave 1)
-- [ ] 07-03-PLAN.md — Human verification checkpoint (Wave 2): verify REL-03 and STAT-03 fully resolved on device
+- [x] 07-01-PLAN.md — Currency propagation: thread currencySymbol from SettingsBloc to 3 call sites and add param to 6 stats widgets (Wave 1)
+- [x] 07-02-PLAN.md — Stats evolution fix: relax shouldRefetchEvolution guard in stats_bloc.dart to re-fetch evolution on CRUD (Wave 1)
+- [x] 07-03-PLAN.md — Human verification checkpoint (Wave 2): verify REL-03 and STAT-03 fully resolved on device
 
 ## Progress
 
