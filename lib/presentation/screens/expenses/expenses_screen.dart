@@ -13,6 +13,7 @@ import 'package:weeklet/presentation/blocs/expense/expense_state.dart';
 import 'package:weeklet/presentation/blocs/export/export_bloc.dart';
 import 'package:weeklet/presentation/blocs/export/export_event.dart';
 import 'package:weeklet/presentation/blocs/export/export_state.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_bloc.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_state.dart';
 import 'package:weeklet/presentation/screens/expenses/widgets/add_expense_form_view.dart';
@@ -113,6 +114,10 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   Widget build(BuildContext context) {
     final expenseState = context.watch<ExpenseBloc>().state;
     final categoryState = context.watch<CategoryBloc>().state;
+    final settingsState = context.watch<SettingsBloc>().state;
+    final currencySymbol = settingsState is SettingsLoaded
+        ? settingsState.currencySymbol
+        : AppConstants.DEFAULT_CURRENCY;
 
     return BlocListener<ExportBloc, ExportState>(
       listenWhen: (_, s) =>
@@ -216,6 +221,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                 child: ExpenseListView(
                   expenses: success.filteredExpenses,
                   categories: catLoaded.categories,
+                  currencySymbol: currencySymbol,
                 ),
               ),
             ),
