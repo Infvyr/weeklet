@@ -41,7 +41,7 @@
 
 - [ ] **REL-01**: App launcher icon is finalized and applied for iOS and Android
 - [ ] **REL-02**: Native splash screen is finalized and applied for iOS and Android
-- [x] **REL-03**: Currency symbol is consistent throughout the app — read from a single source, not hardcoded per widget
+- [ ] **REL-03**: Currency symbol is consistent throughout the app — read from a single source, not hardcoded per widget
 
 ### Architecture Cleanup
 
@@ -96,14 +96,14 @@ Deferred to next milestone.
 | ARCH-02 | Phase 1 | Complete |
 | ARCH-03 | Phase 1 | Complete |
 | ARCH-04 | Phase 1 | Complete |
-| REL-03 | Phase 1 | Complete |
+| REL-03 | Phase 1 + Phase 7 | Pending |
 | INC-01 | Phase 2 | Pending |
 | INC-02 | Phase 2 | Pending |
 | INC-03 | Phase 2 | Pending |
 | INC-04 | Phase 2 | Pending |
 | STAT-01 | Phase 3 | Pending |
 | STAT-02 | Phase 3 | Pending |
-| STAT-03 | Phase 3 | Pending |
+| STAT-03 | Phase 3 + Phase 7 | Pending |
 | STAT-04 | Phase 3 | Pending |
 | SET-01 | Phase 4 | Complete |
 | SET-02 | Phase 4 | Complete |
@@ -125,4 +125,4 @@ Deferred to next milestone.
 
 ---
 *Requirements defined: 2026-04-04*
-*Last updated: 2026-04-04 after roadmap creation*
+*Last updated: 2026-04-27 — REL-03 and STAT-03 re-opened; assigned to Phase 7 gap closure*

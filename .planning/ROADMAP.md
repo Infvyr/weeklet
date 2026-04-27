@@ -13,11 +13,12 @@ Weeklet is a working personal finance app with expenses and categories already s
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Architecture Cleanup** - Fix layer violations, centralize currency, preload stats (completed 2026-04-04)
-- [ ] **Phase 2: Income Screen** - Complete the WIP income screen with modern UI and correct data flow
-- [ ] **Phase 3: Statistics Screen** - Finish statistics modernization with correct totals and annual overview
+- [x] **Phase 2: Income Screen** - Complete the WIP income screen with modern UI and correct data flow (completed 2026-04-27)
+- [x] **Phase 3: Statistics Screen** - Finish statistics modernization with correct totals and annual overview (completed 2026-04-10)
 - [x] **Phase 4: Settings Screen** - Build the full settings experience (biometrics, theme, data, legal, language) (completed 2026-04-12)
 - [x] **Phase 5: Data Export** - PDF export for expense and income records (completed 2026-04-12)
 - [x] **Phase 6: Release Polish** - App icon, splash screen, final pre-release quality pass (completed 2026-04-24)
+- [ ] **Phase 7: Integration Gap Closure** - Fix currency propagation to list/stats widgets and repair stale annual evolution chart
 
 ## Phase Details
 
@@ -118,11 +119,27 @@ Plans:
 - [x] 06-01-PLAN.md — Source icon provision + pubspec.yaml config + run both generators (Wave 1)
 - [x] 06-02-PLAN.md — Human visual verification of icon and splash on iOS/Android + optional white-flash fix (Wave 2)
 
+### Phase 7: Integration Gap Closure
+**Goal**: All list and stats widgets display the user-selected currency symbol, and the annual evolution chart updates immediately after any expense or income CRUD operation
+**Depends on**: Phase 4 (SettingsBloc), Phase 3 (StatsBloc)
+**Requirements**: REL-03 (full close), STAT-03 (full close)
+**Gap Closure:** Closes integration blockers from v1.0 milestone audit
+**Success Criteria** (what must be TRUE):
+  1. A user who changes currency to EUR sees EUR — not MDL — in ExpenseListView, IncomeListView, IncomeTotalCard, and all stats screen widgets
+  2. After adding or deleting an expense or income in the current year, the annual bar chart on the stats screen reflects the change without requiring year navigation
+**Plans**: 3 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Currency propagation: thread currencySymbol from SettingsBloc to 3 call sites and add param to 6 stats widgets (Wave 1)
+- [ ] 07-02-PLAN.md — Stats evolution fix: relax shouldRefetchEvolution guard in stats_bloc.dart to re-fetch evolution on CRUD (Wave 1)
+- [ ] 07-03-PLAN.md — Human verification checkpoint (Wave 2): verify REL-03 and STAT-03 fully resolved on device
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 Note: Phase 4 (Settings) depends only on Phase 1, so it could theoretically run in parallel with Phases 2-3. Sequential ordering is recommended for solo execution.
+Note: Phase 7 closes two integration blockers found in the v1.0 milestone audit — required before completing the milestone.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -132,3 +149,4 @@ Note: Phase 4 (Settings) depends only on Phase 1, so it could theoretically run 
 | 4. Settings Screen | 3/3 | Complete    | 2026-04-12 |
 | 5. Data Export | 4/4 | Complete   | 2026-04-12 |
 | 6. Release Polish | 2/2 | Complete    | 2026-04-24 |
+| 7. Integration Gap Closure | 0/3 | Not started | - |
