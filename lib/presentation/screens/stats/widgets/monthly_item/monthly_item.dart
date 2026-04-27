@@ -10,10 +10,12 @@ class MonthlyItem extends StatelessWidget {
     super.key,
     required this.snapshot,
     required this.maxIncome,
+    required this.currencySymbol,
   });
 
   final MonthlySnapshot snapshot;
   final double maxIncome;
+  final String currencySymbol;
 
   @override
   Widget build(BuildContext context) {
@@ -57,12 +59,14 @@ class MonthlyItem extends StatelessWidget {
             amount: snapshot.totalIncome,
             maxAmount: maxIncome,
             color: context.successColor,
+            currencySymbol: currencySymbol,
           ),
           MonthlyBarRow(
             label: 'Expenses',
             amount: snapshot.totalExpenses,
             maxAmount: maxIncome,
             color: context.colorScheme.error,
+            currencySymbol: currencySymbol,
           ),
         ],
       ),

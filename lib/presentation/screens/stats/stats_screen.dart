@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/domain/entities/statistics.dart';
 import 'package:weeklet/domain/utils/evolution_stats_utils.dart';
+import 'package:weeklet/presentation/blocs/settings/settings_bloc.dart';
+import 'package:weeklet/presentation/blocs/settings/settings_state.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_state.dart';
@@ -28,11 +31,17 @@ class StatsView extends StatelessWidget {
   const StatsView({super.key});
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text('Statistics'),
-    ),
-    body: BlocBuilder<StatsBloc, StatsState>(
+  Widget build(BuildContext context) {
+    final settingsState = context.watch<SettingsBloc>().state;
+    final currencySymbol = settingsState is SettingsLoaded
+        ? settingsState.currencySymbol
+        : AppConstants.DEFAULT_CURRENCY;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Statistics'),
+      ),
+      body: BlocBuilder<StatsBloc, StatsState>(
       builder: (context, state) => switch (state) {
         StatsLoading _ => const Center(
           child: CircularProgressIndicator.adaptive(),
@@ -60,6 +69,7 @@ class StatsView extends StatelessWidget {
                     StatsSummaryCards(
                       stats: loaded.stats,
                       isAnnual: loaded.month == null,
+                      currencySymbol: currencySymbol,
                     ),
                     StatsTabsSection(currentTab: loaded.currentTab),
                     if (loaded.currentTab == StatsTab.monthly) ...[
@@ -69,9 +79,11 @@ class StatsView extends StatelessWidget {
                         ModernDonutChart(
                           categoryStats: loaded.stats.categoryStats,
                           totalExpenses: loaded.stats.totalExpenses,
+                          currencySymbol: currencySymbol,
                         ),
                         CategoryDetailsList(
                           categoryStats: loaded.stats.categoryStats,
+                          currencySymbol: currencySymbol,
                         ),
                       ],
                     ] else if (loaded.evolutionStats
@@ -79,8 +91,14 @@ class StatsView extends StatelessWidget {
                       if (EvolutionStatsUtils.getSnapshotsWithData(
                         es,
                       ).isNotEmpty) ...[
-                        AnnualGroupedBarChart(evolutionStats: es),
-                        MonthlyExpensesList(evolutionStats: es),
+                        AnnualGroupedBarChart(
+                          evolutionStats: es,
+                          currencySymbol: currencySymbol,
+                        ),
+                        MonthlyExpensesList(
+                          evolutionStats: es,
+                          currencySymbol: currencySymbol,
+                        ),
                       ] else
                         const StatsEmptyView(),
                     ] else
@@ -97,6 +115,7 @@ class StatsView extends StatelessWidget {
       },
     ),
   );
+  }
 }
 
 class _StickyFilterHeaderDelegate extends SliverPersistentHeaderDelegate {

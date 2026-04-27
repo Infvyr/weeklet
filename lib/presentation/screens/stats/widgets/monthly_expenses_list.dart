@@ -8,9 +8,11 @@ class MonthlyExpensesList extends StatelessWidget {
   const MonthlyExpensesList({
     super.key,
     required this.evolutionStats,
+    required this.currencySymbol,
   });
 
   final EvolutionStats evolutionStats;
+  final String currencySymbol;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,7 @@ class MonthlyExpensesList extends StatelessWidget {
               (snapshot) => MonthlyItem(
                 snapshot: snapshot,
                 maxIncome: maxValue,
+                currencySymbol: currencySymbol,
               ),
             ),
           ],

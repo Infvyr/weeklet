@@ -7,9 +7,11 @@ class CategoryDetailsList extends StatelessWidget {
   const CategoryDetailsList({
     super.key,
     required this.categoryStats,
+    required this.currencySymbol,
   });
 
   final List<CategoryStats> categoryStats;
+  final String currencySymbol;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,12 @@ class CategoryDetailsList extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            ...categoryStats.map((stat) => CategoryDetailsItem(stat: stat)),
+            ...categoryStats.map(
+              (stat) => CategoryDetailsItem(
+                stat: stat,
+                currencySymbol: currencySymbol,
+              ),
+            ),
           ],
         ),
       ),
