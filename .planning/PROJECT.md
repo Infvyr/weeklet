@@ -35,11 +35,31 @@ Users can always see where their money went — fast entry, accurate totals, no 
 
 ---
 
-## Next Milestone Goals
+## Current Milestone: v1.1 UX Polish
 
-*(To be defined — run `/gsd-new-milestone`)*
+**Goal:** Fix six UX rough edges across the app — layout, navigation, readability, scrolling, and localization.
 
-Carry-forward deferred items from v1:
+**Target features:**
+- Centered empty state on expenses screen
+- PDF export hidden when list is empty (expenses + income)
+- Categories moved to expenses AppBar icon button; removed from bottom navigation
+- Annual evolution amounts displayed in a single row (stats screen)
+- Scrollbar on all scrollable screens
+- Full RO/RU/EN localization; non-ro/ru/en system locale falls back to EN
+
+### Active Requirements
+
+- [ ] **UX-01**: User sees a centered empty state when the expenses list is empty
+- [ ] **UX-02**: PDF export action is hidden when the expenses or income list is empty
+- [ ] **UX-03**: Categories accessible via icon button in expenses AppBar; removed from bottom navigation
+- [ ] **UX-04**: Annual evolution amount fits on a single row (stats screen)
+- [ ] **UX-05**: Scrollbar visible on all scrollable screens
+- [ ] **LOC-01**: All strings translated to RO, RU, and EN; system locales outside ro/ru/en fall back to EN
+
+---
+
+### Deferred (carry-forward from v1.0)
+
 - **QUAL-01/02** — Unit + BLoC tests (test stubs exist; no implementation tests shipped)
 - **BUDG-01/02** — Monthly spending limits per category
 - **AUTO-01** — Recurring transactions
@@ -90,4 +110,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-27 — v1.0 milestone complete and archived*
+*Last updated: 2026-04-29 — v1.1 milestone started*

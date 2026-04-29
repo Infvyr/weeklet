@@ -51,3 +51,8 @@ app.*.map.json
 .agent/
 .claude/
 .planning
+devtools_options.yaml
+.claude/settings.local.json
+.planning/STATE.md
+.planning/ROADMAP.md
+.planning/PROJECT.md

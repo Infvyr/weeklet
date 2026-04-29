@@ -1,38 +1,33 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: archived
-stopped_at: v1.0 milestone archived 2026-04-27
-last_updated: "2026-04-27"
-last_activity: 2026-04-27 -- v1.0 milestone complete and archived
+milestone: v1.1
+milestone_name: UX Polish
+status: planning
+last_updated: "2026-04-29"
+last_activity: 2026-04-29
 progress:
-  total_phases: 7
-  completed_phases: 7
-  total_plans: 21
-  completed_plans: 21
-  percent: 100
+  total_phases: 2
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
 
-**Status:** v1.0 archived — ready for next milestone  
-**Last Updated:** 2026-04-27
+**Status:** v1.1 in progress — roadmap defined, ready to plan  
+**Last Updated:** 2026-04-29
 
-## Milestone v1.0 — Complete
+## Milestone v1.1 — UX Polish
 
-- **Phases:** 7/7 complete
-- **Plans:** 21/21 complete
-- **Requirements:** 25/25 complete
-- **Git tag:** v1.0
-- **Archived:** `.planning/milestones/v1.0-ROADMAP.md`, `.planning/milestones/v1.0-REQUIREMENTS.md`
+- **Phases:** 0/2 complete
+- **Plans:** 0 complete
+- **Requirements:** 0/6 complete
+- **Phases:** 8 (UI Polish), 9 (Localization)
 
-## Next Action
+## Current Position
 
-Run `/gsd-new-milestone` to start v2 requirements and roadmap definition.
-
-Carry-forward deferred items:
-- QUAL-01/02 — unit + BLoC tests
-- BUDG-01/02 — monthly spending limits
-- AUTO-01 — recurring transactions
-- EXP-03/04 — CSV export
+Phase: 8 — UI Polish (not started)
+Plan: —
+Status: Ready to plan
+Last activity: 2026-04-29 — Milestone v1.1 roadmap approved
