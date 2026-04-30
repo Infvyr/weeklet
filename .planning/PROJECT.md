@@ -10,7 +10,7 @@ Users can always see where their money went — fast entry, accurate totals, no 
 
 ## Current State
 
-**v1.0 shipped 2026-04-27.** All 25 v1 requirements complete. App is ready for public App Store and Google Play submission.
+**v1.1 UX Polish complete 2026-04-30.** Phase 8 (UI Polish) delivered all 5 UX requirements. Phase 9 (Localization) remaining.
 
 ### What Ships in v1.0
 
