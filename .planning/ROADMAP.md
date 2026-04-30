@@ -24,6 +24,14 @@
 **Phase 8: UI Polish**
 Goal: Tighten layout, navigation, and visual polish across the app
 Requirements: UX-01, UX-02, UX-03, UX-04, UX-05
+**Plans:** 6 plans
+Plans:
+- [ ] 08-00-PLAN.md — Test stub: number_formatter_test.dart (RED, Wave 0)
+- [ ] 08-01-PLAN.md — Core utilities: formatCompact + buildScrollbar (Wave 1)
+- [ ] 08-02-PLAN.md — Navigation + expenses screen: 4-tab nav, empty state, PDF hide, categories icon (Wave 1)
+- [ ] 08-03-PLAN.md — Income screen PDF hide + stats compact amounts (Wave 2)
+- [ ] 08-04-PLAN.md — Remaining 6 modal sheet scrollbar opt-outs (Wave 2)
+- [ ] 08-05-PLAN.md — Full suite verification + human visual sign-off (Wave 3)
 Success criteria:
 1. Expenses empty state is visually centered on screen
 2. PDF export icon/button is absent when expenses list is empty; absent when income list is empty
