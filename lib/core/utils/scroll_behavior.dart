@@ -14,4 +14,15 @@ class WeekletScrollBehavior extends ScrollBehavior {
   ) => const BouncingScrollPhysics(
     parent: AlwaysScrollableScrollPhysics(),
   );
+
+  @override
+  Widget buildScrollbar(
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) => Scrollbar(
+    controller: details.controller,
+    thumbVisibility: false,
+    child: child,
+  );
 }
