@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
+import 'package:weeklet/core/router/app_routes.dart';
 import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_state.dart';
@@ -13,12 +15,12 @@ import 'package:weeklet/presentation/blocs/expense/expense_state.dart';
 import 'package:weeklet/presentation/blocs/export/export_bloc.dart';
 import 'package:weeklet/presentation/blocs/export/export_event.dart';
 import 'package:weeklet/presentation/blocs/export/export_state.dart';
-import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_bloc.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_state.dart';
 import 'package:weeklet/presentation/screens/expenses/widgets/add_expense_form_view.dart';
 import 'package:weeklet/presentation/screens/expenses/widgets/expense_filter_bar.dart';
 import 'package:weeklet/presentation/screens/expenses/widgets/list/expense_list_view.dart';
+import 'package:weeklet/presentation/widgets/common/empty_state_view.dart';
 
 class ExpensesScreen extends StatefulWidget {
   const ExpensesScreen({super.key});
@@ -63,9 +65,12 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     useSafeArea: true,
     isScrollControlled: true,
     showDragHandle: true,
-    builder: (_) => SizedBox(
-      height: context.screenHeight * 0.8,
-      child: const AddExpenseFormView(),
+    builder: (_) => ScrollConfiguration(
+      behavior: const ScrollBehavior(),
+      child: SizedBox(
+        height: context.screenHeight * 0.8,
+        child: const AddExpenseFormView(),
+      ),
     ),
   );
 
@@ -158,31 +163,38 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
           title: const Text('My Expenses'),
           centerTitle: true,
           actions: [
-            BlocBuilder<ExportBloc, ExportState>(
-              builder: (context, exportState) {
-                if (exportState is ExportInProgress) {
-                  return const SizedBox(
-                    width: 44,
-                    height: 44,
-                    child: Center(
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator.adaptive(
-                          strokeWidth: 2,
-                          semanticsLabel: 'Generating PDF\u2026',
-                        ),
-                      ),
-                    ),
-                  );
-                }
-                return IconButton(
-                  icon: const Icon(Icons.picture_as_pdf),
-                  tooltip: 'Export as PDF',
-                  onPressed: _onExportTapped,
-                );
-              },
+            IconButton(
+              icon: const Icon(Icons.category),
+              tooltip: 'Categories',
+              onPressed: () => context.pushNamed(AppRoutes.categoriesScreen),
             ),
+            if (expenseState case final ExpenseSuccess success)
+              if (success.filteredExpenses.isNotEmpty)
+                BlocBuilder<ExportBloc, ExportState>(
+                  builder: (context, exportState) {
+                    if (exportState is ExportInProgress) {
+                      return const SizedBox(
+                        width: 44,
+                        height: 44,
+                        child: Center(
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator.adaptive(
+                              strokeWidth: 2,
+                              semanticsLabel: 'Generating PDF…',
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    return IconButton(
+                      icon: const Icon(Icons.picture_as_pdf),
+                      tooltip: 'Export as PDF',
+                      onPressed: _onExportTapped,
+                    );
+                  },
+                ),
           ],
           bottom: const PreferredSize(
             preferredSize: Size.fromHeight(60),
@@ -215,6 +227,16 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
               ],
             ),
           ),
+
+          (final ExpenseSuccess success, final CategoriesLoaded _)
+              when success.filteredExpenses.isEmpty =>
+            const Center(
+              child: EmptyStateView(
+                icon: Icons.receipt_long_outlined,
+                title: 'No expenses yet',
+                subtitle: 'Tap + to add your first expense',
+              ),
+            ),
 
           (final ExpenseSuccess success, final CategoriesLoaded catLoaded) =>
             RefreshIndicator.adaptive(
