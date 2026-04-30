@@ -66,6 +66,27 @@ class NumberFormatter {
     return formatCurrency(amount, currencySymbol);
   }
 
+  /// Formats a currency amount compactly with income/expense sign.
+  ///
+  /// Example:
+  /// ```dart
+  /// formatCompactWithSign(15000.0, 'MDL', isIncome: true)  // "+15.0K MDL"
+  /// formatCompactWithSign(-3500.0, 'EUR')                  // "-3.5K EUR"
+  /// formatCompactWithSign(999.0, 'MDL', isIncome: true)    // "+999.00 MDL"
+  /// ```
+  static String formatCompactWithSign(
+    double amount,
+    String currencySymbol, {
+    bool isIncome = false,
+  }) {
+    if (amount.abs() >= 1000) {
+      final sign = amount < 0 ? '-' : (isIncome ? '+' : '');
+      final compact = (amount.abs() / 1000).toStringAsFixed(1);
+      return '$sign${compact}K $currencySymbol';
+    }
+    return formatCurrencyWithSign(amount, currencySymbol, isIncome: isIncome);
+  }
+
   /// Formats time from DateTime to HH:mm format
   ///
   /// Example:
