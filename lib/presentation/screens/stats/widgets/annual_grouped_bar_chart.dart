@@ -133,11 +133,7 @@ class AnnualGroupedBarChart extends StatelessWidget {
                           return Padding(
                             padding: const EdgeInsets.only(right: 8.0),
                             child: Text(
-                              NumberFormatter.formatCurrencyWithSign(
-                                value,
-                                '',
-                                isIncome: false,
-                              ).trim(),
+                              NumberFormatter.formatCompact(value, '').trim(),
                               style: context.labelSmall?.copyWith(
                                 color: context.colorScheme.onSurfaceVariant,
                               ),

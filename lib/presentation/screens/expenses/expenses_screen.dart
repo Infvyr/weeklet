@@ -170,30 +170,10 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
             ),
             if (expenseState case final ExpenseSuccess success)
               if (success.filteredExpenses.isNotEmpty)
-                BlocBuilder<ExportBloc, ExportState>(
-                  builder: (context, exportState) {
-                    if (exportState is ExportInProgress) {
-                      return const SizedBox(
-                        width: 44,
-                        height: 44,
-                        child: Center(
-                          child: SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator.adaptive(
-                              strokeWidth: 2,
-                              semanticsLabel: 'Generating PDF…',
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-                    return IconButton(
-                      icon: const Icon(Icons.picture_as_pdf),
-                      tooltip: 'Export as PDF',
-                      onPressed: _onExportTapped,
-                    );
-                  },
+                IconButton(
+                  icon: const Icon(Icons.picture_as_pdf),
+                  tooltip: 'Export as PDF',
+                  onPressed: _onExportTapped,
                 ),
           ],
           bottom: const PreferredSize(
