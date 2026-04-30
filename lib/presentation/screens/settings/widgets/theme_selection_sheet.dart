@@ -11,7 +11,10 @@ class ThemeSelectionSheet extends StatelessWidget {
 
   static Future<void> show(BuildContext context) => showModalBottomSheet<void>(
     context: context,
-    builder: (context) => const ThemeSelectionSheet(),
+    builder: (context) => const ScrollConfiguration(
+      behavior: ScrollBehavior(),
+      child: ThemeSelectionSheet(),
+    ),
   );
 
   @override

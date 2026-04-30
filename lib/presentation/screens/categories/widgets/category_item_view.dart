@@ -29,9 +29,12 @@ class CategoryItemView extends StatelessWidget {
       useSafeArea: true,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (_) => SizedBox(
-        height: context.screenHeight * 0.8,
-        child: EditCategoryFormView(category),
+      builder: (_) => ScrollConfiguration(
+        behavior: const ScrollBehavior(),
+        child: SizedBox(
+          height: context.screenHeight * 0.8,
+          child: EditCategoryFormView(category),
+        ),
       ),
     );
   }

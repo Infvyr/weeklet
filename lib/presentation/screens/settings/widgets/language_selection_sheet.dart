@@ -11,7 +11,10 @@ class LanguageSelectionSheet extends StatelessWidget {
 
   static Future<void> show(BuildContext context) => showModalBottomSheet<void>(
     context: context,
-    builder: (context) => const LanguageSelectionSheet(),
+    builder: (context) => const ScrollConfiguration(
+      behavior: ScrollBehavior(),
+      child: LanguageSelectionSheet(),
+    ),
   );
 
   static const List<({String label, Locale? locale})> _options = [

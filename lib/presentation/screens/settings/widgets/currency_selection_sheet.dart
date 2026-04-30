@@ -11,7 +11,10 @@ class CurrencySelectionSheet extends StatelessWidget {
 
   static Future<void> show(BuildContext context) => showModalBottomSheet<void>(
     context: context,
-    builder: (context) => const CurrencySelectionSheet(),
+    builder: (context) => const ScrollConfiguration(
+      behavior: ScrollBehavior(),
+      child: CurrencySelectionSheet(),
+    ),
   );
 
   static const List<({String symbol, String label})> _options = [

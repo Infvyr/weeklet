@@ -33,9 +33,12 @@ class IncomeItemView extends StatelessWidget {
       useSafeArea: true,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (_) => SizedBox(
-        height: context.screenHeight * 0.8,
-        child: EditIncomeFormView(income),
+      builder: (_) => ScrollConfiguration(
+        behavior: const ScrollBehavior(),
+        child: SizedBox(
+          height: context.screenHeight * 0.8,
+          child: EditIncomeFormView(income),
+        ),
       ),
     );
   }
