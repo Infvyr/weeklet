@@ -49,6 +49,23 @@ class NumberFormatter {
     return '$sign$formattedAmount $currencySymbol';
   }
 
+  /// Formats a currency amount compactly — values >= 1000 are abbreviated.
+  ///
+  /// Example:
+  /// ```dart
+  /// formatCompact(1200.0, 'MDL')   // "1.2K MDL"
+  /// formatCompact(-3500.0, 'EUR')  // "-3.5K EUR"
+  /// formatCompact(999.99, 'MDL')   // "999.99 MDL"
+  /// ```
+  static String formatCompact(double amount, String currencySymbol) {
+    if (amount.abs() >= 1000) {
+      final sign = amount < 0 ? '-' : '';
+      final compact = (amount.abs() / 1000).toStringAsFixed(1);
+      return '$sign${compact}K $currencySymbol';
+    }
+    return formatCurrency(amount, currencySymbol);
+  }
+
   /// Formats time from DateTime to HH:mm format
   ///
   /// Example:
