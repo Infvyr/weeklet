@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/domain/entities/statistics.dart';
 import 'package:weeklet/domain/utils/expense_filter_utils.dart';
+import 'package:weeklet/core/utils/number_formatter.dart';
 import 'package:weeklet/domain/utils/monthly_snapshot_utils.dart';
 import 'package:weeklet/presentation/screens/stats/widgets/monthly_item/monthly_bar_row.dart';
 
@@ -20,8 +21,9 @@ class MonthlyItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final monthName = ExpenseFilterUtils.getMonthAbbreviation(snapshot.month);
-    final balanceText = MonthlySnapshotUtils.formatBalanceText(
+    final balanceText = NumberFormatter.formatCompact(
       snapshot.balance,
+      currencySymbol,
     );
     final balanceColor =
         MonthlySnapshotUtils.isBalancePositive(snapshot.balance)

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/domain/utils/income_grouping.dart';
 import 'package:weeklet/presentation/blocs/export/export_bloc.dart';
@@ -11,7 +12,6 @@ import 'package:weeklet/presentation/blocs/export/export_state.dart';
 import 'package:weeklet/presentation/blocs/income/income_bloc.dart';
 import 'package:weeklet/presentation/blocs/income/income_event.dart';
 import 'package:weeklet/presentation/blocs/income/income_state.dart';
-import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_bloc.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_state.dart';
 import 'package:weeklet/presentation/screens/income/widgets/add_income_form_view.dart';
@@ -62,9 +62,12 @@ class _IncomeScreenState extends State<IncomeScreen> {
     useSafeArea: true,
     isScrollControlled: true,
     showDragHandle: true,
-    builder: (_) => SizedBox(
-      height: context.screenHeight * 0.8,
-      child: const AddIncomeFormView(),
+    builder: (_) => ScrollConfiguration(
+      behavior: const ScrollBehavior(),
+      child: SizedBox(
+        height: context.screenHeight * 0.8,
+        child: const AddIncomeFormView(),
+      ),
     ),
   );
 
@@ -150,31 +153,33 @@ class _IncomeScreenState extends State<IncomeScreen> {
           title: const Text('My Income'),
           centerTitle: true,
           actions: [
-            BlocBuilder<ExportBloc, ExportState>(
-              builder: (context, exportState) {
-                if (exportState is ExportInProgress) {
-                  return const SizedBox(
-                    width: 44,
-                    height: 44,
-                    child: Center(
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator.adaptive(
-                          strokeWidth: 2,
-                          semanticsLabel: 'Generating PDF\u2026',
+            if (incomeState case final IncomeSuccess success)
+              if (success.filteredIncomes.isNotEmpty)
+                BlocBuilder<ExportBloc, ExportState>(
+                  builder: (context, exportState) {
+                    if (exportState is ExportInProgress) {
+                      return const SizedBox(
+                        width: 44,
+                        height: 44,
+                        child: Center(
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator.adaptive(
+                              strokeWidth: 2,
+                              semanticsLabel: 'Generating PDF…',
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  );
-                }
-                return IconButton(
-                  icon: const Icon(Icons.picture_as_pdf),
-                  tooltip: 'Export as PDF',
-                  onPressed: _onExportTapped,
-                );
-              },
-            ),
+                      );
+                    }
+                    return IconButton(
+                      icon: const Icon(Icons.picture_as_pdf),
+                      tooltip: 'Export as PDF',
+                      onPressed: _onExportTapped,
+                    );
+                  },
+                ),
           ],
           bottom: const PreferredSize(
             preferredSize: Size.fromHeight(60),

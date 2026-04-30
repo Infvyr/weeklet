@@ -21,7 +21,7 @@ class MonthlyBarRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final value = maxAmount > 0 ? (amount / maxAmount).clamp(0.0, 1.0) : 0.0;
-    final formattedAmount = NumberFormatter.formatCurrency(
+    final formattedAmount = NumberFormatter.formatCompact(
       amount,
       currencySymbol,
     );
