@@ -78,7 +78,7 @@ class AnnualGroupedBarChart extends StatelessWidget {
                           ),
                           children: <TextSpan>[
                             TextSpan(
-                              text: NumberFormatter.formatCurrencyWithSign(
+                              text: NumberFormatter.formatCompactWithSign(
                                 rod.toY,
                                 currencySymbol,
                                 isIncome: isIncome,

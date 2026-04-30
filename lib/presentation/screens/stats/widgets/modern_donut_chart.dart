@@ -89,10 +89,9 @@ class ModernDonutChart extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          NumberFormatter.formatCurrencyWithSign(
+                          NumberFormatter.formatCompact(
                             totalExpenses,
                             currencySymbol,
-                            isIncome: false,
                           ),
                           style: context.titleLarge?.copyWith(
                             fontWeight: FontWeight.bold,

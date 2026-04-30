@@ -57,7 +57,7 @@ class StatsSmallCard extends StatelessWidget {
           ),
 
           Text(
-            NumberFormatter.formatCurrencyWithSign(
+            NumberFormatter.formatCompactWithSign(
               amount,
               currencySymbol,
               isIncome: isIncome,

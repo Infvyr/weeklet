@@ -46,7 +46,7 @@ class StatsBalanceCard extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          NumberFormatter.formatCurrencyWithSign(
+          NumberFormatter.formatCompactWithSign(
             balance,
             currencySymbol,
             isIncome: balance >= 0,

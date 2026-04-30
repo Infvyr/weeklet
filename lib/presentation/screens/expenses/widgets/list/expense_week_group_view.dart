@@ -26,7 +26,7 @@ class ExpenseWeekGroupView extends StatelessWidget {
   Widget build(BuildContext context) {
     final groupedByDay = ExpenseGrouping.groupByDay(expenses);
     final weekTotal = ExpenseGrouping.calculateTotal(expenses);
-    final formattedTotal = NumberFormatter.formatCurrency(
+    final formattedTotal = NumberFormatter.formatCompact(
       weekTotal,
       currencySymbol,
     );

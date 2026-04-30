@@ -41,7 +41,7 @@ class CategoryDetailsItem extends StatelessWidget {
                 ),
               ),
               Text(
-                NumberFormatter.formatCurrency(
+                NumberFormatter.formatCompact(
                   stat.totalAmount,
                   currencySymbol,
                 ),

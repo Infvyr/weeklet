@@ -23,7 +23,7 @@ class IncomeWeekGroupView extends StatelessWidget {
   Widget build(BuildContext context) {
     final groupedByDay = IncomeGrouping.groupByDay(incomes);
     final weekTotal = IncomeGrouping.calculateTotal(incomes);
-    final formattedTotal = NumberFormatter.formatCurrencyWithSign(
+    final formattedTotal = NumberFormatter.formatCompactWithSign(
       weekTotal,
       currencySymbol,
       isIncome: true,
