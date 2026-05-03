@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_bloc.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_event.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_state.dart';
@@ -27,6 +28,7 @@ class CurrencySelectionSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final state = context.watch<SettingsBloc>().state;
     final currentSymbol =
         state is SettingsLoaded ? state.currencySymbol : 'MDL';
@@ -38,7 +40,7 @@ class CurrencySelectionSheet extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Currency',
+              l10n.settingsCurrencyTitle,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),

@@ -5,6 +5,8 @@ import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_state.dart';
 import 'package:weeklet/presentation/screens/expenses/expenses_screen.dart';
+import 'package:weeklet/presentation/screens/settings/settings_screen.dart';
+import 'package:weeklet/presentation/screens/stats/stats_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -18,10 +20,8 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _pages = [
     const ExpensesScreen(),
-    const Center(child: Text('Stats')),
-    const Center(
-      child: Text('Settings'),
-    ),
+    const StatsScreen(),
+    const SettingsScreen(),
   ];
 
   @override
@@ -35,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
-          if (index == 1) { // Stats Tab
+          if (index == 1) {
             final statsState = context.read<StatsBloc>().state;
             if (statsState is MonthlyStatsLoaded) {
               context.read<StatsBloc>().add(

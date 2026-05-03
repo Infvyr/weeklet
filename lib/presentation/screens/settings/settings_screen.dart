@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/router/app_routes.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_bloc.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_event.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_state.dart';
@@ -43,21 +44,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _showClearPreferencesDialog() async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await CustomConfirmationDialog.show(
       context: context,
       icon: Icons.settings_backup_restore,
       iconBackgroundColor: context.colorScheme.primary,
       iconColor: Colors.white,
-      title: 'Clear Preferences',
-      subtitle1:
-          'This will reset your theme, language, and currency to defaults.',
-      subtitle2: 'Your expenses, income, and categories will not be affected.',
+      title: l10n.clearPreferencesDialogTitle,
+      subtitle1: l10n.clearPreferencesDialogSubtitle1,
+      subtitle2: l10n.clearPreferencesDialogSubtitle2,
       confirmButtonColor: context.colorScheme.primary,
       confirmButtonTextColor: context.colorScheme.onPrimary,
-      confirmButtonText: 'Clear',
+      confirmButtonText: l10n.clearButtonLabel,
       cancelButtonColor: context.colorScheme.surface,
       cancelButtonTextColor: context.colorScheme.onSurface,
-      cancelButtonText: 'Keep Settings',
+      cancelButtonText: l10n.keepSettingsButtonLabel,
     );
     if (confirmed == true && mounted) {
       context.read<SettingsBloc>().add(const ClearPreferencesRequested());
@@ -65,21 +66,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _showResetAllDataDialog() async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await CustomConfirmationDialog.show(
       context: context,
       icon: Icons.delete_forever,
       iconBackgroundColor: context.colorScheme.error,
       iconColor: Colors.white,
-      title: 'Reset All Data',
-      subtitle1:
-          'This will permanently delete all your expenses, income, and categories.',
-      subtitle2: 'This action cannot be undone.',
+      title: l10n.resetDataDialogTitle,
+      subtitle1: l10n.resetDataDialogSubtitle1,
+      subtitle2: l10n.actionCannotBeUndone,
       confirmButtonColor: context.colorScheme.error,
       confirmButtonTextColor: context.colorScheme.onError,
-      confirmButtonText: 'Reset',
+      confirmButtonText: l10n.resetButtonLabel,
       cancelButtonColor: context.colorScheme.surface,
       cancelButtonTextColor: context.colorScheme.onSurface,
-      cancelButtonText: 'Keep Data',
+      cancelButtonText: l10n.keepDataButtonLabel,
     );
     if (confirmed == true && mounted) {
       context.read<SettingsBloc>().add(const ResetAllDataRequested());
@@ -106,167 +107,169 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text('Settings'),
-    ),
-    body: BlocConsumer<SettingsBloc, SettingsState>(
-      listener: (context, state) {
-        if (state is SettingsLoaded && state.actionError != null) {
-          context.showErrorSnackBar(state.actionError!);
-        }
-      },
-      builder: (context, state) {
-        if (state is SettingsInitial || state is SettingsLoading) {
-          return const Center(child: CircularProgressIndicator.adaptive());
-        }
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(l10n.settingsScreenTitle),
+      ),
+      body: BlocConsumer<SettingsBloc, SettingsState>(
+        listener: (context, state) {
+          if (state is SettingsLoaded && state.actionError != null) {
+            context.showErrorSnackBar(state.actionError!);
+          }
+        },
+        builder: (context, state) {
+          if (state is SettingsInitial || state is SettingsLoading) {
+            return const Center(child: CircularProgressIndicator.adaptive());
+          }
 
-        if (state is SettingsFailure) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Settings could not be loaded.',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 16.0),
-                TextButton(
-                  onPressed: () => context
-                      .read<SettingsBloc>()
-                      .add(const LoadSettingsRequested()),
-                  child: const Text('Retry'),
-                ),
-              ],
-            ),
-          );
-        }
-
-        if (state is! SettingsLoaded) return const SizedBox.shrink();
-
-        final themeLabel = switch (state.themeMode) {
-          ThemeMode.system => 'System default',
-          ThemeMode.light => 'Light',
-          ThemeMode.dark => 'Dark',
-        };
-
-        final languageLabel = switch (state.locale?.languageCode) {
-          'ro' => 'Romanian',
-          'ru' => 'Russian',
-          'en' => 'English',
-          _ => 'System default',
-        };
-
-        return ListView(
-          padding: const EdgeInsets.only(bottom: 32.0),
-          children: [
-            // ─── Security ─────────────────────────────────────────────────
-            const SettingsSectionHeader(title: 'Security'),
-            _buildCard([
-              SettingsTile(
-                leading: const Icon(Icons.fingerprint),
-                title: 'Biometric Authentication',
-                subtitle: state.biometricEnabled
-                    ? 'Enabled — Face ID / Touch ID required on resume'
-                    : 'Disabled',
-                trailing: Switch.adaptive(
-                  value: state.biometricEnabled,
-                  onChanged: (value) => context
-                      .read<SettingsBloc>()
-                      .add(BiometricToggled(enabled: value)),
-                ),
+          if (state is SettingsFailure) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    l10n.settingsLoadError,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 16.0),
+                  TextButton(
+                    onPressed: () => context
+                        .read<SettingsBloc>()
+                        .add(const LoadSettingsRequested()),
+                    child: Text(l10n.retryButtonLabel),
+                  ),
+                ],
               ),
-            ]),
+            );
+          }
 
-            // ─── Appearance ───────────────────────────────────────────────
-            const SettingsSectionHeader(title: 'Appearance'),
-            _buildCard([
-              SettingsTile(
-                leading: const Icon(Icons.palette_outlined),
-                title: 'Theme',
-                subtitle: themeLabel,
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => ThemeSelectionSheet.show(context),
-              ),
-              SettingsTile(
-                leading: const Icon(Icons.language),
-                title: 'Language',
-                subtitle: languageLabel,
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => LanguageSelectionSheet.show(context),
-              ),
-              SettingsTile(
-                leading: const Icon(Icons.attach_money),
-                title: 'Currency',
-                subtitle: state.currencySymbol,
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => CurrencySelectionSheet.show(context),
-              ),
-            ]),
+          if (state is! SettingsLoaded) return const SizedBox.shrink();
 
-            // ─── Data ─────────────────────────────────────────────────────
-            const SettingsSectionHeader(title: 'Data'),
-            _buildCard([
-              SettingsTile(
-                leading: const Icon(Icons.settings_backup_restore),
-                title: 'Clear Preferences',
-                subtitle: 'Resets theme, language, and currency to defaults',
-                onTap: _showClearPreferencesDialog,
-              ),
-              SettingsTile(
-                leading: Icon(
-                  Icons.delete_forever,
-                  color: context.colorScheme.error,
-                ),
-                title: 'Reset All Data',
-                subtitle:
-                    'Permanently deletes all expenses, income, and categories',
-                trailing: Icon(
-                  Icons.warning_amber_rounded,
-                  color: context.colorScheme.error,
-                  size: 18.0,
-                ),
-                onTap: _showResetAllDataDialog,
-              ),
-            ]),
+          final themeLabel = switch (state.themeMode) {
+            ThemeMode.system => l10n.themeSystemDefault,
+            ThemeMode.light => l10n.themeLight,
+            ThemeMode.dark => l10n.themeDark,
+          };
 
-            // ─── Legal ────────────────────────────────────────────────────
-            const SettingsSectionHeader(title: 'Legal'),
-            _buildCard([
-              SettingsTile(
-                leading: const Icon(Icons.privacy_tip_outlined),
-                title: 'Privacy Policy',
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => Navigator.of(
-                  context,
-                ).pushNamed(AppRoutes.privacyPolicyScreen),
-              ),
-              SettingsTile(
-                leading: const Icon(Icons.gavel_outlined),
-                title: 'Terms & Conditions',
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () =>
-                    Navigator.of(context).pushNamed(AppRoutes.termsScreen),
-              ),
-            ]),
+          final languageLabel = switch (state.locale?.languageCode) {
+            'ro' => l10n.languageRomanian,
+            'ru' => l10n.languageRussian,
+            'en' => l10n.languageEnglish,
+            _ => l10n.languageSystemDefault,
+          };
 
-            // ─── About ────────────────────────────────────────────────────
-            const SettingsSectionHeader(title: 'About'),
-            _buildCard([
-              SettingsTile(
-                leading: const Icon(Icons.info_outline),
-                title: 'App Version',
-                trailing: Text(
-                  _version.isEmpty ? '...' : _version,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+          return ListView(
+            padding: const EdgeInsets.only(bottom: 32.0),
+            children: [
+              // ─── Security ───────────────────────────────────────────────
+              SettingsSectionHeader(title: l10n.settingsSectionSecurity),
+              _buildCard([
+                SettingsTile(
+                  leading: const Icon(Icons.fingerprint),
+                  title: l10n.settingsBiometricTitle,
+                  subtitle: state.biometricEnabled
+                      ? l10n.settingsBiometricEnabledSubtitle
+                      : l10n.settingsBiometricDisabledSubtitle,
+                  trailing: Switch.adaptive(
+                    value: state.biometricEnabled,
+                    onChanged: (value) => context
+                        .read<SettingsBloc>()
+                        .add(BiometricToggled(enabled: value)),
                   ),
                 ),
-              ),
-            ]),
-          ],
-        );
-      },
-    ),
-  );
+              ]),
+
+              // ─── Appearance ─────────────────────────────────────────────
+              SettingsSectionHeader(title: l10n.settingsSectionAppearance),
+              _buildCard([
+                SettingsTile(
+                  leading: const Icon(Icons.palette_outlined),
+                  title: l10n.settingsThemeTitle,
+                  subtitle: themeLabel,
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => ThemeSelectionSheet.show(context),
+                ),
+                SettingsTile(
+                  leading: const Icon(Icons.language),
+                  title: l10n.settingsLanguageTitle,
+                  subtitle: languageLabel,
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => LanguageSelectionSheet.show(context),
+                ),
+                SettingsTile(
+                  leading: const Icon(Icons.attach_money),
+                  title: l10n.settingsCurrencyTitle,
+                  subtitle: state.currencySymbol,
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => CurrencySelectionSheet.show(context),
+                ),
+              ]),
+
+              // ─── Data ───────────────────────────────────────────────────
+              SettingsSectionHeader(title: l10n.settingsSectionData),
+              _buildCard([
+                SettingsTile(
+                  leading: const Icon(Icons.settings_backup_restore),
+                  title: l10n.settingsClearPreferencesTitle,
+                  subtitle: l10n.settingsClearPreferencesSubtitle,
+                  onTap: _showClearPreferencesDialog,
+                ),
+                SettingsTile(
+                  leading: Icon(
+                    Icons.delete_forever,
+                    color: context.colorScheme.error,
+                  ),
+                  title: l10n.settingsResetDataTitle,
+                  subtitle: l10n.settingsResetDataSubtitle,
+                  trailing: Icon(
+                    Icons.warning_amber_rounded,
+                    color: context.colorScheme.error,
+                    size: 18.0,
+                  ),
+                  onTap: _showResetAllDataDialog,
+                ),
+              ]),
+
+              // ─── Legal ──────────────────────────────────────────────────
+              SettingsSectionHeader(title: l10n.settingsSectionLegal),
+              _buildCard([
+                SettingsTile(
+                  leading: const Icon(Icons.privacy_tip_outlined),
+                  title: l10n.settingsPrivacyPolicyTitle,
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Navigator.of(
+                    context,
+                  ).pushNamed(AppRoutes.privacyPolicyScreen),
+                ),
+                SettingsTile(
+                  leading: const Icon(Icons.gavel_outlined),
+                  title: l10n.settingsTermsTitle,
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () =>
+                      Navigator.of(context).pushNamed(AppRoutes.termsScreen),
+                ),
+              ]),
+
+              // ─── About ──────────────────────────────────────────────────
+              SettingsSectionHeader(title: l10n.settingsSectionAbout),
+              _buildCard([
+                SettingsTile(
+                  leading: const Icon(Icons.info_outline),
+                  title: l10n.settingsAppVersionTitle,
+                  trailing: Text(
+                    _version.isEmpty ? '...' : _version,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ]),
+            ],
+          );
+        },
+      ),
+    );
+  }
 }

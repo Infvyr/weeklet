@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_bloc.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_event.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_state.dart';
@@ -23,6 +24,7 @@ class ThemeSelectionSheet extends StatelessWidget {
     final currentTheme =
         state is SettingsLoaded ? state.themeMode : ThemeMode.system;
 
+    final l10n = AppLocalizations.of(context);
     return SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -30,7 +32,7 @@ class ThemeSelectionSheet extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Theme',
+              l10n.settingsThemeTitle,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -45,21 +47,21 @@ class ThemeSelectionSheet extends StatelessWidget {
                 Navigator.of(context).pop();
               }
             },
-            child: const Column(
+            child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 RadioListTile<ThemeMode>(
                   value: ThemeMode.system,
-                  title: Text('System default'),
-                  subtitle: Text('Follows device setting'),
+                  title: Text(l10n.themeSystemDefault),
+                  subtitle: Text(l10n.themeSystemDefaultSubtitle),
                 ),
                 RadioListTile<ThemeMode>(
                   value: ThemeMode.light,
-                  title: Text('Light'),
+                  title: Text(l10n.themeLight),
                 ),
                 RadioListTile<ThemeMode>(
                   value: ThemeMode.dark,
-                  title: Text('Dark'),
+                  title: Text(l10n.themeDark),
                 ),
               ],
             ),

@@ -19,9 +19,9 @@ class CustomConfirmationDialog extends StatelessWidget {
     required this.confirmButtonTextColor,
     required this.cancelButtonColor,
     required this.cancelButtonTextColor,
+    required this.confirmButtonText,
+    required this.cancelButtonText,
     this.iconColor = Colors.red,
-    this.confirmButtonText = 'Delete',
-    this.cancelButtonText = 'Cancel',
     this.onConfirm,
     this.onCancel,
   });
@@ -84,9 +84,9 @@ class CustomConfirmationDialog extends StatelessWidget {
     required Color confirmButtonTextColor,
     required Color cancelButtonColor,
     required Color cancelButtonTextColor,
+    required String confirmButtonText,
+    required String cancelButtonText,
     Color iconColor = Colors.white,
-    String confirmButtonText = 'Delete',
-    String cancelButtonText = 'Cancel',
     VoidCallback? onConfirm,
     VoidCallback? onCancel,
   }) => showDialog<bool>(
