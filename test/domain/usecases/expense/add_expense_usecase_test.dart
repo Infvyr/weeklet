@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:uuid/uuid.dart';
 import 'package:weeklet/domain/entities/expense.dart';
+import 'package:weeklet/domain/exceptions/expense_exceptions.dart';
 import 'package:weeklet/domain/repositories/expense_repository.dart';
 import 'package:weeklet/domain/usecases/expense/add_expense_usecase.dart';
 
@@ -37,105 +38,120 @@ void main() {
   });
 
   group('AddExpenseUseCase — amount validation (ARCH-01)', () {
-    test('throws ArgumentError for non-numeric amount', () {
-      expect(
-        () async => useCase(
-          AddExpenseParams(
-            amount: 'abc',
-            description: 'Test expense',
-            categoryId: 'cat-1',
-            date: DateTime(2024, 1, 15),
+    test(
+      'throws ExpenseValidationException(invalidAmount) for non-numeric amount',
+      () {
+        expect(
+          () async => useCase(
+            AddExpenseParams(
+              amount: 'abc',
+              description: 'Test expense',
+              categoryId: 'cat-1',
+              date: DateTime(2024, 1, 15),
+            ),
           ),
-        ),
-        throwsA(
-          isA<ArgumentError>().having(
-            (e) => e.message,
-            'message',
-            'Expense amount must be a positive number',
+          throwsA(
+            isA<ExpenseValidationException>().having(
+              (e) => e.error,
+              'error',
+              ExpenseValidationError.invalidAmount,
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
 
-    test('throws ArgumentError for zero amount', () {
-      expect(
-        () async => useCase(
-          AddExpenseParams(
-            amount: '0',
-            description: 'Test expense',
-            categoryId: 'cat-1',
-            date: DateTime(2024, 1, 15),
+    test(
+      'throws ExpenseValidationException(invalidAmount) for zero amount',
+      () {
+        expect(
+          () async => useCase(
+            AddExpenseParams(
+              amount: '0',
+              description: 'Test expense',
+              categoryId: 'cat-1',
+              date: DateTime(2024, 1, 15),
+            ),
           ),
-        ),
-        throwsA(
-          isA<ArgumentError>().having(
-            (e) => e.message,
-            'message',
-            'Expense amount must be a positive number',
+          throwsA(
+            isA<ExpenseValidationException>().having(
+              (e) => e.error,
+              'error',
+              ExpenseValidationError.invalidAmount,
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
 
-    test('throws ArgumentError for negative amount', () {
-      expect(
-        () async => useCase(
-          AddExpenseParams(
-            amount: '-5.0',
-            description: 'Test expense',
-            categoryId: 'cat-1',
-            date: DateTime(2024, 1, 15),
+    test(
+      'throws ExpenseValidationException(invalidAmount) for negative amount',
+      () {
+        expect(
+          () async => useCase(
+            AddExpenseParams(
+              amount: '-5.0',
+              description: 'Test expense',
+              categoryId: 'cat-1',
+              date: DateTime(2024, 1, 15),
+            ),
           ),
-        ),
-        throwsA(
-          isA<ArgumentError>().having(
-            (e) => e.message,
-            'message',
-            'Expense amount must be a positive number',
+          throwsA(
+            isA<ExpenseValidationException>().having(
+              (e) => e.error,
+              'error',
+              ExpenseValidationError.invalidAmount,
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
 
-    test('throws ArgumentError for empty description', () {
-      expect(
-        () async => useCase(
-          AddExpenseParams(
-            amount: '100.50',
-            description: '',
-            categoryId: 'cat-1',
-            date: DateTime(2024, 1, 15),
+    test(
+      'throws ExpenseValidationException(emptyDescription) for empty description',
+      () {
+        expect(
+          () async => useCase(
+            AddExpenseParams(
+              amount: '100.50',
+              description: '',
+              categoryId: 'cat-1',
+              date: DateTime(2024, 1, 15),
+            ),
           ),
-        ),
-        throwsA(
-          isA<ArgumentError>().having(
-            (e) => e.message,
-            'message',
-            'Expense description cannot be empty',
+          throwsA(
+            isA<ExpenseValidationException>().having(
+              (e) => e.error,
+              'error',
+              ExpenseValidationError.emptyDescription,
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
 
-    test('throws ArgumentError for empty categoryId', () {
-      expect(
-        () async => useCase(
-          AddExpenseParams(
-            amount: '100.50',
-            description: 'Test expense',
-            categoryId: '',
-            date: DateTime(2024, 1, 15),
+    test(
+      'throws ExpenseValidationException(emptyCategory) for empty categoryId',
+      () {
+        expect(
+          () async => useCase(
+            AddExpenseParams(
+              amount: '100.50',
+              description: 'Test expense',
+              categoryId: '',
+              date: DateTime(2024, 1, 15),
+            ),
           ),
-        ),
-        throwsA(
-          isA<ArgumentError>().having(
-            (e) => e.message,
-            'message',
-            'Category cannot be empty',
+          throwsA(
+            isA<ExpenseValidationException>().having(
+              (e) => e.error,
+              'error',
+              ExpenseValidationError.emptyCategory,
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
 
     test('succeeds for valid params', () async {
       await expectLater(
