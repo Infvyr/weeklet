@@ -142,7 +142,6 @@ class _IncomeScreenState extends State<IncomeScreen> {
             s is ExportFailure,
         listener: (context, exportState) {
           if (exportState is ExportSuccess) {
-            final exportBloc = context.read<ExportBloc>();
             unawaited(
               SharePlus.instance
                   .share(
@@ -154,7 +153,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                   )
                   .then((_) {
                     if (!mounted) return;
-                    exportBloc.add(const ResetExportRequested());
+                    context.read<ExportBloc>().add(const ResetExportRequested());
                   }),
             );
           } else if (exportState is ExportFailure) {
