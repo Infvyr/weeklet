@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:uuid/uuid.dart';
 import 'package:weeklet/domain/entities/income.dart';
+import 'package:weeklet/domain/exceptions/income_exceptions.dart';
 import 'package:weeklet/domain/repositories/income_repository.dart';
 import 'package:weeklet/domain/usecases/income/add_income_use_case.dart';
 
@@ -34,43 +35,49 @@ void main() {
   });
 
   group('AddIncomeUseCase — amount validation (ARCH-01)', () {
-    test('throws ArgumentError for non-numeric amount', () {
-      expect(
-        () async => useCase(
-          AddIncomeParams(
-            amount: 'abc',
-            description: 'Test income',
-            date: DateTime(2024, 1, 15),
+    test(
+      'throws IncomeValidationException(invalidAmount) for non-numeric amount',
+      () {
+        expect(
+          () async => useCase(
+            AddIncomeParams(
+              amount: 'abc',
+              description: 'Test income',
+              date: DateTime(2024, 1, 15),
+            ),
           ),
-        ),
-        throwsA(
-          isA<ArgumentError>().having(
-            (e) => e.message,
-            'message',
-            'Income amount must be a positive number',
+          throwsA(
+            isA<IncomeValidationException>().having(
+              (e) => e.error,
+              'error',
+              IncomeValidationError.invalidAmount,
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
 
-    test('throws ArgumentError for zero amount', () {
-      expect(
-        () async => useCase(
-          AddIncomeParams(
-            amount: '0',
-            description: 'Test income',
-            date: DateTime(2024, 1, 15),
+    test(
+      'throws IncomeValidationException(invalidAmount) for zero amount',
+      () {
+        expect(
+          () async => useCase(
+            AddIncomeParams(
+              amount: '0',
+              description: 'Test income',
+              date: DateTime(2024, 1, 15),
+            ),
           ),
-        ),
-        throwsA(
-          isA<ArgumentError>().having(
-            (e) => e.message,
-            'message',
-            'Income amount must be a positive number',
+          throwsA(
+            isA<IncomeValidationException>().having(
+              (e) => e.error,
+              'error',
+              IncomeValidationError.invalidAmount,
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
 
     test('succeeds for valid amount', () async {
       await expectLater(
