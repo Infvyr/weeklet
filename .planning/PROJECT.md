@@ -10,7 +10,7 @@ Users can always see where their money went — fast entry, accurate totals, no 
 
 ## Current State
 
-**v1.1 UX Polish complete 2026-04-30.** Phase 8 (UI Polish) delivered all 5 UX requirements. Phase 9 (Localization) remaining.
+**v1.1 milestone complete 2026-05-03.** Phase 9 (Localization) delivered LOC-01 — full English/Romanian/Russian support with runtime language switching. All 9 phases of v1.1 are complete.
 
 ### What Ships in v1.0
 
