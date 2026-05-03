@@ -128,6 +128,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
         if (state case IncomeSuccess(actionError: final err?) when err.isNotEmpty) {
           final message = switch (err) {
             'invalidAmount' => l10n.errorInvalidAmount,
+            'emptyDescription' => l10n.errorEmptyDescription,
             _ => l10n.errorGeneric,
           };
           context.showErrorSnackBar(message);
