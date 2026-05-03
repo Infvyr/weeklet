@@ -116,7 +116,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: BlocConsumer<SettingsBloc, SettingsState>(
         listener: (context, state) {
           if (state is SettingsLoaded && state.actionError != null) {
-            context.showErrorSnackBar(state.actionError!);
+            final l10n = AppLocalizations.of(context);
+            final msg = switch (state.actionError!) {
+              'errorBiometricFailed' => l10n.errorBiometricFailed,
+              _ => state.actionError!,
+            };
+            context.showErrorSnackBar(msg);
           }
         },
         builder: (context, state) {

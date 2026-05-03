@@ -171,7 +171,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         // Revert — scan failed or was cancelled (per D-08)
         emit(st.copyWith(
           settings: st.settings.copyWith(biometricEnabled: false),
-          actionError: 'Biometric authentication could not be verified.',
+          actionError: 'errorBiometricFailed',
         ));
         return;
       }
