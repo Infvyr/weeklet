@@ -7,6 +7,7 @@ import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/router/app_routes.dart';
 import 'package:weeklet/domain/entities/category.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_state.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
@@ -94,7 +95,8 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     if (expenseState is! ExpenseSuccess) return;
 
     if (expenseState.selectedMonth == null) {
-      context.showSnackBar('Please select a specific month to export.');
+      final l10n = AppLocalizations.of(context);
+      context.showSnackBar(l10n.exportMonthRequiredMessage);
       return;
     }
 
@@ -121,6 +123,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final expenseState = context.watch<ExpenseBloc>().state;
     final categoryState = context.watch<CategoryBloc>().state;
     final settingsState = context.watch<SettingsBloc>().state;
@@ -128,51 +131,70 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         ? settingsState.currencySymbol
         : AppConstants.DEFAULT_CURRENCY;
 
-    return BlocListener<ExportBloc, ExportState>(
-      listenWhen: (_, s) =>
-          (s is ExportSuccess &&
-              s.exportType == ExportType.expenses) ||
-          s is ExportFailure,
-      listener: (context, exportState) {
-        if (exportState is ExportSuccess) {
-          final exportBloc = context.read<ExportBloc>();
-          unawaited(
-            SharePlus.instance
-                .share(
-                  ShareParams(
-                    files: [XFile(exportState.filePath)],
-                    subject: exportState.subject,
-                    sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1),
-                  ),
-                )
-                .then((_) {
-                  if (!mounted) return;
-                  exportBloc.add(const ResetExportRequested());
-                }),
-          );
-        } else if (exportState is ExportFailure) {
-          context.showErrorSnackBar(
-            'Failed to generate PDF. Please try again.',
-          );
-          context.read<ExportBloc>().add(const ResetExportRequested());
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ExportBloc, ExportState>(
+          listenWhen: (_, s) =>
+              (s is ExportSuccess &&
+                  s.exportType == ExportType.expenses) ||
+              s is ExportFailure,
+          listener: (context, exportState) {
+            if (exportState is ExportSuccess) {
+              final exportBloc = context.read<ExportBloc>();
+              unawaited(
+                SharePlus.instance
+                    .share(
+                      ShareParams(
+                        files: [XFile(exportState.filePath)],
+                        subject: exportState.subject,
+                        sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1),
+                      ),
+                    )
+                    .then((_) {
+                      if (!mounted) return;
+                      exportBloc.add(const ResetExportRequested());
+                    }),
+              );
+            } else if (exportState is ExportFailure) {
+              context.showErrorSnackBar(l10n.pdfExportError);
+              context.read<ExportBloc>().add(const ResetExportRequested());
+            }
+          },
+        ),
+        BlocListener<ExpenseBloc, ExpenseState>(
+          listenWhen: (_, s) =>
+              s is ExpenseSuccess && (s.actionError?.isNotEmpty ?? false),
+          listener: (context, state) {
+            if (state case ExpenseSuccess(actionError: final err?)
+                when err.isNotEmpty) {
+              final message = switch (err) {
+                'invalidAmount' => l10n.errorInvalidAmount,
+                'emptyDescription' => l10n.errorEmptyDescription,
+                'emptyCategory' => l10n.errorEmptyCategory,
+                _ => l10n.errorGeneric,
+              };
+              context.showErrorSnackBar(message);
+              context.read<ExpenseBloc>().add(const ClearActionErrorRequested());
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text('My Expenses'),
+          title: Text(l10n.expensesScreenTitle),
           centerTitle: true,
           actions: [
             IconButton(
               icon: const Icon(Icons.category),
-              tooltip: 'Categories',
+              tooltip: l10n.categoriesTooltip,
               onPressed: () => context.pushNamed(AppRoutes.categoriesScreen),
             ),
             if (expenseState case final ExpenseSuccess success)
               if (success.filteredExpenses.isNotEmpty)
                 IconButton(
                   icon: const Icon(Icons.picture_as_pdf),
-                  tooltip: 'Export as PDF',
+                  tooltip: l10n.exportPdfTooltip,
                   onPressed: _onExportTapped,
                 ),
           ],
@@ -188,7 +210,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
 
           (ExpenseFailure _, _) => Center(
             child: Column(
-              mainAxisAlignment: .center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   Icons.error_outline,
@@ -196,13 +218,13 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                   color: context.colorScheme.error,
                 ),
                 const SizedBox(height: 16),
-                Text('Failed to load expenses', style: context.bodyLarge),
+                Text(l10n.expensesLoadError, style: context.bodyLarge),
                 const SizedBox(height: 8),
                 TextButton(
                   onPressed: () => context.read<ExpenseBloc>().add(
                     const LoadExpensesRequested(),
                   ),
-                  child: const Text('Retry'),
+                  child: Text(l10n.retryButtonLabel),
                 ),
               ],
             ),
@@ -210,11 +232,11 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
 
           (final ExpenseSuccess success, final CategoriesLoaded _)
               when success.filteredExpenses.isEmpty =>
-            const Center(
+            Center(
               child: EmptyStateView(
                 icon: Icons.receipt_long_outlined,
-                title: 'No expenses yet',
-                subtitle: 'Tap + to add your first expense',
+                title: l10n.expensesEmptyTitle,
+                subtitle: l10n.expensesEmptySubtitle,
               ),
             ),
 
@@ -250,9 +272,9 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
               ),
               label: Visibility(
                 visible: _isAtBottom,
-                child: const Text('Add Expense'),
+                child: Text(l10n.addExpenseButtonLabel),
               ),
-              tooltip: _isAtBottom ? '' : 'Add new expense',
+              tooltip: _isAtBottom ? '' : l10n.addExpenseTooltip,
             ),
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/domain/utils/expense_filter_utils.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_event.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_state.dart';
@@ -19,6 +20,7 @@ class ExpenseFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final state = context.watch<ExpenseBloc>().state;
 
     if (state is! ExpenseSuccess) {
@@ -39,10 +41,10 @@ class ExpenseFilterBar extends StatelessWidget {
               selectedItem: state.selectedMonth,
               itemBuilder: (month) => Text(
                 month == null
-                    ? 'All Months'
+                    ? l10n.allMonthsLabel
                     : ExpenseFilterUtils.getMonthName(month),
               ),
-              hint: 'Select Month',
+              hint: l10n.selectMonthHint,
               onChanged: (month) {
                 context.read<ExpenseBloc>().add(
                   FilterDateChanged(month: month),
@@ -57,7 +59,7 @@ class ExpenseFilterBar extends StatelessWidget {
               items: state.availableYears,
               selectedItem: state.selectedYear,
               itemBuilder: (year) => Text(year.toString()),
-              hint: 'Select Year',
+              hint: l10n.selectYearHint,
               onChanged: (year) {
                 if (year != null) {
                   context.read<ExpenseBloc>().add(

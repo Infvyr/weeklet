@@ -1,5 +1,5 @@
-import 'package:flutter/widgets.dart';
-import 'package:weeklet/core/utils/form_validators.dart';
+import 'package:flutter/material.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/widgets/input_view.dart';
 import 'package:weeklet/presentation/widgets/label_view.dart';
 
@@ -14,19 +14,25 @@ class DescriptionFieldView extends StatelessWidget {
   final bool isRequired;
 
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    spacing: 8,
-    children: [
-      const LabelView(
-        text: 'Description',
-      ),
-      InputView(
-        controller: controller,
-        hintText: 'For ex.: Grocery shopping',
-        textInputAction: .next,
-        validator: isRequired ? FormValidators.required : null,
-      ),
-    ],
-  );
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8,
+      children: [
+        LabelView(
+          text: l10n.descriptionFieldLabel,
+        ),
+        InputView(
+          controller: controller,
+          hintText: l10n.descriptionFieldHint,
+          textInputAction: TextInputAction.next,
+          validator: isRequired
+              ? (value) =>
+                  (value == null || value.isEmpty) ? l10n.validationRequired : null
+              : null,
+        ),
+      ],
+    );
+  }
 }
