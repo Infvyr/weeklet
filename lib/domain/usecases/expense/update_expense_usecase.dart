@@ -1,4 +1,5 @@
 import 'package:weeklet/domain/entities/expense.dart';
+import 'package:weeklet/domain/exceptions/expense_exceptions.dart';
 import 'package:weeklet/domain/repositories/expense_repository.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
 
@@ -15,13 +16,19 @@ class UpdateExpenseUseCase implements UseCase<void, Expense> {
 
   void _validateExpense(Expense params) {
     if (params.description.trim().isEmpty) {
-      throw ArgumentError('Expense description cannot be empty');
+      throw const ExpenseValidationException(
+        ExpenseValidationError.emptyDescription,
+      );
     }
     if (params.amount <= 0) {
-      throw ArgumentError('Expense amount must be greater than 0');
+      throw const ExpenseValidationException(
+        ExpenseValidationError.invalidAmount,
+      );
     }
     if (params.categoryId.trim().isEmpty) {
-      throw ArgumentError('Category cannot be empty');
+      throw const ExpenseValidationException(
+        ExpenseValidationError.emptyCategory,
+      );
     }
   }
 }

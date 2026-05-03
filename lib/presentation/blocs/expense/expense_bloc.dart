@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:weeklet/core/di/service_locator.dart';
+import 'package:weeklet/domain/exceptions/expense_exceptions.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
 import 'package:weeklet/domain/usecases/expense/add_expense_usecase.dart';
 import 'package:weeklet/domain/usecases/expense/delete_expense_usecase.dart';
@@ -119,12 +120,12 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
         );
         add(const LoadExpensesRequested());
         sl<StatsBloc>().add(LoadMonthlyStats(year: DateTime.now().year));
-      } on ArgumentError catch (e) {
+      } on ExpenseValidationException catch (e) {
         debugPrint('error in _onAddExpense: $e');
         emit(
           st.copyWith(
             selectedMonth: st.selectedMonth,
-            actionError: e.message?.toString() ?? 'Invalid input',
+            actionError: e.error.name,
           ),
         );
       } catch (e) {
@@ -132,7 +133,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
         emit(
           st.copyWith(
             selectedMonth: st.selectedMonth,
-            actionError: 'Could not add the expense',
+            actionError: 'genericError',
           ),
         );
       }
@@ -148,11 +149,20 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
         await updateExpenseUseCase(event.expense);
         add(const LoadExpensesRequested());
         sl<StatsBloc>().add(LoadMonthlyStats(year: DateTime.now().year));
-      } catch (e) {
+      } on ExpenseValidationException catch (e) {
+        debugPrint('error in _onUpdateExpense: $e');
         emit(
           st.copyWith(
             selectedMonth: st.selectedMonth,
-            actionError: 'Could not update the expense',
+            actionError: e.error.name,
+          ),
+        );
+      } catch (e) {
+        debugPrint('error in _onUpdateExpense: $e');
+        emit(
+          st.copyWith(
+            selectedMonth: st.selectedMonth,
+            actionError: 'genericError',
           ),
         );
       }
@@ -168,11 +178,20 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
         await deleteExpenseUseCase(event.id);
         add(const LoadExpensesRequested());
         sl<StatsBloc>().add(LoadMonthlyStats(year: DateTime.now().year));
-      } catch (e) {
+      } on ExpenseValidationException catch (e) {
+        debugPrint('error in _onDeleteExpense: $e');
         emit(
           st.copyWith(
             selectedMonth: st.selectedMonth,
-            actionError: 'Could not delete the expense',
+            actionError: e.error.name,
+          ),
+        );
+      } catch (e) {
+        debugPrint('error in _onDeleteExpense: $e');
+        emit(
+          st.copyWith(
+            selectedMonth: st.selectedMonth,
+            actionError: 'genericError',
           ),
         );
       }

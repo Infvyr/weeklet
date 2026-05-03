@@ -1,5 +1,6 @@
 import 'package:uuid/uuid.dart';
 import 'package:weeklet/domain/entities/expense.dart';
+import 'package:weeklet/domain/exceptions/expense_exceptions.dart';
 import 'package:weeklet/domain/repositories/expense_repository.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
 
@@ -32,13 +33,19 @@ class AddExpenseUseCase implements UseCase<void, AddExpenseParams> {
   Expense _buildAndValidate(AddExpenseParams params) {
     final parsedAmount = double.tryParse(params.amount);
     if (parsedAmount == null || parsedAmount <= 0) {
-      throw ArgumentError('Expense amount must be a positive number');
+      throw const ExpenseValidationException(
+        ExpenseValidationError.invalidAmount,
+      );
     }
     if (params.description.trim().isEmpty) {
-      throw ArgumentError('Expense description cannot be empty');
+      throw const ExpenseValidationException(
+        ExpenseValidationError.emptyDescription,
+      );
     }
     if (params.categoryId.trim().isEmpty) {
-      throw ArgumentError('Category cannot be empty');
+      throw const ExpenseValidationException(
+        ExpenseValidationError.emptyCategory,
+      );
     }
     final now = DateTime.now();
     return Expense(

@@ -1,3 +1,4 @@
+import 'package:weeklet/domain/exceptions/category_exceptions.dart';
 import 'package:weeklet/domain/repositories/category_repository.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
 
@@ -13,8 +14,8 @@ class DeleteCategoryUseCase implements UseCase<void, String> {
     String params,
   ) async {
     if (params.trim().isEmpty) {
-      throw ArgumentError(
-        'Category ID cannot be empty',
+      throw const CategoryValidationException(
+        CategoryValidationError.emptyCategoryId,
       );
     }
     return repository.deleteCategory(

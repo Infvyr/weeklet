@@ -1,5 +1,6 @@
 import 'package:uuid/uuid.dart';
 import 'package:weeklet/domain/entities/income.dart';
+import 'package:weeklet/domain/exceptions/income_exceptions.dart';
 import 'package:weeklet/domain/repositories/income_repository.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
 
@@ -30,7 +31,9 @@ class AddIncomeUseCase implements UseCase<void, AddIncomeParams> {
   Income _buildAndValidate(AddIncomeParams params) {
     final parsedAmount = double.tryParse(params.amount);
     if (parsedAmount == null || parsedAmount <= 0) {
-      throw ArgumentError('Income amount must be a positive number');
+      throw const IncomeValidationException(
+        IncomeValidationError.invalidAmount,
+      );
     }
     final now = DateTime.now();
     return Income(

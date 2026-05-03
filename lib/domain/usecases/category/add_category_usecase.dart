@@ -1,5 +1,6 @@
 import 'package:uuid/uuid.dart';
 import 'package:weeklet/domain/entities/category.dart';
+import 'package:weeklet/domain/exceptions/category_exceptions.dart';
 import 'package:weeklet/domain/repositories/category_repository.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
 
@@ -24,10 +25,14 @@ class AddCategoryUseCase implements UseCase<void, AddCategoryParams> {
   @override
   Future<void> call(AddCategoryParams params) async {
     if (params.name.trim().isEmpty) {
-      throw ArgumentError('Category name cannot be empty');
+      throw const CategoryValidationException(
+        CategoryValidationError.emptyName,
+      );
     }
     if (params.icon.trim().isEmpty) {
-      throw ArgumentError('Category icon cannot be empty');
+      throw const CategoryValidationException(
+        CategoryValidationError.emptyIcon,
+      );
     }
     return repository.addCategory(
       Category(
