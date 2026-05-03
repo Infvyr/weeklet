@@ -68,7 +68,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       emit(SettingsLoaded(settings: settings));
     } catch (e) {
       debugPrint('error in _onLoadSettings: $e');
-      emit(const SettingsFailure('Settings could not be loaded.'));
+      emit(const SettingsFailure('settingsLoadError'));
     }
   }
 
