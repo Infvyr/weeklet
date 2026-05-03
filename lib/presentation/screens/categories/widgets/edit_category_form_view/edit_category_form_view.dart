@@ -5,6 +5,7 @@ import 'package:weeklet/core/constants/category_icons.dart';
 import 'package:weeklet/core/extensions/category_extensions.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/domain/entities/category.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_event.dart';
 import 'package:weeklet/presentation/blocs/category/category_state.dart';
@@ -87,79 +88,86 @@ class _EditCategoryFormViewState extends State<EditCategoryFormView> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      BlocConsumer<CategoryBloc, CategoryState>(
-        listener: (context, state) {
-          if (state is CategorySuccess) {
-            if (context.mounted) {
-              context.pop();
-            }
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return BlocConsumer<CategoryBloc, CategoryState>(
+      listener: (context, state) {
+        if (state is CategorySuccess) {
+          if (context.mounted) {
+            context.pop();
           }
-          if (state is CategoryError) {
-            context.showSnackBar(state.message);
-          }
-        },
-        builder: (context, state) {
-          final isLoading = state is CategoryLoading;
+        }
+        if (state is CategoryError) {
+          final msg = switch (state.message) {
+            'emptyName' => l10n.categoryNameValidationRequired,
+            'errorCategoryNotFound' => l10n.errorCategoryNotFound,
+            _ => l10n.errorGeneric,
+          };
+          context.showErrorSnackBar(msg);
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state is CategoryLoading;
 
-          return CallbackShortcuts(
-            bindings: <ShortcutActivator, VoidCallback>{
-              const SingleActivator(LogicalKeyboardKey.escape): _handleClose,
-            },
-            child: Focus(
-              autofocus: true,
-              child: GestureDetector(
-                onTap: context.unfocus,
-                child: Scaffold(
-                  body: SingleChildScrollView(
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      right: 16,
-                      top: 16,
-                      bottom: 24,
-                    ),
-                    child: Form(
-                      autovalidateMode: AutovalidateMode.onUnfocus,
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        spacing: 20,
-                        children: [
-                          EditCategoryFormHeader(onClose: _handleClose),
-                          CategoryName(controller: _nameController),
-                          ValueListenableBuilder(
-                            valueListenable: _selectedIconNotifier,
-                            builder: (context, selectedIcon, ___) =>
-                                ValueListenableBuilder<TextEditingValue>(
-                                  valueListenable: _nameController,
-                                  builder: (context, searchTerm, ___) =>
-                                      SelectedIconView(
-                                        selectedIcon: selectedIcon,
-                                        categoryName: searchTerm.text,
-                                      ),
-                                ),
-                          ),
-                          CategoryIconsView(
-                            onIconSelected: _onIconSelected,
-                            selectedIconNotifier: _selectedIconNotifier,
-                          ),
-                        ],
-                      ),
+        return CallbackShortcuts(
+          bindings: <ShortcutActivator, VoidCallback>{
+            const SingleActivator(LogicalKeyboardKey.escape): _handleClose,
+          },
+          child: Focus(
+            autofocus: true,
+            child: GestureDetector(
+              onTap: context.unfocus,
+              child: Scaffold(
+                body: SingleChildScrollView(
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    top: 16,
+                    bottom: 24,
+                  ),
+                  child: Form(
+                    autovalidateMode: AutovalidateMode.onUnfocus,
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      spacing: 20,
+                      children: [
+                        EditCategoryFormHeader(onClose: _handleClose),
+                        CategoryName(controller: _nameController),
+                        ValueListenableBuilder(
+                          valueListenable: _selectedIconNotifier,
+                          builder: (context, selectedIcon, ___) =>
+                              ValueListenableBuilder<TextEditingValue>(
+                                valueListenable: _nameController,
+                                builder: (context, searchTerm, ___) =>
+                                    SelectedIconView(
+                                      selectedIcon: selectedIcon,
+                                      categoryName: searchTerm.text,
+                                    ),
+                              ),
+                        ),
+                        CategoryIconsView(
+                          onIconSelected: _onIconSelected,
+                          selectedIconNotifier: _selectedIconNotifier,
+                        ),
+                      ],
                     ),
                   ),
-                  bottomNavigationBar: CategoryFormFooterView(
-                    isLoading: isLoading,
-                    onSave: _updateCategory,
-                    onCancel: _handleClose,
-                    nameController: _nameController,
-                    selectedIconNotifier: _selectedIconNotifier,
-                  ),
+                ),
+                bottomNavigationBar: CategoryFormFooterView(
+                  isLoading: isLoading,
+                  onSave: _updateCategory,
+                  onCancel: _handleClose,
+                  nameController: _nameController,
+                  selectedIconNotifier: _selectedIconNotifier,
                 ),
               ),
             ),
-          );
-        },
-      );
+          ),
+        );
+      },
+    );
+  }
 }

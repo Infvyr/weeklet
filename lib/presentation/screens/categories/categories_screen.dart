@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/router/app_routes.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_state.dart';
 import 'package:weeklet/presentation/screens/categories/widgets/categories_empty_view.dart';
@@ -11,9 +12,11 @@ class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({super.key});
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
       appBar: AppBar(
-        title: const Text('Categories'),
+        title: Text(l10n.categoriesScreenTitle),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -45,9 +48,14 @@ class CategoriesScreen extends StatelessWidget {
             }
 
             if (state is CategoryError) {
+              final msg = switch (state.message) {
+                'emptyName' => l10n.categoryNameValidationRequired,
+                'errorCategoryNotFound' => l10n.errorCategoryNotFound,
+                _ => l10n.errorGeneric,
+              };
               return Center(
                 child: Text(
-                  state.message,
+                  msg,
                   textAlign: TextAlign.center,
                 ),
               );
@@ -58,9 +66,10 @@ class CategoriesScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        tooltip: 'Create new category',
+        tooltip: l10n.createCategoryTooltip,
         onPressed: () => context.pushNamed(AppRoutes.addCategoryScreen),
         child: const Icon(Icons.add),
       ),
     );
+  }
 }
