@@ -2,7 +2,7 @@
 phase: 09-localization
 plan: '05'
 type: verification
-status: partial
+status: complete
 requirements: [LOC-01]
 tags: [localization, verification, checkpoint]
 ---
@@ -78,8 +78,18 @@ All greps return ZERO matches in non-excluded paths.
 | `AppLocalizations.delegate` in `app.dart` | 1 match — PASS |
 | `localeResolutionCallback:` in `app.dart` | 1 match — PASS |
 
-## Manual Verification — Pending
+## Manual Verification — Approved
 
-Task 2 (human-verify gate) is pending user approval.
+**User signed off: approved** (2026-05-03)
 
-See Task 2 in 09-05-PLAN.md for the 5 scenarios to verify on device/simulator.
+All five LOC-01 scenarios verified on device/simulator:
+
+| Scenario | Description | Result |
+|----------|-------------|--------|
+| A | System locale = Romanian — all screens/modals/dialogs in RO | PASS |
+| B | System locale = Russian — all screens/modals/dialogs in RU | PASS |
+| C | Unsupported locale (FR/DE) — fallback to English everywhere | PASS |
+| D | Runtime language switch via Settings → Language (no restart) | PASS |
+| E | Amount labels with currency placeholder, month names, biometric prompt | PASS |
+
+LOC-01 is satisfied end-to-end.
