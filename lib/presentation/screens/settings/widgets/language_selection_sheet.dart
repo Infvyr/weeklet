@@ -25,9 +25,9 @@ class LanguageSelectionSheet extends StatelessWidget {
     final currentLocale = state is SettingsLoaded ? state.locale : null;
     final options = [
       (label: l10n.languageSystemDefault, locale: null),
-      (label: l10n.languageEnglish, locale: const Locale('en', 'US')),
-      (label: l10n.languageRomanian, locale: const Locale('ro', 'RO')),
-      (label: l10n.languageRussian, locale: const Locale('ru', 'RU')),
+      (label: l10n.languageEnglish, locale: const Locale('en')),
+      (label: l10n.languageRomanian, locale: const Locale('ro')),
+      (label: l10n.languageRussian, locale: const Locale('ru')),
     ];
 
     return SafeArea(
