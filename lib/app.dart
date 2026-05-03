@@ -8,6 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart'
 import 'package:weeklet/core/di/service_locator.dart' show sl;
 import 'package:weeklet/core/theme/theme.dart';
 import 'package:weeklet/core/utils/locale_manager.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/app_initializer.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
@@ -68,10 +69,21 @@ class WeekletApp extends StatelessWidget {
           locale: locale,
           supportedLocales: LocaleManager.supportedLocales,
           localizationsDelegates: const [
+            AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
+          localeResolutionCallback: (locale, supportedLocales) {
+            // LOC-01 fallback: any unsupported device locale renders English.
+            if (locale == null) return const Locale('en');
+            for (final supported in supportedLocales) {
+              if (supported.languageCode == locale.languageCode) {
+                return supported;
+              }
+            }
+            return const Locale('en');
+          },
         );
       },
     ),

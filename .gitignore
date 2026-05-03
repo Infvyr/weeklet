@@ -56,3 +56,7 @@ devtools_options.yaml
 .planning/STATE.md
 .planning/ROADMAP.md
 .planning/PROJECT.md
+
+# gen-l10n generated files
+lib/l10n/app_localizations.dart
+lib/l10n/app_localizations_*.dart
