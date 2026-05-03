@@ -296,6 +296,11 @@
     "description": "Label for the Home navigation item"
   },
 
+  "navIncome": "Income",
+  "@navIncome": {
+    "description": "Label for the Income navigation tab"
+  },
+
   "settingsSectionSecurity": "Security",
   "@settingsSectionSecurity": {
     "description": "Settings section header for Security"

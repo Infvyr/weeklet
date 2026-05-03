@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/domain/utils/expense_filter_utils.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_state.dart';
@@ -12,6 +13,7 @@ class StatsFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final state = context.watch<StatsBloc>().state;
 
     if (state is! MonthlyStatsLoaded) {
@@ -38,10 +40,10 @@ class StatsFilterBar extends StatelessWidget {
               selectedItem: state.month,
               itemBuilder: (month) => Text(
                 month == null
-                    ? 'All Months'
+                    ? l10n.allMonthsLabel
                     : ExpenseFilterUtils.getMonthName(month),
               ),
-              hint: 'Select Month',
+              hint: l10n.selectMonthHint,
               onChanged: (month) {
                 context.read<StatsBloc>().add(
                   LoadMonthlyStats(
@@ -59,7 +61,7 @@ class StatsFilterBar extends StatelessWidget {
               items: years,
               selectedItem: state.year,
               itemBuilder: (year) => Text(year.toString()),
-              hint: 'Select Year',
+              hint: l10n.selectYearHint,
               onChanged: (year) {
                 if (year != null) {
                   context.read<StatsBloc>().add(

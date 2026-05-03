@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/domain/entities/statistics.dart';
 import 'package:weeklet/domain/utils/evolution_stats_utils.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/screens/stats/widgets/monthly_item/monthly_item.dart';
 
 class MonthlyExpensesList extends StatelessWidget {
@@ -16,6 +17,7 @@ class MonthlyExpensesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     // Get snapshots with actual data
     final snapshotsWithData = EvolutionStatsUtils.getSnapshotsWithData(
       evolutionStats,
@@ -38,7 +40,7 @@ class MonthlyExpensesList extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Monthly Breakdown',
+              l10n.statsMonthlyBreakdownTitle,
               style: context.bodySmall?.copyWith(
                 color: context.colorScheme.onSurfaceVariant,
               ),

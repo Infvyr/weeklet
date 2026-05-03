@@ -4,6 +4,7 @@ import 'package:weeklet/domain/entities/statistics.dart';
 import 'package:weeklet/domain/utils/expense_filter_utils.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
 import 'package:weeklet/domain/utils/monthly_snapshot_utils.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/screens/stats/widgets/monthly_item/monthly_bar_row.dart';
 
 class MonthlyItem extends StatelessWidget {
@@ -20,6 +21,7 @@ class MonthlyItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final monthName = ExpenseFilterUtils.getMonthAbbreviation(snapshot.month);
     final balanceText = NumberFormatter.formatCompact(
       snapshot.balance,
@@ -57,14 +59,14 @@ class MonthlyItem extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           MonthlyBarRow(
-            label: 'Income',
+            label: l10n.incomeBarLabel,
             amount: snapshot.totalIncome,
             maxAmount: maxIncome,
             color: context.successColor,
             currencySymbol: currencySymbol,
           ),
           MonthlyBarRow(
-            label: 'Expenses',
+            label: l10n.expensesBarLabel,
             amount: snapshot.totalExpenses,
             maxAmount: maxIncome,
             color: context.colorScheme.error,

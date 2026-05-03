@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/screens/expenses/expenses_screen.dart';
 import 'package:weeklet/presentation/screens/income/income_screen.dart';
 import 'package:weeklet/presentation/screens/settings/settings_screen.dart';
@@ -26,36 +27,33 @@ class _MainNavigationState extends State<MainNavigation> {
   );
 
   @override
-  Widget build(
-    BuildContext context,
-  ) => Scaffold(
-    body: _screens[_selectedIndex],
-    bottomNavigationBar: BottomNavigationBar(
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.account_balance_wallet),
-          label: 'Income',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.trending_up,
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.home),
+            label: l10n.navHome,
           ),
-          label: 'Stats',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.settings,
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.account_balance_wallet),
+            label: l10n.navIncome,
           ),
-          label: 'Settings',
-        ),
-      ],
-      currentIndex: _selectedIndex,
-      onTap: _onItemTapped,
-      type: BottomNavigationBarType.fixed,
-    ),
-  );
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.trending_up),
+            label: l10n.navStats,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.settings),
+            label: l10n.navSettings,
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
+      ),
+    );
+  }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklet/core/di/service_locator.dart' show sl;
 import 'package:weeklet/core/services/biometric_service.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
 import 'package:weeklet/presentation/blocs/category/category_event.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
@@ -84,8 +85,9 @@ class _AppInitializerState extends State<AppInitializer> {
   }
 
   Future<void> _unlock() async {
+    final l10n = AppLocalizations.of(context);
     final authenticated = await sl<BiometricService>().authenticate(
-      reason: 'Authenticate to access Weeklet.',
+      reason: l10n.biometricAuthReason,
     );
     if (authenticated && mounted) {
       setState(() => _isLocked = false);
@@ -112,39 +114,42 @@ class _BiometricGateOverlay extends StatelessWidget {
   final VoidCallback onTryAgain;
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    body: SafeArea(
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(48.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // App icon placeholder — 64x64 dp as per UI-SPEC
-              const FlutterLogo(size: 64.0),
-              const SizedBox(height: 24.0),
-              Text(
-                'Authenticate to continue',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(48.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // App icon placeholder — 64x64 dp as per UI-SPEC
+                const FlutterLogo(size: 64.0),
+                const SizedBox(height: 24.0),
+                Text(
+                  l10n.biometricGateTitle,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8.0),
-              Text(
-                'Use Face ID or fingerprint to access Weeklet.',
-                style: Theme.of(context).textTheme.bodyMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32.0),
-              FilledButton(
-                onPressed: onTryAgain,
-                child: const Text('Try Again'),
-              ),
-            ],
+                const SizedBox(height: 8.0),
+                Text(
+                  l10n.biometricGateSubtitle,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32.0),
+                FilledButton(
+                  onPressed: onTryAgain,
+                  child: Text(l10n.tryAgainButtonLabel),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 
 class StatsSmallCard extends StatelessWidget {
   const StatsSmallCard({
@@ -24,11 +25,13 @@ class StatsSmallCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isPositive = percentage >= 0;
     final percentageColor = isPositive ? Colors.green : Colors.red;
     final percentageIcon = isPositive
         ? Icons.call_made
         : Icons.call_received; // Arrow up/down
+    final vsLabel = isAnnual ? l10n.statsVsLastYear : l10n.statsVsLastMonth;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -77,7 +80,7 @@ class StatsSmallCard extends StatelessWidget {
               const SizedBox(width: 4),
               Flexible(
                 child: Text(
-                  '${(percentage * 100).abs().toStringAsFixed(1)}% ${isAnnual ? 'vs last year' : 'vs last month'}',
+                  '${(percentage * 100).abs().toStringAsFixed(1)}% $vsLabel',
                   overflow: TextOverflow.ellipsis,
                   style: context.bodySmall?.copyWith(color: percentageColor),
                 ),

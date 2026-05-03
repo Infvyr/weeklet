@@ -45,12 +45,17 @@ final class CurrencyChanged extends SettingsEvent {
 
 /// User toggled the biometric authentication switch.
 final class BiometricToggled extends SettingsEvent {
-  const BiometricToggled({required this.enabled});
+  const BiometricToggled({required this.enabled, this.reason = ''});
 
   final bool enabled;
 
+  /// Localized reason string shown in the native biometric auth dialog.
+  /// Supplied by the calling widget via AppLocalizations; empty string
+  /// falls back to a sentinel in the BLoC handler.
+  final String reason;
+
   @override
-  List<Object?> get props => [enabled];
+  List<Object?> get props => [enabled, reason];
 }
 
 /// User confirmed clearing preferences (settings box reset to defaults).

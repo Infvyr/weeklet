@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 
 class StatsBalanceCard extends StatelessWidget {
   const StatsBalanceCard({
@@ -15,7 +16,9 @@ class StatsBalanceCard extends StatelessWidget {
   final String currencySymbol;
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Container(
     width: double.infinity,
     padding: const EdgeInsets.all(24),
     decoration: BoxDecoration(
@@ -35,7 +38,7 @@ class StatsBalanceCard extends StatelessWidget {
             const SizedBox(width: 8),
             Flexible(
               child: Text(
-                isAnnual ? 'Annual Balance' : 'Monthly Balance',
+                isAnnual ? l10n.statsAnnualBalance : l10n.statsMonthlyBalance,
                 overflow: TextOverflow.ellipsis,
                 style: context.bodySmall?.copyWith(
                   color: Colors.white,
@@ -58,7 +61,7 @@ class StatsBalanceCard extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'Realized Savings',
+          l10n.statsRealizedSavings,
           style: context.bodySmall?.copyWith(
             color: Colors.white,
           ),
@@ -66,4 +69,5 @@ class StatsBalanceCard extends StatelessWidget {
       ],
     ),
   );
+  }
 }

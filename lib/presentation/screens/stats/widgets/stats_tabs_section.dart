@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_tab.dart';
@@ -14,39 +15,43 @@ class StatsTabsSection extends StatelessWidget {
   final StatsTab currentTab;
 
   @override
-  Widget build(BuildContext context) => Container(
-    decoration: BoxDecoration(
-      color: context.colorScheme.surfaceContainerHighest.withValues(alpha: .3),
-      borderRadius: BorderRadius.circular(24),
-    ),
-    padding: const EdgeInsets.all(4),
-    child: Row(
-      children: [
-        Expanded(
-          child: StatsTabButton(
-            title: 'Monthly',
-            isSelected: currentTab == StatsTab.monthly,
-            onTap: () {
-              context.read<StatsBloc>().add(
-                const ChangeStatsTab(StatsTab.monthly),
-              );
-            },
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Container(
+      decoration: BoxDecoration(
+        color:
+            context.colorScheme.surfaceContainerHighest.withValues(alpha: .3),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      padding: const EdgeInsets.all(4),
+      child: Row(
+        children: [
+          Expanded(
+            child: StatsTabButton(
+              title: l10n.statsTabMonthly,
+              isSelected: currentTab == StatsTab.monthly,
+              onTap: () {
+                context.read<StatsBloc>().add(
+                  const ChangeStatsTab(StatsTab.monthly),
+                );
+              },
+            ),
           ),
-        ),
-        Expanded(
-          child: StatsTabButton(
-            title: 'Annual Evolution',
-            isSelected: currentTab == StatsTab.annual,
-            onTap: () {
-              context.read<StatsBloc>().add(
-                const ChangeStatsTab(StatsTab.annual),
-              );
-            },
+          Expanded(
+            child: StatsTabButton(
+              title: l10n.statsTabAnnualEvolution,
+              isSelected: currentTab == StatsTab.annual,
+              onTap: () {
+                context.read<StatsBloc>().add(
+                  const ChangeStatsTab(StatsTab.annual),
+                );
+              },
+            ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
 
 class StatsTabButton extends StatelessWidget {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_state.dart';
@@ -24,47 +25,51 @@ class _MainScreenState extends State<MainScreen> {
   ];
 
   @override
-  Widget build(
-    BuildContext context,
-  ) => Scaffold(
-    body: IndexedStack(
-      index: _currentIndex,
-      children: _pages,
-    ),
-    bottomNavigationBar: BottomNavigationBar(
-      currentIndex: _currentIndex,
-      onTap: (index) {
-        if (index == 1) { // Stats Tab
-          final statsState = context.read<StatsBloc>().state;
-          if (statsState is MonthlyStatsLoaded) {
-            context.read<StatsBloc>().add(LoadMonthlyStats(month: statsState.month, year: statsState.year));
-          } else {
-            context.read<StatsBloc>().add(LoadMonthlyStats(year: DateTime.now().year));
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          if (index == 1) { // Stats Tab
+            final statsState = context.read<StatsBloc>().state;
+            if (statsState is MonthlyStatsLoaded) {
+              context.read<StatsBloc>().add(
+                LoadMonthlyStats(
+                  month: statsState.month,
+                  year: statsState.year,
+                ),
+              );
+            } else {
+              context.read<StatsBloc>().add(
+                LoadMonthlyStats(year: DateTime.now().year),
+              );
+            }
           }
-        }
-        setState(() => _currentIndex = index);
-      },
-      type: BottomNavigationBarType.fixed,
-      useLegacyColorScheme: false,
-      iconSize: 20,
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Expenses',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.trending_up,
+          setState(() => _currentIndex = index);
+        },
+        type: BottomNavigationBarType.fixed,
+        useLegacyColorScheme: false,
+        iconSize: 20,
+        items: [
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.home),
+            label: l10n.navExpenses,
           ),
-          label: 'Stats',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.settings,
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.trending_up),
+            label: l10n.navStats,
           ),
-          label: 'Settings',
-        ),
-      ],
-    ),
-  );
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.settings),
+            label: l10n.navSettings,
+          ),
+        ],
+      ),
+    );
+  }
 }

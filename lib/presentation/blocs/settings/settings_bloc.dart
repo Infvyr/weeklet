@@ -156,10 +156,15 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         return;
       }
 
-      // Enabling: perform test auth scan first
+      // Enabling: perform test auth scan first.
+      // reason is supplied by the calling widget via AppLocalizations;
+      // fall back to sentinel string if not provided (BLoC must not import
+      // AppLocalizations — Pitfall 3 preserved).
+      final reason = event.reason.isNotEmpty
+          ? event.reason
+          : 'biometricVerifyReason';
       final authenticated = await biometricService.authenticate(
-        reason:
-            'Verify your identity to enable biometric authentication.',
+        reason: reason,
       );
 
       if (!authenticated) {

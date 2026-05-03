@@ -4,6 +4,7 @@ import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/domain/entities/statistics.dart';
 import 'package:weeklet/domain/utils/evolution_stats_utils.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_bloc.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_state.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
@@ -32,6 +33,7 @@ class StatsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final settingsState = context.watch<SettingsBloc>().state;
     final currencySymbol = settingsState is SettingsLoaded
         ? settingsState.currencySymbol
@@ -39,7 +41,7 @@ class StatsView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Statistics'),
+        title: Text(l10n.statsScreenTitle),
       ),
       body: BlocBuilder<StatsBloc, StatsState>(
       builder: (context, state) => switch (state) {
