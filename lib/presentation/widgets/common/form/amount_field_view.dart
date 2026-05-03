@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
-import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/widgets/input_view.dart';
 import 'package:weeklet/presentation/widgets/label_view.dart';
@@ -9,7 +8,7 @@ class AmountFieldView extends StatelessWidget {
   const AmountFieldView({
     super.key,
     required this.controller,
-    this.currencySymbol = AppConstants.DEFAULT_CURRENCY,
+    required this.currencySymbol,
   });
 
   final TextEditingController controller;
