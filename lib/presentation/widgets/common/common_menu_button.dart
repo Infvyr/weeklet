@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 
 /// Menu item configuration for CommonMenuButton
 class MenuItem {
@@ -30,61 +31,65 @@ class CommonMenuButton extends StatelessWidget {
     super.key,
     required this.menuItems,
     this.iconSize = 20,
-    this.tooltip = 'More options',
+    this.tooltip,
   });
 
   final List<MenuItem> menuItems;
   final double iconSize;
-  final String tooltip;
+  final String? tooltip;
 
   @override
-  Widget build(BuildContext context) => MenuAnchor(
-    alignmentOffset: const Offset(-65, 4),
-    consumeOutsideTap: true,
-    builder: (context, controller, ___) => IconButton(
-      padding: .zero,
-      visualDensity: .compact,
-      tooltip: tooltip,
-      style: IconButton.styleFrom(
-        tapTargetSize: .shrinkWrap,
-        shape: RoundedRectangleBorder(
-          borderRadius: .circular(12),
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final resolvedTooltip = tooltip ?? l10n.moreOptionsTooltip;
+    return MenuAnchor(
+      alignmentOffset: const Offset(-65, 4),
+      consumeOutsideTap: true,
+      builder: (context, controller, ___) => IconButton(
+        padding: EdgeInsets.zero,
+        visualDensity: VisualDensity.compact,
+        tooltip: resolvedTooltip,
+        style: IconButton.styleFrom(
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        onPressed: () {
+          if (controller.isOpen) {
+            controller.close();
+          } else {
+            controller.open();
+          }
+        },
+        icon: Icon(
+          Icons.more_vert,
+          size: iconSize,
+          color: context.colorScheme.onSurfaceVariant,
         ),
       ),
-      onPressed: () {
-        if (controller.isOpen) {
-          controller.close();
-        } else {
-          controller.open();
-        }
-      },
-      icon: Icon(
-        Icons.more_vert,
-        size: iconSize,
-        color: context.colorScheme.onSurfaceVariant,
-      ),
-    ),
-    menuChildren: menuItems
-        .map(
-          (item) => MenuItemButton(
-            onPressed: item.onPressed,
-            semanticsLabel: item.semanticLabel ?? item.label,
-            leadingIcon: Icon(
-              item.icon,
-              size: 16,
-              color: item.iconColor,
-            ),
-            style: item.overlayColor != null
-                ? TextButton.styleFrom(overlayColor: item.overlayColor)
-                : null,
-            child: Text(
-              item.label,
-              style: item.textColor != null
-                  ? TextStyle(color: item.textColor)
+      menuChildren: menuItems
+          .map(
+            (item) => MenuItemButton(
+              onPressed: item.onPressed,
+              semanticsLabel: item.semanticLabel ?? item.label,
+              leadingIcon: Icon(
+                item.icon,
+                size: 16,
+                color: item.iconColor,
+              ),
+              style: item.overlayColor != null
+                  ? TextButton.styleFrom(overlayColor: item.overlayColor)
                   : null,
+              child: Text(
+                item.label,
+                style: item.textColor != null
+                    ? TextStyle(color: item.textColor)
+                    : null,
+              ),
             ),
-          ),
-        )
-        .toList(),
-  );
+          )
+          .toList(),
+    );
+  }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weeklet/core/extensions/date_time_extensions.dart';
 import 'package:weeklet/core/utils/date_picker_config.dart';
 import 'package:weeklet/core/utils/locale_manager.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/widgets/input_view.dart';
 import 'package:weeklet/presentation/widgets/label_view.dart';
 
@@ -29,20 +30,23 @@ class DateFieldView extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: .start,
-    spacing: 8,
-    children: [
-      const LabelView(text: 'Date'),
-      InputView(
-        hintText: selectedDate != null
-            ? selectedDate!.format(style: .long)
-            : 'Select date',
-        readOnly: true,
-        onTap: () => _selectDate(context),
-        errorText: errorText,
-        suffixIcon: const Icon(Icons.calendar_today_outlined, size: 20),
-      ),
-    ],
-  );
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8,
+      children: [
+        LabelView(text: l10n.dateFieldLabel),
+        InputView(
+          hintText: selectedDate != null
+              ? selectedDate!.format(style: .long)
+              : l10n.dateFieldHint,
+          readOnly: true,
+          onTap: () => _selectDate(context),
+          errorText: errorText,
+          suffixIcon: const Icon(Icons.calendar_today_outlined, size: 20),
+        ),
+      ],
+    );
+  }
 }

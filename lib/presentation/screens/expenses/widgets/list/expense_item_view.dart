@@ -5,6 +5,7 @@ import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
 import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/domain/entities/expense.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_event.dart';
 import 'package:weeklet/presentation/screens/expenses/widgets/edit_expense_form_view/edit_expense_form_view.dart';
@@ -49,36 +50,41 @@ class ExpenseItemView extends StatelessWidget {
     );
   }
 
-  List<MenuItem> _buildMenuItems(BuildContext context) => [
-    MenuItem(
-      label: 'Edit',
-      icon: Icons.edit,
-      onPressed: () => _editExpense(context),
-      semanticLabel: 'Edit expense',
-    ),
-    MenuItem(
-      label: 'Delete',
-      icon: Icons.delete,
-      iconColor: context.colorScheme.error,
-      textColor: context.colorScheme.error,
-      overlayColor: context.colorScheme.error,
-      onPressed: () => CustomConfirmationDialog.show(
-        context: context,
-        icon: Icons.delete,
-        iconBackgroundColor: context.colorScheme.error,
-        title: 'Delete expense?',
-        subtitle1: 'Are you sure you want to delete',
-        subtitle1AccentText: ' ${expense.description}?',
-        subtitle2: 'This action cannot be undone.',
-        confirmButtonColor: context.colorScheme.error,
-        onConfirm: () => _deleteExpense(context),
-        confirmButtonTextColor: Colors.white,
-        cancelButtonColor: context.colorScheme.outline,
-        cancelButtonTextColor: context.colorScheme.onSurface,
+  List<MenuItem> _buildMenuItems(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return [
+      MenuItem(
+        label: l10n.editMenuLabel,
+        icon: Icons.edit,
+        onPressed: () => _editExpense(context),
+        semanticLabel: 'Edit expense',
       ),
-      semanticLabel: 'Delete expense',
-    ),
-  ];
+      MenuItem(
+        label: l10n.deleteMenuLabel,
+        icon: Icons.delete,
+        iconColor: context.colorScheme.error,
+        textColor: context.colorScheme.error,
+        overlayColor: context.colorScheme.error,
+        onPressed: () => CustomConfirmationDialog.show(
+          context: context,
+          icon: Icons.delete,
+          iconBackgroundColor: context.colorScheme.error,
+          title: l10n.deleteExpenseDialogTitle,
+          subtitle1: l10n.deleteConfirmSubtitle1,
+          subtitle1AccentText: ' ${expense.description}?',
+          subtitle2: l10n.actionCannotBeUndone,
+          confirmButtonColor: context.colorScheme.error,
+          onConfirm: () => _deleteExpense(context),
+          confirmButtonTextColor: Colors.white,
+          confirmButtonText: l10n.deleteButtonLabel,
+          cancelButtonColor: context.colorScheme.outline,
+          cancelButtonTextColor: context.colorScheme.onSurface,
+          cancelButtonText: l10n.cancelButtonLabel,
+        ),
+        semanticLabel: 'Delete expense',
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +96,7 @@ class ExpenseItemView extends StatelessWidget {
     final formattedTime = NumberFormatter.formatTime(expense.createdAt);
 
     return Padding(
-      padding: const .symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         spacing: 12,
         children: [

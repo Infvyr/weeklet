@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 
 /// A confirmation dialog that asks the user if they want to discard unsaved changes.
 ///
@@ -9,25 +10,28 @@ class UnsavedChangesDialog extends StatelessWidget {
   const UnsavedChangesDialog({super.key});
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
-    title: const Text('Discard changes?'),
-    content: const Text(
-      'You have unsaved changes. Are you sure you want to leave without saving?',
-    ),
-    actions: [
-      TextButton(
-        onPressed: () => context.pop(false),
-        child: const Text('Cancel'),
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return AlertDialog(
+      title: Text(l10n.discardChangesDialogTitle),
+      content: const Text(
+        'You have unsaved changes. Are you sure you want to leave without saving?',
       ),
-      TextButton(
-        onPressed: () => context.pop(true),
-        style: TextButton.styleFrom(
-          foregroundColor: context.colorScheme.error,
+      actions: [
+        TextButton(
+          onPressed: () => context.pop(false),
+          child: Text(l10n.cancelButtonLabel),
         ),
-        child: const Text('Discard'),
-      ),
-    ],
-  );
+        TextButton(
+          onPressed: () => context.pop(true),
+          style: TextButton.styleFrom(
+            foregroundColor: context.colorScheme.error,
+          ),
+          child: Text(l10n.discardButtonLabel),
+        ),
+      ],
+    );
+  }
 
   /// Shows the unsaved changes dialog and returns a `Future<bool>`.
   ///

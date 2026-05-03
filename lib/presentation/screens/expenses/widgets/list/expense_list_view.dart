@@ -3,6 +3,7 @@ import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/domain/entities/expense.dart';
 import 'package:weeklet/domain/utils/expense_grouping.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/screens/expenses/widgets/list/expense_week_group_view.dart';
 import 'package:weeklet/presentation/widgets/common/empty_state_view.dart';
 
@@ -20,11 +21,12 @@ class ExpenseListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (expenses.isEmpty) {
-      return const EmptyStateView(
+      return EmptyStateView(
         icon: Icons.receipt_long_outlined,
-        title: 'No expenses yet',
-        subtitle: 'Tap + to add your first expense',
+        title: l10n.expensesEmptyTitle,
+        subtitle: l10n.expensesEmptySubtitle,
       );
     }
 
@@ -33,7 +35,7 @@ class ExpenseListView extends StatelessWidget {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      padding: const .only(bottom: 50),
+      padding: const EdgeInsets.only(bottom: 50),
       itemCount: groupedByWeek.length,
       itemBuilder: (context, index) {
         final entry = groupedByWeek.entries.elementAt(index);

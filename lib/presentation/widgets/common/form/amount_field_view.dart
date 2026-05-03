@@ -1,8 +1,6 @@
-import 'package:flutter/services.dart'
-    show FilteringTextInputFormatter, TextInputAction;
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:weeklet/core/constants/app_constants.dart';
-import 'package:weeklet/core/utils/form_validators.dart';
 import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/widgets/input_view.dart';
 import 'package:weeklet/presentation/widgets/label_view.dart';
@@ -29,7 +27,7 @@ class AmountFieldView extends StatelessWidget {
         ),
         InputView(
           controller: controller,
-          hintText: '0.00',
+          hintText: l10n.amountFieldHint,
           keyboardType: const TextInputType.numberWithOptions(
             decimal: true,
           ),
@@ -37,7 +35,18 @@ class AmountFieldView extends StatelessWidget {
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
           ],
-          validator: FormValidators.amountFormat,
+          validator: (value) {
+            if (value == null || value.isEmpty) return l10n.validationRequired;
+            final regExp = RegExp(r'^[0-9]+(\.[0-9]+)?$');
+            if (!regExp.hasMatch(value)) {
+              return l10n.validationInvalidAmountFormat;
+            }
+            final amount = double.tryParse(value);
+            if (amount == null || amount <= 0) {
+              return l10n.validationAmountMustBePositive;
+            }
+            return null;
+          },
         ),
       ],
     );
