@@ -26,46 +26,42 @@ class LocaleManager {
 
   late Locale _currentLocale;
 
-  /// List of supported locales in the app
+  /// List of supported locales in the app.
   ///
   /// **Supported Languages:**
-  /// - English (US, GB)
-  /// - Romanian
-  /// - Russian
-  /// - German
-  /// - French
-  /// - Spanish
-  /// - Italian
+  /// - English (en) — fallback for any unsupported system locale
+  /// - Romanian (ro)
+  /// - Russian (ru)
   ///
-  /// Add or remove locales as needed for your app
+  /// Country codes are intentionally omitted so that
+  /// `MaterialApp.localeResolutionCallback` can match by `languageCode`
+  /// alone and fall through to `Locale('en')` for any other locale.
+  ///
+  /// LOC-01: only en/ro/ru. Any other system locale is mapped to en by
+  /// `MaterialApp.localeResolutionCallback` in [WeekletApp].
   static const List<Locale> supportedLocales = [
-    Locale('en', 'US'),
-    Locale('en', 'GB'),
-    Locale('ro', 'RO'),
-    Locale('ru', 'RU'),
-    Locale('de', 'DE'),
-    Locale('fr', 'FR'),
-    Locale('es', 'ES'),
-    Locale('it', 'IT'),
+    Locale('en'),
+    Locale('ro'),
+    Locale('ru'),
   ];
 
   /// Initialize LocaleManager with device locale
   void initialize(Locale? deviceLocale) {
     _currentLocale =
-        _findMatchingLocale(deviceLocale) ?? const Locale('en', 'US');
+        _findMatchingLocale(deviceLocale) ?? const Locale('en');
     intl.Intl.defaultLocale = _currentLocale.toString().replaceAll('-', '_');
   }
 
-  /// Get current locale as string (e.g., "en_US")
+  /// Get current locale as string (e.g., "en")
   ///
   /// Used for intl package formatting
   ///
   /// **Returns:**
-  /// Locale string in format "language_COUNTRY" (e.g., "en_US", "ro_RO")
+  /// Locale string in format "language" (e.g., "en", "ro", "ru")
   ///
   /// **Example:**
   /// ```dart
-  /// String locale = LocaleManager().currentLocaleString; // "en_US"
+  /// String locale = LocaleManager().currentLocaleString; // "en"
   /// ```
   String get currentLocaleString =>
       _currentLocale.toString().replaceAll('-', '_');
@@ -73,11 +69,11 @@ class LocaleManager {
   /// Get current locale as Locale object
   ///
   /// **Returns:**
-  /// Locale object with language and country codes
+  /// Locale object with language code (e.g., `Locale('en')`, `Locale('ro')`)
   ///
   /// **Example:**
   /// ```dart
-  /// Locale locale = LocaleManager().currentLocale; // Locale('en', 'US')
+  /// Locale locale = LocaleManager().currentLocale; // Locale('en')
   /// ```
   Locale get currentLocale => _currentLocale;
 
@@ -89,16 +85,16 @@ class LocaleManager {
   /// **Note:**
   /// After calling this, you need to trigger a rebuild:
   /// ```dart
-  /// LocaleManager().setLocale(const Locale('ro', 'RO'));
+  /// LocaleManager().setLocale(const Locale('ro'));
   /// (context as Element).markNeedsBuild();
   /// ```
   ///
   /// **Example:**
   /// ```dart
-  /// LocaleManager().setLocale(const Locale('ro', 'RO'));
+  /// LocaleManager().setLocale(const Locale('ro'));
   /// ```
   void setLocale(Locale locale) {
-    final matched = _findMatchingLocale(locale) ?? const Locale('en', 'US');
+    final matched = _findMatchingLocale(locale) ?? const Locale('en');
     _currentLocale = matched;
     intl.Intl.defaultLocale = matched.toString().replaceAll('-', '_');
   }
@@ -118,8 +114,8 @@ class LocaleManager {
   ///
   /// **Example:**
   /// ```dart
-  /// // Device: ro_RO -> Returns: Locale('ro', 'RO')
-  /// // Device: ro_MD -> Returns: Locale('ro', 'RO') (language match)
+  /// // Device: ro_RO -> Returns: Locale('ro') (language match)
+  /// // Device: ro_MD -> Returns: Locale('ro') (language match)
   /// // Device: ja_JP -> Returns: null (no match)
   /// ```
   Locale? _findMatchingLocale(Locale? locale) {
