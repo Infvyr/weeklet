@@ -10,57 +10,57 @@ Users can always see where their money went — fast entry, accurate totals, no 
 
 ## Current State
 
-**v1.1 milestone complete 2026-05-03.** Phase 9 (Localization) delivered LOC-01 — full English/Romanian/Russian support with runtime language switching. All 9 phases of v1.1 are complete.
+**v1.1 UX Polish shipped 2026-05-03.** All 9 phases complete across 2 milestones. The app is feature-complete for its initial public release scope — full CRUD for expenses/income/categories, PDF export, statistics, settings (biometric, theme, language, currency), and complete EN/RO/RU localization with runtime language switching and EN fallback for unsupported locales.
 
-### What Ships in v1.0
+### What Ships in v1.1
 
-- Expense tracking — add, edit, delete; weekly grouping by category; monthly totals
-- Category management — create, edit, delete with icon/color picker
-- Income screen — full CRUD with weekly grouping, stats sync, UI matching expense screen
-- Statistics screen — monthly and annual breakdowns; correct totals; chart refreshes on CRUD
-- Settings screen — biometric auth, theme (light/dark/system), language (ro/ru/system), cache clear, full data reset, privacy policy, terms, app version
-- PDF export — expense and income PDF generation via share sheet
-- Branded launcher icon (#1447E6) and native splash screen — iOS and Android
-- Currency reactive — user-selected symbol propagated from `SettingsBloc` to all screens and widgets
-- Multi-language: Romanian, Russian, system default
+- Everything from v1.0, plus:
+- Centered empty state on expenses screen
+- PDF export hidden when list is empty (expenses + income)
+- Categories moved to expenses AppBar icon; removed from bottom navigation
+- Annual evolution amounts compact-formatted and single-row in stats
+- Scrollbars on all scrollable screens
+- Full EN/RO/RU localization — 145 ARB keys × 3 locales, runtime language switching, EN fallback for all other locales
 
-### Architecture (v1.0 Baseline)
+### Architecture (v1.1 Baseline)
 
 - Flutter 3.41.1 (pinned via FVM), Dart ^3.11.0
 - Clean Architecture: BLoC + GetIt DI + Hive local storage
-- Validation and UUID generation in use cases (not BLoCs)
-- `AppConstants.DEFAULT_CURRENCY` — single source of truth for currency symbol
-- `StatsBloc` preloaded in `AppInitializer` — instant stats on navigation
-- Locale-aware month abbreviations via `intl`
+- Typed domain exceptions — `ExpenseValidationException`, `IncomeValidationException`, `CategoryValidationException` with enum codes; no English strings in domain layer
+- `AppLocalizations` in presentation layer only; BLoCs emit string error codes, widgets translate via switch
+- `LocaleManager.supportedLocales` = [en, ro, ru]; bare `Locale` objects (no country codes)
+- `localeResolutionCallback` returns `Locale('en')` for unsupported locales
+- 16,789 LOC (Dart)
 
 ---
 
-## Current Milestone: v1.1 UX Polish
+## Requirements
 
-**Goal:** Fix six UX rough edges across the app — layout, navigation, readability, scrolling, and localization.
+### Validated
 
-**Target features:**
-- Centered empty state on expenses screen
-- PDF export hidden when list is empty (expenses + income)
-- Categories moved to expenses AppBar icon button; removed from bottom navigation
-- Annual evolution amounts displayed in a single row (stats screen)
-- Scrollbar on all scrollable screens
-- Full RO/RU/EN localization; non-ro/ru/en system locale falls back to EN
+- ✓ **ARCH-01** — Use cases validate inputs and throw on failure — v1.0
+- ✓ **ARCH-02** — UUID generation in use cases, not BLoCs — v1.0
+- ✓ **ARCH-03** — StatsBloc preloaded at startup via AppInitializer — v1.0
+- ✓ **ARCH-04** — Locale-aware month abbreviations via intl — v1.0
+- ✓ **INC-01–04** — Income CRUD, weekly grouping, stats sync — v1.0
+- ✓ **STATS-01–03** — Monthly/annual breakdowns, chart refresh on CRUD — v1.0
+- ✓ **SET-01–05** — Biometric auth, theme, language, currency, data reset — v1.0
+- ✓ **EXP-01–02** — PDF export for expenses and income — v1.0
+- ✓ **REL-01–04** — Branded icon, splash screen, branded colors — v1.0
+- ✓ **UX-01** — Centered empty state on expenses list — v1.1
+- ✓ **UX-02** — PDF export hidden when list is empty — v1.1
+- ✓ **UX-03** — Categories via AppBar icon; removed from bottom nav — v1.1
+- ✓ **UX-04** — Annual evolution amounts fit on one line — v1.1
+- ✓ **UX-05** — Scrollbar on all scrollable screens — v1.1
+- ✓ **LOC-01** — Full EN/RO/RU localization, EN fallback for unsupported locales — v1.1
 
-### Active Requirements
+### Active
 
-- [ ] **UX-01**: User sees a centered empty state when the expenses list is empty
-- [ ] **UX-02**: PDF export action is hidden when the expenses or income list is empty
-- [ ] **UX-03**: Categories accessible via icon button in expenses AppBar; removed from bottom navigation
-- [ ] **UX-04**: Annual evolution amount fits on a single row (stats screen)
-- [ ] **UX-05**: Scrollbar visible on all scrollable screens
-- [ ] **LOC-01**: All strings translated to RO, RU, and EN; system locales outside ro/ru/en fall back to EN
+*(None — v1.1 scope complete. Define requirements for next milestone via `/gsd-new-milestone`.)*
 
----
+### Deferred
 
-### Deferred (carry-forward from v1.0)
-
-- **QUAL-01/02** — Unit + BLoC tests (test stubs exist; no implementation tests shipped)
+- **QUAL-01/02** — Unit + BLoC tests (use-case stubs exist; no BLoC tests shipped)
 - **BUDG-01/02** — Monthly spending limits per category
 - **AUTO-01** — Recurring transactions
 - **EXP-03/04** — CSV export (expense + income)
@@ -69,7 +69,7 @@ Users can always see where their money went — fast entry, accurate totals, no 
 
 ## Constraints
 
-- **Tech stack:** Flutter 3.41.1 (pinned via FVM); Dart ^3.11.0
+- **Tech stack:** Flutter 3.41.1 (pinned via FVM); Dart ^3.11.0; no Flutter upgrades until next milestone
 - **Architecture:** Clean Architecture with BLoC must be maintained; layer separation is non-negotiable
 - **Storage:** Hive only; no SQLite migration, no network calls
 - **Platform:** iOS and Android primary; macOS/Linux/Windows folders present but not target platforms
@@ -78,36 +78,33 @@ Users can always see where their money went — fast entry, accurate totals, no 
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Local-first with Hive | Simplicity — no backend infrastructure, no auth, no sync | Validated — shipped |
-| BLoC for all state management | Established pattern, enforced by CLAUDE.md | Validated — shipped |
-| Romanian + Russian + system locale | Core user base; `intl` already a dependency | Validated — shipped |
-| `AppConstants.DEFAULT_CURRENCY` | Single source of truth; eliminates scattered string literals | Validated — Phase 1 |
-| `StatsBloc` preloaded in `AppInitializer` | Instant stats screen — no spinner on navigation | Validated — Phase 1 |
-| Settings screen modeled on screenshot | User provided exact reference design (dark, grouped sections, icons) | Validated — Phase 4 |
+| Local-first with Hive | Simplicity — no backend, no auth, no sync | ✓ Validated v1.0 |
+| BLoC for all state management | Established pattern, enforced by CLAUDE.md | ✓ Validated v1.0 |
+| Romanian + Russian + system locale | Core user base; `intl` already a dependency | ✓ Validated v1.1 |
+| `AppConstants.DEFAULT_CURRENCY` | Single source of truth for currency symbol | ✓ Validated v1.0 |
+| `StatsBloc` preloaded in `AppInitializer` | Instant stats — no spinner on navigation | ✓ Validated v1.0 |
+| Settings screen modeled on screenshot | User provided exact reference design | ✓ Validated v1.0 |
+| Typed domain exceptions with enum codes | BLoCs emit codes, widgets translate — no English in domain | ✓ Validated v1.1 |
+| Bare `Locale` objects (no country codes) | Matches `LocaleManager.supportedLocales`; avoids `Locale.==` mismatch | ✓ Validated v1.1 |
+| `currencySymbol` passed to `AmountFieldView` | Required param prevents stale default; forces explicit passing | ✓ Validated v1.1 |
+| `deletionDialog` button labels required (not defaulted) | Callers must pass l10n strings; no hardcoded English defaults | ✓ Validated v1.1 |
 
 ## Out of Scope
 
-- Cloud sync / backend — local-first is a core product constraint; no network infrastructure planned
-- Web target — only iOS and Android are primary targets
-- Multi-currency — single currency per user; currency is a display setting, not multi-currency accounting
-- Onboarding flow — not needed for personal-use launch; revisit if user acquisition becomes a goal
+- Cloud sync / backend — local-first is a core product constraint
+- Web target — iOS and Android only
+- Multi-currency — single currency per user; display setting only
+- Onboarding flow — personal-use app; revisit if user acquisition becomes a goal
+- Empty state centering for income/categories screens — expenses only per UX-01
+
+---
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
-**After each phase transition** (via `/gsd-next`):
-1. Requirements invalidated? → Move to Out of Scope with reason
-2. Requirements validated? → Move to Validated with phase reference
-3. New requirements emerged? → Add to Active
-4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
-
-**After each milestone** (via `/gsd-complete-milestone`):
-1. Full review of all sections
-2. Core Value check — still the right priority?
-3. Audit Out of Scope — reasons still valid?
-4. Update Context with current state
+**After each phase:** Move requirements, log decisions, check "What This Is" accuracy.
+**After each milestone:** Full review — core value check, Out of Scope audit, context update.
 
 ---
-*Last updated: 2026-04-29 — v1.1 milestone started*
+*Last updated: 2026-05-03 after v1.1 UX Polish milestone*
