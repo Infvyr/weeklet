@@ -3,6 +3,7 @@ import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
 import 'package:weeklet/domain/utils/income_filter_utils.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 
 class IncomeTotalCard extends StatelessWidget {
   const IncomeTotalCard({
@@ -18,6 +19,7 @@ class IncomeTotalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final monthName = selectedMonth != null
         ? IncomeFilterUtils.getMonthName(selectedMonth!).toLowerCase()
         : '';
@@ -27,17 +29,17 @@ class IncomeTotalCard extends StatelessWidget {
       isIncome: true,
     );
     final label = selectedMonth != null
-        ? 'Total income for $monthName'
-        : 'Total income';
+        ? l10n.incomeTotalForMonth(monthName)
+        : l10n.incomeTotalAllMonths;
 
     return SizedBox(
       width: double.infinity,
       child: Card(
         color: Colors.green,
         child: Padding(
-          padding: const .all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
-            crossAxisAlignment: .start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 8,
             children: [
               Text(
@@ -50,7 +52,7 @@ class IncomeTotalCard extends StatelessWidget {
                 formattedTotal,
                 style: context.headlineMedium?.copyWith(
                   color: Colors.white,
-                  fontWeight: .bold,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],

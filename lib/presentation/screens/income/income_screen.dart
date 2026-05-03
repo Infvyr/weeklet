@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/domain/utils/income_grouping.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/blocs/export/export_bloc.dart';
 import 'package:weeklet/presentation/blocs/export/export_event.dart';
 import 'package:weeklet/presentation/blocs/export/export_state.dart';
@@ -91,7 +92,8 @@ class _IncomeScreenState extends State<IncomeScreen> {
     if (incomeState is! IncomeSuccess) return;
 
     if (incomeState.selectedMonth == null) {
-      context.showSnackBar('Please select a specific month to export.');
+      final l10n = AppLocalizations.of(context);
+      context.showSnackBar(l10n.exportMonthRequiredMessage);
       return;
     }
 
@@ -112,132 +114,145 @@ class _IncomeScreenState extends State<IncomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final incomeState = context.watch<IncomeBloc>().state;
     final settingsState = context.watch<SettingsBloc>().state;
     final currencySymbol = settingsState is SettingsLoaded
         ? settingsState.currencySymbol
         : AppConstants.DEFAULT_CURRENCY;
 
-    return BlocListener<ExportBloc, ExportState>(
+    return BlocListener<IncomeBloc, IncomeState>(
       listenWhen: (_, s) =>
-          (s is ExportSuccess &&
-              s.exportType == ExportType.income) ||
-          s is ExportFailure,
-      listener: (context, exportState) {
-        if (exportState is ExportSuccess) {
-          final exportBloc = context.read<ExportBloc>();
-          unawaited(
-            SharePlus.instance
-                .share(
-                  ShareParams(
-                    files: [XFile(exportState.filePath)],
-                    subject: exportState.subject,
-                    sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1),
-                  ),
-                )
-                .then((_) {
-                  if (!mounted) return;
-                  exportBloc.add(const ResetExportRequested());
-                }),
-          );
-        } else if (exportState is ExportFailure) {
-          context.showErrorSnackBar(
-            'Failed to generate PDF. Please try again.',
-          );
-          context.read<ExportBloc>().add(const ResetExportRequested());
+          s is IncomeSuccess && s.actionError != null,
+      listener: (context, state) {
+        if (state case IncomeSuccess(actionError: final err?) when err.isNotEmpty) {
+          final message = switch (err) {
+            'invalidAmount' => l10n.errorInvalidAmount,
+            _ => l10n.errorGeneric,
+          };
+          context.showErrorSnackBar(message);
+          context.read<IncomeBloc>().add(const ClearIncomeActionErrorRequested());
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: const Text('My Income'),
-          centerTitle: true,
-          actions: [
-            if (incomeState case final IncomeSuccess success)
-              if (success.filteredIncomes.isNotEmpty)
-                IconButton(
-                  icon: const Icon(Icons.picture_as_pdf),
-                  tooltip: 'Export as PDF',
-                  onPressed: _onExportTapped,
-                ),
-          ],
-          bottom: const PreferredSize(
-            preferredSize: Size.fromHeight(60),
-            child: IncomeFilterBar(),
-          ),
-        ),
-        body: switch (incomeState) {
-          IncomeLoading _ => const Center(
-            child: CircularProgressIndicator.adaptive(),
-          ),
-
-          IncomeFailure _ => Center(
-            child: Column(
-              mainAxisAlignment: .center,
-              children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 48,
-                  color: context.colorScheme.error,
-                ),
-                const SizedBox(height: 16),
-                Text('Failed to load income', style: context.bodyLarge),
-                const SizedBox(height: 8),
-                TextButton(
-                  onPressed: () => context.read<IncomeBloc>().add(
-                    const LoadIncomesRequested(),
+      child: BlocListener<ExportBloc, ExportState>(
+        listenWhen: (_, s) =>
+            (s is ExportSuccess &&
+                s.exportType == ExportType.income) ||
+            s is ExportFailure,
+        listener: (context, exportState) {
+          if (exportState is ExportSuccess) {
+            final exportBloc = context.read<ExportBloc>();
+            unawaited(
+              SharePlus.instance
+                  .share(
+                    ShareParams(
+                      files: [XFile(exportState.filePath)],
+                      subject: exportState.subject,
+                      sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1),
+                    ),
+                  )
+                  .then((_) {
+                    if (!mounted) return;
+                    exportBloc.add(const ResetExportRequested());
+                  }),
+            );
+          } else if (exportState is ExportFailure) {
+            context.showErrorSnackBar(l10n.pdfExportError);
+            context.read<ExportBloc>().add(const ResetExportRequested());
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: Text(l10n.incomeScreenTitle),
+            centerTitle: true,
+            actions: [
+              if (incomeState case final IncomeSuccess success)
+                if (success.filteredIncomes.isNotEmpty)
+                  IconButton(
+                    icon: const Icon(Icons.picture_as_pdf),
+                    tooltip: l10n.exportPdfTooltip,
+                    onPressed: _onExportTapped,
                   ),
-                  child: const Text('Retry'),
-                ),
-              ],
+            ],
+            bottom: const PreferredSize(
+              preferredSize: Size.fromHeight(60),
+              child: IncomeFilterBar(),
             ),
           ),
+          body: switch (incomeState) {
+            IncomeLoading _ => const Center(
+              child: CircularProgressIndicator.adaptive(),
+            ),
 
-          final IncomeSuccess success => RefreshIndicator.adaptive(
-            onRefresh: _onRefresh,
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              padding: const EdgeInsets.all(16.0),
+            IncomeFailure _ => Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IncomeTotalCard(
-                    total: IncomeGrouping.calculateTotal(
-                      success.filteredIncomes,
-                    ),
-                    selectedMonth: success.selectedMonth,
-                    currencySymbol: currencySymbol,
+                  Icon(
+                    Icons.error_outline,
+                    size: 48,
+                    color: context.colorScheme.error,
                   ),
                   const SizedBox(height: 16),
-                  IncomeListView(
-                    incomes: success.filteredIncomes,
-                    currencySymbol: currencySymbol,
+                  Text(l10n.incomeLoadError, style: context.bodyLarge),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () => context.read<IncomeBloc>().add(
+                      const LoadIncomesRequested(),
+                    ),
+                    child: Text(l10n.retryButtonLabel),
                   ),
                 ],
               ),
             ),
-          ),
 
-          _ => const SizedBox.shrink(),
-        },
-        floatingActionButton: AnimatedContainer(
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.easeInOut,
-          width: _isAtBottom ? context.screenWidth - 32 : 56,
-          height: _isAtBottom ? 48 : 56,
-          child: AnimatedSlide(
+            final IncomeSuccess success => RefreshIndicator.adaptive(
+              onRefresh: _onRefresh,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    IncomeTotalCard(
+                      total: IncomeGrouping.calculateTotal(
+                        success.filteredIncomes,
+                      ),
+                      selectedMonth: success.selectedMonth,
+                      currencySymbol: currencySymbol,
+                    ),
+                    const SizedBox(height: 16),
+                    IncomeListView(
+                      incomes: success.filteredIncomes,
+                      currencySymbol: currencySymbol,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            _ => const SizedBox.shrink(),
+          },
+          floatingActionButton: AnimatedContainer(
             duration: const Duration(milliseconds: 400),
-            offset: Offset.zero,
-            child: FloatingActionButton.extended(
-              onPressed: _showAddIncomeSheet,
-              icon: Transform.translate(
-                offset: _isAtBottom ? Offset.zero : const Offset(6, 0),
-                child: const Icon(Icons.add),
+            curve: Curves.easeInOut,
+            width: _isAtBottom ? context.screenWidth - 32 : 56,
+            height: _isAtBottom ? 48 : 56,
+            child: AnimatedSlide(
+              duration: const Duration(milliseconds: 400),
+              offset: Offset.zero,
+              child: FloatingActionButton.extended(
+                onPressed: _showAddIncomeSheet,
+                icon: Transform.translate(
+                  offset: _isAtBottom ? Offset.zero : const Offset(6, 0),
+                  child: const Icon(Icons.add),
+                ),
+                label: Visibility(
+                  visible: _isAtBottom,
+                  child: Text(l10n.addIncomeButtonLabel),
+                ),
+                tooltip: _isAtBottom ? '' : l10n.addIncomeTooltip,
               ),
-              label: Visibility(
-                visible: _isAtBottom,
-                child: const Text('Add Income'),
-              ),
-              tooltip: _isAtBottom ? '' : 'Add new income',
             ),
           ),
         ),

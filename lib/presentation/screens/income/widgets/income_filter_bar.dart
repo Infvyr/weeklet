@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklet/core/extensions/context_extensions.dart';
 import 'package:weeklet/domain/utils/income_filter_utils.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/blocs/income/income_bloc.dart';
 import 'package:weeklet/presentation/blocs/income/income_event.dart';
 import 'package:weeklet/presentation/blocs/income/income_state.dart';
@@ -12,6 +13,7 @@ class IncomeFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final state = context.watch<IncomeBloc>().state;
 
     if (state is! IncomeSuccess) {
@@ -32,10 +34,10 @@ class IncomeFilterBar extends StatelessWidget {
               selectedItem: state.selectedMonth,
               itemBuilder: (month) => Text(
                 month == null
-                    ? 'All Months'
+                    ? l10n.allMonthsLabel
                     : IncomeFilterUtils.getMonthName(month),
               ),
-              hint: 'Select Month',
+              hint: l10n.selectMonthHint,
               onChanged: (month) {
                 context.read<IncomeBloc>().add(
                   IncomeFilterDateChanged(month: month),
@@ -50,7 +52,7 @@ class IncomeFilterBar extends StatelessWidget {
               items: state.availableYears,
               selectedItem: state.selectedYear,
               itemBuilder: (year) => Text(year.toString()),
-              hint: 'Select Year',
+              hint: l10n.selectYearHint,
               onChanged: (year) {
                 if (year != null) {
                   context.read<IncomeBloc>().add(

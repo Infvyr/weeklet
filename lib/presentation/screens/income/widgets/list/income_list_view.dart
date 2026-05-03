@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weeklet/core/constants/app_constants.dart';
 import 'package:weeklet/domain/entities/income.dart';
 import 'package:weeklet/domain/utils/income_grouping.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/screens/income/widgets/list/income_week_group_view.dart';
 import 'package:weeklet/presentation/widgets/common/empty_state_view.dart';
 
@@ -18,10 +19,11 @@ class IncomeListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (incomes.isEmpty) {
-      return const EmptyStateView(
+      final l10n = AppLocalizations.of(context);
+      return EmptyStateView(
         icon: Icons.account_balance_wallet_outlined,
-        title: 'No income yet',
-        subtitle: 'Tap + to add your first income',
+        title: l10n.incomeEmptyTitle,
+        subtitle: l10n.incomeEmptySubtitle,
       );
     }
 
@@ -30,7 +32,7 @@ class IncomeListView extends StatelessWidget {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      padding: const .only(bottom: 50),
+      padding: const EdgeInsets.only(bottom: 50),
       itemCount: groupedByWeek.length,
       itemBuilder: (context, index) {
         final entry = groupedByWeek.entries.elementAt(index);
