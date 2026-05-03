@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklet/domain/entities/category.dart';
+import 'package:weeklet/domain/exceptions/category_exceptions.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
 import 'package:weeklet/domain/usecases/category/add_category_usecase.dart';
 import 'package:weeklet/domain/usecases/category/delete_category_usecase.dart';
@@ -46,14 +47,19 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       );
       emit(
         const CategorySuccess(
-          message: 'Category added successfully',
+          message: 'categoryAddedSuccess',
         ),
       );
       add(const GetAllCategoriesEvent());
+    } on CategoryValidationException catch (e) {
+      debugPrint('error in _onAddCategory: $e');
+      emit(
+        CategoryError(message: e.error.name),
+      );
     } catch (e) {
       debugPrint('error in _onAddCategory: $e');
       emit(
-        CategoryError(message: e.toString()),
+        const CategoryError(message: 'genericError'),
       );
     }
   }
@@ -71,11 +77,14 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         createdAt: event.createdAt,
       );
       await updateCategoryUseCase(category);
-      emit(const CategorySuccess(message: 'Category updated successfully'));
+      emit(const CategorySuccess(message: 'categoryUpdatedSuccess'));
       add(const GetAllCategoriesEvent());
+    } on CategoryValidationException catch (e) {
+      debugPrint('error in _onUpdateCategory: $e');
+      emit(CategoryError(message: e.error.name));
     } catch (e) {
       debugPrint('error in _onUpdateCategory: $e');
-      emit(CategoryError(message: e.toString()));
+      emit(const CategoryError(message: 'genericError'));
     }
   }
 
@@ -86,11 +95,14 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     emit(const CategoryLoading());
     try {
       await deleteCategoryUseCase(event.id);
-      emit(const CategorySuccess(message: 'Category deleted successfully'));
+      emit(const CategorySuccess(message: 'categoryDeletedSuccess'));
       add(const GetAllCategoriesEvent());
+    } on CategoryValidationException catch (e) {
+      debugPrint('error in _onDeleteCategory: $e');
+      emit(CategoryError(message: e.error.name));
     } catch (e) {
       debugPrint('error in _onDeleteCategory: $e');
-      emit(CategoryError(message: e.toString()));
+      emit(const CategoryError(message: 'genericError'));
     }
   }
 
@@ -104,7 +116,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       emit(CategoriesLoaded(categories: categories));
     } catch (e) {
       debugPrint('error in _onGetAllCategories: $e');
-      emit(CategoryError(message: e.toString()));
+      emit(const CategoryError(message: 'genericError'));
     }
   }
 
@@ -118,11 +130,14 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       if (category != null) {
         emit(CategoryLoaded(category: category));
       } else {
-        emit(const CategoryError(message: 'Category not found'));
+        emit(const CategoryError(message: 'errorCategoryNotFound'));
       }
+    } on CategoryValidationException catch (e) {
+      debugPrint('error in _onGetCategoryById: $e');
+      emit(CategoryError(message: e.error.name));
     } catch (e) {
       debugPrint('error in _onGetCategoryById: $e');
-      emit(CategoryError(message: e.toString()));
+      emit(const CategoryError(message: 'genericError'));
     }
   }
 }

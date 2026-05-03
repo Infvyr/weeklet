@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklet/core/di/service_locator.dart';
+import 'package:weeklet/domain/exceptions/income_exceptions.dart';
 import 'package:weeklet/domain/usecases/income/add_income_use_case.dart';
 import 'package:weeklet/domain/usecases/income/delete_income_use_case.dart';
 import 'package:weeklet/domain/usecases/income/get_incomes_use_case.dart';
@@ -108,12 +109,12 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
         );
         add(const LoadIncomesRequested());
         sl<StatsBloc>().add(LoadMonthlyStats(year: DateTime.now().year));
-      } on ArgumentError catch (e) {
+      } on IncomeValidationException catch (e) {
         debugPrint('error in _onAddIncome: $e');
         emit(
           st.copyWith(
             selectedMonth: st.selectedMonth,
-            actionError: e.message?.toString() ?? 'Invalid input',
+            actionError: e.error.name,
           ),
         );
       } catch (e) {
@@ -121,7 +122,7 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
         emit(
           st.copyWith(
             selectedMonth: st.selectedMonth,
-            actionError: 'Could not add the income',
+            actionError: 'genericError',
           ),
         );
       }
@@ -137,11 +138,20 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
         await updateIncomeUseCase(event.income);
         add(const LoadIncomesRequested());
         sl<StatsBloc>().add(LoadMonthlyStats(year: DateTime.now().year));
-      } catch (e) {
+      } on IncomeValidationException catch (e) {
+        debugPrint('error in _onUpdateIncome: $e');
         emit(
           st.copyWith(
             selectedMonth: st.selectedMonth,
-            actionError: 'Could not update the income',
+            actionError: e.error.name,
+          ),
+        );
+      } catch (e) {
+        debugPrint('error in _onUpdateIncome: $e');
+        emit(
+          st.copyWith(
+            selectedMonth: st.selectedMonth,
+            actionError: 'genericError',
           ),
         );
       }
@@ -157,11 +167,20 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
         await deleteIncomeUseCase(event.id);
         add(const LoadIncomesRequested());
         sl<StatsBloc>().add(LoadMonthlyStats(year: DateTime.now().year));
-      } catch (e) {
+      } on IncomeValidationException catch (e) {
+        debugPrint('error in _onDeleteIncome: $e');
         emit(
           st.copyWith(
             selectedMonth: st.selectedMonth,
-            actionError: 'Could not delete the income',
+            actionError: e.error.name,
+          ),
+        );
+      } catch (e) {
+        debugPrint('error in _onDeleteIncome: $e');
+        emit(
+          st.copyWith(
+            selectedMonth: st.selectedMonth,
+            actionError: 'genericError',
           ),
         );
       }
