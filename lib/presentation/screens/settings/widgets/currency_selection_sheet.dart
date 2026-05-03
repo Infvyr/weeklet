@@ -19,11 +19,11 @@ class CurrencySelectionSheet extends StatelessWidget {
   );
 
   static const List<({String symbol, String label})> _options = [
-    (symbol: 'MDL', label: 'Moldovan Leu (MDL)'),
-    (symbol: 'RON', label: 'Romanian Leu (RON)'),
-    (symbol: 'EUR', label: 'Euro (EUR)'),
-    (symbol: 'USD', label: 'US Dollar (USD)'),
-    (symbol: 'RUB', label: 'Russian Ruble (RUB)'),
+    (symbol: 'MDL', label: 'MDL'),
+    (symbol: 'RON', label: 'RON'),
+    (symbol: 'EUR', label: 'EUR'),
+    (symbol: 'USD', label: 'USD'),
+    (symbol: 'RUB', label: 'RUB'),
   ];
 
   @override
