@@ -26,7 +26,8 @@
       "Bash(rm -f \"/Users/vasilenovatchii/My Projects/Flutter/Weeklet/.claude/cache/gsd-update-check.json\")",
       "Skill(gsd-next)",
       "Skill(gsd-complete-milestone)",
-      "Skill(gsd-plan-milestone-gaps)"
+      "Skill(gsd-plan-milestone-gaps)",
+      "Skill(gsd:update)"
     ]
   }
 }
