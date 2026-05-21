@@ -2,21 +2,72 @@
 // These absorb .add() calls without crashing and expose their initial state.
 // All classes are public so they can be imported across test files.
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weeklet/domain/entities/statistics.dart';
+import 'package:weeklet/domain/usecases/base/use_case.dart';
+import 'package:weeklet/domain/usecases/stats/get_available_periods_use_case.dart';
+import 'package:weeklet/domain/usecases/stats/get_evolution_stats_use_case.dart';
+import 'package:weeklet/domain/usecases/stats/get_monthly_stats_use_case.dart';
 import 'package:weeklet/presentation/blocs/category/category_event.dart';
 import 'package:weeklet/presentation/blocs/category/category_state.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_event.dart';
 import 'package:weeklet/presentation/blocs/expense/expense_state.dart';
 import 'package:weeklet/presentation/blocs/income/income_event.dart';
 import 'package:weeklet/presentation/blocs/income/income_state.dart';
+import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_state.dart';
 
-class FakeStatsBloc extends Bloc<StatsEvent, StatsState> {
-  FakeStatsBloc() : super(const StatsInitial()) {
-    on<LoadMonthlyStats>((_, __) {});
-    on<ChangeStatsTab>((_, __) {});
-    on<ChartTouchInteraction>((_, __) {});
-  }
+// ---------------------------------------------------------------------------
+// Stub use cases for FakeStatsBloc
+// ---------------------------------------------------------------------------
+
+// These stubs use noSuchMethod so the concrete use case's `repository` field
+// (which becomes part of the abstract contract) is implicitly satisfied.
+
+class _StubGetMonthlyStatsUseCase implements GetMonthlyStatsUseCase {
+  @override
+  Future<MonthlyStats> call(GetMonthlyStatsParams params) async =>
+      const MonthlyStats(
+        totalIncome: 0,
+        totalExpenses: 0,
+        balance: 0,
+        incomeGrowthPercentage: 0,
+        expenseGrowthPercentage: 0,
+        categoryStats: [],
+      );
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _StubGetEvolutionStatsUseCase implements GetEvolutionStatsUseCase {
+  @override
+  Future<EvolutionStats> call(GetEvolutionStatsParams params) async =>
+      const EvolutionStats(snapshots: []);
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _StubGetAvailablePeriodsUseCase implements GetAvailablePeriodsUseCase {
+  @override
+  Future<Map<int, List<int>>> call(NoParams params) async => {};
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+// ---------------------------------------------------------------------------
+// FakeStatsBloc — extends StatsBloc so it can be registered as StatsBloc
+// ---------------------------------------------------------------------------
+
+class FakeStatsBloc extends StatsBloc {
+  FakeStatsBloc()
+    : super(
+        getMonthlyStatsUseCase: _StubGetMonthlyStatsUseCase(),
+        getEvolutionStatsUseCase: _StubGetEvolutionStatsUseCase(),
+        getAvailablePeriodsUseCase: _StubGetAvailablePeriodsUseCase(),
+      );
 }
 
 class FakeExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
