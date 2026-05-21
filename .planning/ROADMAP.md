@@ -32,7 +32,7 @@ See [v1.0-ROADMAP.md](.planning/milestones/v1.0-ROADMAP.md) for full details.
   **Plans:** 3 plans
   Plans:
   - [ ] 10-01-PLAN.md — TEST-03 TDD: AddCategoryUseCase duplicate prevention (enum + use case + tests)
-  - [ ] 10-02-PLAN.md — TEST-04: Delete use case tests for expense, income, and category
+  - [x] 10-02-PLAN.md — TEST-04: Delete use case tests for expense, income, and category
   - [ ] 10-03-PLAN.md — TEST-05 + TEST-06: ExpenseFilterUtils and IncomeFilterUtils filtering tests
 - [ ] Phase 11: BLoC State Machine Tests — BLoC event handlers, state transitions, and mutation side effects for all 5 BLoCs
 - [ ] Phase 12: Widget Component Tests — Screen and component unit tests for rendering, interaction, and form validation
@@ -49,7 +49,7 @@ See [v1.0-ROADMAP.md](.planning/milestones/v1.0-ROADMAP.md) for full details.
 | 1–7   | v1.0      | 21/21 | Complete | 2026-04-27 |
 | 8     | v1.1      | 6/6   | Complete | 2026-04-30 |
 | 9     | v1.1      | 6/6   | Complete | 2026-05-03 |
-| 10    | v1.2      | 3/3   | Not started | — |
+| 10    | v1.2      | 1/3 | In Progress|  |
 | 11    | v1.2      | TBD   | Not started | — |
 | 12    | v1.2      | TBD   | Not started | — |
 | 13    | v1.2      | TBD   | Not started | — |
