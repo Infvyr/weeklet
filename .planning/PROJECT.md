@@ -8,6 +8,16 @@ Weeklet is a Flutter app for simple personal finance management. Users track wee
 
 Users can always see where their money went — fast entry, accurate totals, no friction.
 
+## Current Milestone: v1.2 Testing
+
+**Goal:** Establish comprehensive test infrastructure covering use cases, BLoCs, and widgets with complete feature coverage.
+
+**Target areas:**
+- Use Case unit tests (validation, error handling, edge cases)
+- BLoC tests (state transitions, event handling)
+- Widget tests (component rendering, interaction)
+- Full coverage: Expenses, Income, Categories, Stats, Settings, PDF Export, Localization
+
 ## Current State
 
 **v1.1 UX Polish shipped 2026-05-03.** All 9 phases complete across 2 milestones. The app is feature-complete for its initial public release scope — full CRUD for expenses/income/categories, PDF export, statistics, settings (biometric, theme, language, currency), and complete EN/RO/RU localization with runtime language switching and EN fallback for unsupported locales.
@@ -56,7 +66,10 @@ Users can always see where their money went — fast entry, accurate totals, no 
 
 ### Active
 
-*(None — v1.1 scope complete. Define requirements for next milestone via `/gsd-new-milestone`.)*
+- **TEST-01–04** — Use case unit tests for validation, error handling, and edge cases
+- **TEST-05–08** — BLoC state transition and event handler tests
+- **TEST-09–12** — Widget component and interaction tests
+- **TEST-13–15** — Integration tests for critical user flows
 
 ### Deferred
 
@@ -107,4 +120,4 @@ This document evolves at phase transitions and milestone boundaries.
 **After each milestone:** Full review — core value check, Out of Scope audit, context update.
 
 ---
-*Last updated: 2026-05-03 after v1.1 UX Polish milestone*
+*Last updated: 2026-05-21 — v1.2 Testing milestone started*
