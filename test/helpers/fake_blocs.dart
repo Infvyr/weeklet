@@ -1,21 +1,31 @@
 // Fake BLoC classes for GetIt registration in Wave 2+3 tests.
 // These absorb .add() calls without crashing and expose their initial state.
 // All classes are public so they can be imported across test files.
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weeklet/domain/entities/category.dart';
+import 'package:weeklet/domain/entities/expense.dart';
+import 'package:weeklet/domain/entities/income.dart';
 import 'package:weeklet/domain/entities/statistics.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
+import 'package:weeklet/domain/usecases/category/add_category_usecase.dart';
+import 'package:weeklet/domain/usecases/category/delete_category_usecase.dart';
+import 'package:weeklet/domain/usecases/category/get_all_categories_usecase.dart';
+import 'package:weeklet/domain/usecases/category/get_single_category_usecase.dart';
+import 'package:weeklet/domain/usecases/category/update_category_usecase.dart';
+import 'package:weeklet/domain/usecases/expense/add_expense_usecase.dart';
+import 'package:weeklet/domain/usecases/expense/delete_expense_usecase.dart';
+import 'package:weeklet/domain/usecases/expense/get_all_expenses_usecase.dart';
+import 'package:weeklet/domain/usecases/expense/update_expense_usecase.dart';
+import 'package:weeklet/domain/usecases/income/add_income_use_case.dart';
+import 'package:weeklet/domain/usecases/income/delete_income_use_case.dart';
+import 'package:weeklet/domain/usecases/income/get_incomes_use_case.dart';
+import 'package:weeklet/domain/usecases/income/update_income_use_case.dart';
 import 'package:weeklet/domain/usecases/stats/get_available_periods_use_case.dart';
 import 'package:weeklet/domain/usecases/stats/get_evolution_stats_use_case.dart';
 import 'package:weeklet/domain/usecases/stats/get_monthly_stats_use_case.dart';
-import 'package:weeklet/presentation/blocs/category/category_event.dart';
-import 'package:weeklet/presentation/blocs/category/category_state.dart';
-import 'package:weeklet/presentation/blocs/expense/expense_event.dart';
-import 'package:weeklet/presentation/blocs/expense/expense_state.dart';
-import 'package:weeklet/presentation/blocs/income/income_event.dart';
-import 'package:weeklet/presentation/blocs/income/income_state.dart';
+import 'package:weeklet/presentation/blocs/category/category_bloc.dart';
+import 'package:weeklet/presentation/blocs/expense/expense_bloc.dart';
+import 'package:weeklet/presentation/blocs/income/income_bloc.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
-import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
-import 'package:weeklet/presentation/blocs/stats/stats_state.dart';
 
 // ---------------------------------------------------------------------------
 // Stub use cases for FakeStatsBloc
@@ -70,34 +80,161 @@ class FakeStatsBloc extends StatsBloc {
       );
 }
 
-class FakeExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
-  FakeExpenseBloc() : super(const ExpenseInitial()) {
-    on<LoadExpensesRequested>((_, __) {});
-    on<AddExpenseStarted>((_, __) {});
-    on<UpdateExpenseStarted>((_, __) {});
-    on<DeleteExpenseStarted>((_, __) {});
-    on<FilterDateChanged>((_, __) {});
-    on<ClearActionErrorRequested>((_, __) {});
-  }
+// ---------------------------------------------------------------------------
+// Stub use cases for FakeExpenseBloc
+// ---------------------------------------------------------------------------
+
+class _StubAddExpenseUseCase implements AddExpenseUseCase {
+  @override
+  Future<void> call(AddExpenseParams params) async {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-class FakeIncomeBloc extends Bloc<IncomeEvent, IncomeState> {
-  FakeIncomeBloc() : super(const IncomeInitial()) {
-    on<LoadIncomesRequested>((_, __) {});
-    on<AddIncomeStarted>((_, __) {});
-    on<UpdateIncomeStarted>((_, __) {});
-    on<DeleteIncomeStarted>((_, __) {});
-    on<IncomeFilterDateChanged>((_, __) {});
-    on<ClearIncomeActionErrorRequested>((_, __) {});
-  }
+class _StubUpdateExpenseUseCase implements UpdateExpenseUseCase {
+  @override
+  Future<void> call(Expense params) async {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-class FakeCategoryBloc extends Bloc<CategoryEvent, CategoryState> {
-  FakeCategoryBloc() : super(const CategoryLoading()) {
-    on<GetAllCategoriesEvent>((_, __) {});
-    on<AddCategoryEvent>((_, __) {});
-    on<UpdateCategoryEvent>((_, __) {});
-    on<DeleteCategoryEvent>((_, __) {});
-    on<GetCategoryByIdEvent>((_, __) {});
-  }
+class _StubDeleteExpenseUseCase implements DeleteExpenseUseCase {
+  @override
+  Future<void> call(String params) async {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _StubGetAllExpensesUseCase implements GetAllExpensesUseCase {
+  @override
+  Future<List<Expense>> call(NoParams params) async => const [];
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+// ---------------------------------------------------------------------------
+// Stub use cases for FakeIncomeBloc
+// ---------------------------------------------------------------------------
+
+class _StubAddIncomeUseCase implements AddIncomeUseCase {
+  @override
+  Future<void> call(AddIncomeParams params) async {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _StubUpdateIncomeUseCase implements UpdateIncomeUseCase {
+  @override
+  Future<void> call(Income params) async {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _StubDeleteIncomeUseCase implements DeleteIncomeUseCase {
+  @override
+  Future<void> call(String id) async {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _StubGetIncomesUseCase implements GetIncomesUseCase {
+  @override
+  Future<List<Income>> call() async => const [];
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+// ---------------------------------------------------------------------------
+// Stub use cases for FakeCategoryBloc
+// ---------------------------------------------------------------------------
+
+class _StubAddCategoryUseCase implements AddCategoryUseCase {
+  @override
+  Future<void> call(AddCategoryParams params) async {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _StubUpdateCategoryUseCase implements UpdateCategoryUseCase {
+  @override
+  Future<void> call(Category params) async {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _StubDeleteCategoryUseCase implements DeleteCategoryUseCase {
+  @override
+  Future<void> call(String params) async {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _StubGetAllCategoriesUseCase implements GetAllCategoriesUseCase {
+  @override
+  Future<List<Category>> call(NoParams params) async => const [];
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _StubGetSingleCategoryUseCase implements GetSingleCategoryUseCase {
+  @override
+  Future<Category?> call(String params) async => null;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+// ---------------------------------------------------------------------------
+// FakeExpenseBloc — extends ExpenseBloc so it can be registered as ExpenseBloc
+// ---------------------------------------------------------------------------
+
+class FakeExpenseBloc extends ExpenseBloc {
+  FakeExpenseBloc()
+    : super(
+        addExpenseUseCase: _StubAddExpenseUseCase(),
+        updateExpenseUseCase: _StubUpdateExpenseUseCase(),
+        deleteExpenseUseCase: _StubDeleteExpenseUseCase(),
+        getExpensesUseCase: _StubGetAllExpensesUseCase(),
+      );
+}
+
+// ---------------------------------------------------------------------------
+// FakeIncomeBloc — extends IncomeBloc so it can be registered as IncomeBloc
+// ---------------------------------------------------------------------------
+
+class FakeIncomeBloc extends IncomeBloc {
+  FakeIncomeBloc()
+    : super(
+        addIncomeUseCase: _StubAddIncomeUseCase(),
+        updateIncomeUseCase: _StubUpdateIncomeUseCase(),
+        deleteIncomeUseCase: _StubDeleteIncomeUseCase(),
+        getIncomesUseCase: _StubGetIncomesUseCase(),
+      );
+}
+
+// ---------------------------------------------------------------------------
+// FakeCategoryBloc — extends CategoryBloc so it can be registered as CategoryBloc
+// ---------------------------------------------------------------------------
+
+class FakeCategoryBloc extends CategoryBloc {
+  FakeCategoryBloc()
+    : super(
+        addCategoryUseCase: _StubAddCategoryUseCase(),
+        updateCategoryUseCase: _StubUpdateCategoryUseCase(),
+        deleteCategoryUseCase: _StubDeleteCategoryUseCase(),
+        getAllCategoriesUseCase: _StubGetAllCategoriesUseCase(),
+        getCategoryByIdUseCase: _StubGetSingleCategoryUseCase(),
+      );
 }
