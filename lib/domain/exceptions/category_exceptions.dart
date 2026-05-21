@@ -9,6 +9,7 @@ enum CategoryValidationError {
   emptyIcon,
   emptyId,
   emptyCategoryId,
+  duplicateName,
 }
 
 /// Domain-layer exception for category validation failures.

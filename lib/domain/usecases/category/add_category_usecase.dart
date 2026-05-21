@@ -34,6 +34,13 @@ class AddCategoryUseCase implements UseCase<void, AddCategoryParams> {
         CategoryValidationError.emptyIcon,
       );
     }
+    final existing = await repository.getAllCategories();
+    final normalizedNew = params.name.trim().toLowerCase();
+    if (existing.any((c) => c.name.trim().toLowerCase() == normalizedNew)) {
+      throw const CategoryValidationException(
+        CategoryValidationError.duplicateName,
+      );
+    }
     return repository.addCategory(
       Category(
         id: uuid.v4(),
