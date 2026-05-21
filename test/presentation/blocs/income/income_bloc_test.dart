@@ -1,7 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
-import 'package:weeklet/core/di/service_locator.dart';
 import 'package:weeklet/domain/entities/income.dart';
 import 'package:weeklet/domain/exceptions/income_exceptions.dart';
 import 'package:weeklet/domain/usecases/income/add_income_use_case.dart';
@@ -93,7 +92,7 @@ IncomeSuccess _successSeed({List<Income>? incomes}) {
     selectedYear: DateTime.now().year,
     selectedMonth: null,
     availableYears: [DateTime.now().year],
-    availableMonths: [5],
+    availableMonths: const [5],
   );
 }
 
@@ -101,16 +100,16 @@ IncomeSuccess _successSeed({List<Income>? incomes}) {
 // Shared stub references (reset in each group's setUp)
 // ---------------------------------------------------------------------------
 
-late _StubAddIncomeUseCase stubAdd;
-late _StubUpdateIncomeUseCase stubUpdate;
-late _StubDeleteIncomeUseCase stubDelete;
-late _StubGetIncomesUseCase stubGet;
+late _StubAddIncomeUseCase _stubAdd;
+late _StubUpdateIncomeUseCase _stubUpdate;
+late _StubDeleteIncomeUseCase _stubDelete;
+late _StubGetIncomesUseCase _stubGet;
 
 IncomeBloc _makeBloc() => IncomeBloc(
-  addIncomeUseCase: stubAdd,
-  updateIncomeUseCase: stubUpdate,
-  deleteIncomeUseCase: stubDelete,
-  getIncomesUseCase: stubGet,
+  addIncomeUseCase: _stubAdd,
+  updateIncomeUseCase: _stubUpdate,
+  deleteIncomeUseCase: _stubDelete,
+  getIncomesUseCase: _stubGet,
 );
 
 // ---------------------------------------------------------------------------
@@ -120,10 +119,10 @@ IncomeBloc _makeBloc() => IncomeBloc(
 void main() {
   group('IncomeBloc — initial state', () {
     setUp(() {
-      stubAdd = _StubAddIncomeUseCase();
-      stubUpdate = _StubUpdateIncomeUseCase();
-      stubDelete = _StubDeleteIncomeUseCase();
-      stubGet = _StubGetIncomesUseCase();
+      _stubAdd = _StubAddIncomeUseCase();
+      _stubUpdate = _StubUpdateIncomeUseCase();
+      _stubDelete = _StubDeleteIncomeUseCase();
+      _stubGet = _StubGetIncomesUseCase();
     });
 
     test('initial state is IncomeInitial', () {
@@ -135,15 +134,15 @@ void main() {
 
   group('IncomeBloc — load', () {
     setUp(() {
-      stubAdd = _StubAddIncomeUseCase();
-      stubUpdate = _StubUpdateIncomeUseCase();
-      stubDelete = _StubDeleteIncomeUseCase();
-      stubGet = _StubGetIncomesUseCase();
+      _stubAdd = _StubAddIncomeUseCase();
+      _stubUpdate = _StubUpdateIncomeUseCase();
+      _stubDelete = _StubDeleteIncomeUseCase();
+      _stubGet = _StubGetIncomesUseCase();
     });
 
     blocTest<IncomeBloc, IncomeState>(
       'emits IncomeLoading then IncomeSuccess on success',
-      setUp: () => stubGet.returnValue = [_fakeIncome()],
+      setUp: () => _stubGet.returnValue = [_fakeIncome()],
       build: _makeBloc,
       act: (bloc) => bloc.add(const LoadIncomesRequested()),
       expect: () => [const IncomeLoading(), isA<IncomeSuccess>()],
@@ -154,7 +153,7 @@ void main() {
 
     blocTest<IncomeBloc, IncomeState>(
       'emits IncomeLoading then IncomeFailure when stub throws',
-      setUp: () => stubGet.shouldThrow = true,
+      setUp: () => _stubGet.shouldThrow = true,
       build: _makeBloc,
       act: (bloc) => bloc.add(const LoadIncomesRequested()),
       expect: () => [const IncomeLoading(), isA<IncomeFailure>()],
@@ -163,10 +162,10 @@ void main() {
 
   group('IncomeBloc — filter', () {
     setUp(() {
-      stubAdd = _StubAddIncomeUseCase();
-      stubUpdate = _StubUpdateIncomeUseCase();
-      stubDelete = _StubDeleteIncomeUseCase();
-      stubGet = _StubGetIncomesUseCase();
+      _stubAdd = _StubAddIncomeUseCase();
+      _stubUpdate = _StubUpdateIncomeUseCase();
+      _stubDelete = _StubDeleteIncomeUseCase();
+      _stubGet = _StubGetIncomesUseCase();
     });
 
     blocTest<IncomeBloc, IncomeState>(
@@ -200,23 +199,23 @@ void main() {
       'IncomeFilterDateChanged does nothing when not in IncomeSuccess',
       build: _makeBloc,
       act: (bloc) => bloc.add(const IncomeFilterDateChanged(year: 2025)),
-      expect: () => [],
+      expect: () => <IncomeState>[],
     );
   });
 
   group('IncomeBloc — add', () {
     setUp(() {
-      stubAdd = _StubAddIncomeUseCase();
-      stubUpdate = _StubUpdateIncomeUseCase();
-      stubDelete = _StubDeleteIncomeUseCase();
-      stubGet = _StubGetIncomesUseCase();
+      _stubAdd = _StubAddIncomeUseCase();
+      _stubUpdate = _StubUpdateIncomeUseCase();
+      _stubDelete = _StubDeleteIncomeUseCase();
+      _stubGet = _StubGetIncomesUseCase();
     });
 
     blocTest<IncomeBloc, IncomeState>(
       'AddIncomeStarted in IncomeSuccess triggers reload',
       setUp: () {
         GetIt.instance.registerSingleton<StatsBloc>(FakeStatsBloc());
-        stubGet.returnValue = [_fakeIncome()];
+        _stubGet.returnValue = [_fakeIncome()];
       },
       build: _makeBloc,
       seed: _successSeed,
@@ -234,8 +233,8 @@ void main() {
     blocTest<IncomeBloc, IncomeState>(
       'AddIncomeStarted validation exception sets actionError',
       setUp: () {
-        stubAdd.shouldThrow = true;
-        stubAdd.throwable = const IncomeValidationException(
+        _stubAdd.shouldThrow = true;
+        _stubAdd.throwable = const IncomeValidationException(
           IncomeValidationError.emptyDescription,
         );
         GetIt.instance.registerSingleton<StatsBloc>(FakeStatsBloc());
@@ -262,8 +261,8 @@ void main() {
     blocTest<IncomeBloc, IncomeState>(
       'AddIncomeStarted generic exception sets actionError to genericError',
       setUp: () {
-        stubAdd.shouldThrow = true;
-        stubAdd.throwable = Exception('boom');
+        _stubAdd.shouldThrow = true;
+        _stubAdd.throwable = Exception('boom');
         GetIt.instance.registerSingleton<StatsBloc>(FakeStatsBloc());
       },
       build: _makeBloc,
@@ -295,23 +294,23 @@ void main() {
           date: DateTime(DateTime.now().year, 5, 1),
         ),
       ),
-      expect: () => [],
+      expect: () => <IncomeState>[],
     );
   });
 
   group('IncomeBloc — update', () {
     setUp(() {
-      stubAdd = _StubAddIncomeUseCase();
-      stubUpdate = _StubUpdateIncomeUseCase();
-      stubDelete = _StubDeleteIncomeUseCase();
-      stubGet = _StubGetIncomesUseCase();
+      _stubAdd = _StubAddIncomeUseCase();
+      _stubUpdate = _StubUpdateIncomeUseCase();
+      _stubDelete = _StubDeleteIncomeUseCase();
+      _stubGet = _StubGetIncomesUseCase();
     });
 
     blocTest<IncomeBloc, IncomeState>(
       'UpdateIncomeStarted triggers reload',
       setUp: () {
         GetIt.instance.registerSingleton<StatsBloc>(FakeStatsBloc());
-        stubGet.returnValue = [_fakeIncome()];
+        _stubGet.returnValue = [_fakeIncome()];
       },
       build: _makeBloc,
       seed: _successSeed,
@@ -323,7 +322,7 @@ void main() {
     blocTest<IncomeBloc, IncomeState>(
       'UpdateIncomeStarted error sets actionError to genericError',
       setUp: () {
-        stubUpdate.shouldThrow = true;
+        _stubUpdate.shouldThrow = true;
         GetIt.instance.registerSingleton<StatsBloc>(FakeStatsBloc());
       },
       build: _makeBloc,
@@ -342,21 +341,21 @@ void main() {
 
   group('IncomeBloc — delete', () {
     setUp(() {
-      stubAdd = _StubAddIncomeUseCase();
-      stubUpdate = _StubUpdateIncomeUseCase();
-      stubDelete = _StubDeleteIncomeUseCase();
-      stubGet = _StubGetIncomesUseCase();
+      _stubAdd = _StubAddIncomeUseCase();
+      _stubUpdate = _StubUpdateIncomeUseCase();
+      _stubDelete = _StubDeleteIncomeUseCase();
+      _stubGet = _StubGetIncomesUseCase();
     });
 
     blocTest<IncomeBloc, IncomeState>(
       'DeleteIncomeStarted triggers reload',
       setUp: () {
         GetIt.instance.registerSingleton<StatsBloc>(FakeStatsBloc());
-        stubGet.returnValue = [];
+        _stubGet.returnValue = [];
       },
       build: _makeBloc,
       seed: _successSeed,
-      act: (bloc) => bloc.add(DeleteIncomeStarted('inc-1')),
+      act: (bloc) => bloc.add(const DeleteIncomeStarted('inc-1')),
       expect: () => [const IncomeLoading(), isA<IncomeSuccess>()],
       tearDown: () async => GetIt.instance.reset(),
     );
@@ -364,12 +363,12 @@ void main() {
     blocTest<IncomeBloc, IncomeState>(
       'DeleteIncomeStarted error sets actionError',
       setUp: () {
-        stubDelete.shouldThrow = true;
+        _stubDelete.shouldThrow = true;
         GetIt.instance.registerSingleton<StatsBloc>(FakeStatsBloc());
       },
       build: _makeBloc,
       seed: _successSeed,
-      act: (bloc) => bloc.add(DeleteIncomeStarted('inc-1')),
+      act: (bloc) => bloc.add(const DeleteIncomeStarted('inc-1')),
       expect: () => [
         isA<IncomeSuccess>().having(
           (s) => s.actionError,
@@ -383,10 +382,10 @@ void main() {
 
   group('IncomeBloc — clear error', () {
     setUp(() {
-      stubAdd = _StubAddIncomeUseCase();
-      stubUpdate = _StubUpdateIncomeUseCase();
-      stubDelete = _StubDeleteIncomeUseCase();
-      stubGet = _StubGetIncomesUseCase();
+      _stubAdd = _StubAddIncomeUseCase();
+      _stubUpdate = _StubUpdateIncomeUseCase();
+      _stubDelete = _StubDeleteIncomeUseCase();
+      _stubGet = _StubGetIncomesUseCase();
     });
 
     blocTest<IncomeBloc, IncomeState>(

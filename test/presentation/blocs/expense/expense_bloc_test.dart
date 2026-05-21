@@ -1,7 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
-import 'package:weeklet/core/di/service_locator.dart';
 import 'package:weeklet/domain/entities/expense.dart';
 import 'package:weeklet/domain/exceptions/expense_exceptions.dart';
 import 'package:weeklet/domain/usecases/base/use_case.dart';
@@ -90,7 +89,7 @@ ExpenseSuccess _successSeed({List<Expense>? expenses}) {
     selectedYear: DateTime.now().year,
     selectedMonth: null,
     availableYears: [DateTime.now().year],
-    availableMonths: [5],
+    availableMonths: const [5],
   );
 }
 
@@ -98,16 +97,16 @@ ExpenseSuccess _successSeed({List<Expense>? expenses}) {
 // Shared stub references (reset in each group's setUp)
 // ---------------------------------------------------------------------------
 
-late _StubAddExpenseUseCase stubAdd;
-late _StubUpdateExpenseUseCase stubUpdate;
-late _StubDeleteExpenseUseCase stubDelete;
-late _StubGetAllExpensesUseCase stubGet;
+late _StubAddExpenseUseCase _stubAdd;
+late _StubUpdateExpenseUseCase _stubUpdate;
+late _StubDeleteExpenseUseCase _stubDelete;
+late _StubGetAllExpensesUseCase _stubGet;
 
 ExpenseBloc _makeBloc() => ExpenseBloc(
-  addExpenseUseCase: stubAdd,
-  updateExpenseUseCase: stubUpdate,
-  deleteExpenseUseCase: stubDelete,
-  getExpensesUseCase: stubGet,
+  addExpenseUseCase: _stubAdd,
+  updateExpenseUseCase: _stubUpdate,
+  deleteExpenseUseCase: _stubDelete,
+  getExpensesUseCase: _stubGet,
 );
 
 // ---------------------------------------------------------------------------
@@ -117,10 +116,10 @@ ExpenseBloc _makeBloc() => ExpenseBloc(
 void main() {
   group('ExpenseBloc — initial state', () {
     setUp(() {
-      stubAdd = _StubAddExpenseUseCase();
-      stubUpdate = _StubUpdateExpenseUseCase();
-      stubDelete = _StubDeleteExpenseUseCase();
-      stubGet = _StubGetAllExpensesUseCase();
+      _stubAdd = _StubAddExpenseUseCase();
+      _stubUpdate = _StubUpdateExpenseUseCase();
+      _stubDelete = _StubDeleteExpenseUseCase();
+      _stubGet = _StubGetAllExpensesUseCase();
     });
 
     test('initial state is ExpenseInitial', () {
@@ -132,15 +131,15 @@ void main() {
 
   group('ExpenseBloc — load', () {
     setUp(() {
-      stubAdd = _StubAddExpenseUseCase();
-      stubUpdate = _StubUpdateExpenseUseCase();
-      stubDelete = _StubDeleteExpenseUseCase();
-      stubGet = _StubGetAllExpensesUseCase();
+      _stubAdd = _StubAddExpenseUseCase();
+      _stubUpdate = _StubUpdateExpenseUseCase();
+      _stubDelete = _StubDeleteExpenseUseCase();
+      _stubGet = _StubGetAllExpensesUseCase();
     });
 
     blocTest<ExpenseBloc, ExpenseState>(
       'emits ExpenseLoading then ExpenseSuccess on success',
-      setUp: () => stubGet.returnValue = [_fakeExpense()],
+      setUp: () => _stubGet.returnValue = [_fakeExpense()],
       build: _makeBloc,
       act: (bloc) => bloc.add(const LoadExpensesRequested()),
       expect: () => [const ExpenseLoading(), isA<ExpenseSuccess>()],
@@ -151,7 +150,7 @@ void main() {
 
     blocTest<ExpenseBloc, ExpenseState>(
       'emits ExpenseLoading then ExpenseFailure when stub throws',
-      setUp: () => stubGet.shouldThrow = true,
+      setUp: () => _stubGet.shouldThrow = true,
       build: _makeBloc,
       act: (bloc) => bloc.add(const LoadExpensesRequested()),
       expect: () => [const ExpenseLoading(), isA<ExpenseFailure>()],
@@ -160,10 +159,10 @@ void main() {
 
   group('ExpenseBloc — filter', () {
     setUp(() {
-      stubAdd = _StubAddExpenseUseCase();
-      stubUpdate = _StubUpdateExpenseUseCase();
-      stubDelete = _StubDeleteExpenseUseCase();
-      stubGet = _StubGetAllExpensesUseCase();
+      _stubAdd = _StubAddExpenseUseCase();
+      _stubUpdate = _StubUpdateExpenseUseCase();
+      _stubDelete = _StubDeleteExpenseUseCase();
+      _stubGet = _StubGetAllExpensesUseCase();
     });
 
     blocTest<ExpenseBloc, ExpenseState>(
@@ -197,23 +196,23 @@ void main() {
       'FilterDateChanged does nothing when not in ExpenseSuccess',
       build: _makeBloc,
       act: (bloc) => bloc.add(const FilterDateChanged(year: 2025)),
-      expect: () => [],
+      expect: () => <ExpenseState>[],
     );
   });
 
   group('ExpenseBloc — add', () {
     setUp(() {
-      stubAdd = _StubAddExpenseUseCase();
-      stubUpdate = _StubUpdateExpenseUseCase();
-      stubDelete = _StubDeleteExpenseUseCase();
-      stubGet = _StubGetAllExpensesUseCase();
+      _stubAdd = _StubAddExpenseUseCase();
+      _stubUpdate = _StubUpdateExpenseUseCase();
+      _stubDelete = _StubDeleteExpenseUseCase();
+      _stubGet = _StubGetAllExpensesUseCase();
     });
 
     blocTest<ExpenseBloc, ExpenseState>(
       'AddExpenseStarted in ExpenseSuccess triggers reload',
       setUp: () {
         GetIt.instance.registerSingleton<StatsBloc>(FakeStatsBloc());
-        stubGet.returnValue = [_fakeExpense()];
+        _stubGet.returnValue = [_fakeExpense()];
       },
       build: _makeBloc,
       seed: _successSeed,
@@ -232,8 +231,8 @@ void main() {
     blocTest<ExpenseBloc, ExpenseState>(
       'AddExpenseStarted validation exception sets actionError',
       setUp: () {
-        stubAdd.shouldThrow = true;
-        stubAdd.throwable = const ExpenseValidationException(
+        _stubAdd.shouldThrow = true;
+        _stubAdd.throwable = const ExpenseValidationException(
           ExpenseValidationError.emptyDescription,
         );
         GetIt.instance.registerSingleton<StatsBloc>(FakeStatsBloc());
@@ -261,8 +260,8 @@ void main() {
     blocTest<ExpenseBloc, ExpenseState>(
       'AddExpenseStarted generic exception sets actionError to genericError',
       setUp: () {
-        stubAdd.shouldThrow = true;
-        stubAdd.throwable = Exception('boom');
+        _stubAdd.shouldThrow = true;
+        _stubAdd.throwable = Exception('boom');
         GetIt.instance.registerSingleton<StatsBloc>(FakeStatsBloc());
       },
       build: _makeBloc,
@@ -296,23 +295,23 @@ void main() {
           date: DateTime(DateTime.now().year, 5, 1),
         ),
       ),
-      expect: () => [],
+      expect: () => <ExpenseState>[],
     );
   });
 
   group('ExpenseBloc — update', () {
     setUp(() {
-      stubAdd = _StubAddExpenseUseCase();
-      stubUpdate = _StubUpdateExpenseUseCase();
-      stubDelete = _StubDeleteExpenseUseCase();
-      stubGet = _StubGetAllExpensesUseCase();
+      _stubAdd = _StubAddExpenseUseCase();
+      _stubUpdate = _StubUpdateExpenseUseCase();
+      _stubDelete = _StubDeleteExpenseUseCase();
+      _stubGet = _StubGetAllExpensesUseCase();
     });
 
     blocTest<ExpenseBloc, ExpenseState>(
       'UpdateExpenseStarted triggers reload',
       setUp: () {
         GetIt.instance.registerSingleton<StatsBloc>(FakeStatsBloc());
-        stubGet.returnValue = [_fakeExpense()];
+        _stubGet.returnValue = [_fakeExpense()];
       },
       build: _makeBloc,
       seed: _successSeed,
@@ -325,7 +324,7 @@ void main() {
     blocTest<ExpenseBloc, ExpenseState>(
       'UpdateExpenseStarted error sets actionError to genericError',
       setUp: () {
-        stubUpdate.shouldThrow = true;
+        _stubUpdate.shouldThrow = true;
         GetIt.instance.registerSingleton<StatsBloc>(FakeStatsBloc());
       },
       build: _makeBloc,
@@ -345,21 +344,21 @@ void main() {
 
   group('ExpenseBloc — delete', () {
     setUp(() {
-      stubAdd = _StubAddExpenseUseCase();
-      stubUpdate = _StubUpdateExpenseUseCase();
-      stubDelete = _StubDeleteExpenseUseCase();
-      stubGet = _StubGetAllExpensesUseCase();
+      _stubAdd = _StubAddExpenseUseCase();
+      _stubUpdate = _StubUpdateExpenseUseCase();
+      _stubDelete = _StubDeleteExpenseUseCase();
+      _stubGet = _StubGetAllExpensesUseCase();
     });
 
     blocTest<ExpenseBloc, ExpenseState>(
       'DeleteExpenseStarted triggers reload',
       setUp: () {
         GetIt.instance.registerSingleton<StatsBloc>(FakeStatsBloc());
-        stubGet.returnValue = [];
+        _stubGet.returnValue = [];
       },
       build: _makeBloc,
       seed: _successSeed,
-      act: (bloc) => bloc.add(DeleteExpenseStarted('exp-1')),
+      act: (bloc) => bloc.add(const DeleteExpenseStarted('exp-1')),
       expect: () => [const ExpenseLoading(), isA<ExpenseSuccess>()],
       tearDown: () async => GetIt.instance.reset(),
     );
@@ -367,12 +366,12 @@ void main() {
     blocTest<ExpenseBloc, ExpenseState>(
       'DeleteExpenseStarted error sets actionError',
       setUp: () {
-        stubDelete.shouldThrow = true;
+        _stubDelete.shouldThrow = true;
         GetIt.instance.registerSingleton<StatsBloc>(FakeStatsBloc());
       },
       build: _makeBloc,
       seed: _successSeed,
-      act: (bloc) => bloc.add(DeleteExpenseStarted('exp-1')),
+      act: (bloc) => bloc.add(const DeleteExpenseStarted('exp-1')),
       expect: () => [
         isA<ExpenseSuccess>().having(
           (s) => s.actionError,
@@ -386,10 +385,10 @@ void main() {
 
   group('ExpenseBloc — clear error', () {
     setUp(() {
-      stubAdd = _StubAddExpenseUseCase();
-      stubUpdate = _StubUpdateExpenseUseCase();
-      stubDelete = _StubDeleteExpenseUseCase();
-      stubGet = _StubGetAllExpensesUseCase();
+      _stubAdd = _StubAddExpenseUseCase();
+      _stubUpdate = _StubUpdateExpenseUseCase();
+      _stubDelete = _StubDeleteExpenseUseCase();
+      _stubGet = _StubGetAllExpensesUseCase();
     });
 
     blocTest<ExpenseBloc, ExpenseState>(
