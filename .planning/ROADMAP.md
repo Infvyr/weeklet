@@ -38,7 +38,7 @@ See [v1.0-ROADMAP.md](.planning/milestones/v1.0-ROADMAP.md) for full details.
   **Plans:** 3 plans
   Plans:
   - [x] 11-01-PLAN.md — TEST-12 + TEST-13 + TEST-15: Shared helpers (fake_blocs, collectStates) + CategoryBloc, StatsBloc, ExportBloc tests
-  - [ ] 11-02-PLAN.md — TEST-09 + TEST-11: ExpenseBloc and IncomeBloc tests (GetIt isolation for CRUD handlers)
+  - [x] 11-02-PLAN.md — TEST-09 + TEST-11: ExpenseBloc and IncomeBloc tests (GetIt isolation for CRUD handlers)
   - [ ] 11-03-PLAN.md — TEST-14: SettingsBloc tests (BiometricService stub + all 4 fake BLoCs in GetIt)
 - [ ] Phase 12: Widget Component Tests — Screen and component unit tests for rendering, interaction, and form validation
 - [ ] Phase 13: Integration & Critical Path Tests — End-to-end user workflows and file operations (PDF generation)
@@ -55,6 +55,6 @@ See [v1.0-ROADMAP.md](.planning/milestones/v1.0-ROADMAP.md) for full details.
 | 8     | v1.1      | 6/6   | Complete | 2026-04-30 |
 | 9     | v1.1      | 6/6   | Complete | 2026-05-03 |
 | 10    | v1.2      | 3/3 | Complete   | 2026-05-21 |
-| 11    | v1.2      | 1/3 | In Progress|  |
+| 11    | v1.2      | 2/3 | In Progress|  |
 | 12    | v1.2      | TBD   | Not started | — |
 | 13    | v1.2      | TBD   | Not started | — |
