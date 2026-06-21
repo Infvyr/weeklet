@@ -40,14 +40,16 @@ See [v1.0-ROADMAP.md](.planning/milestones/v1.0-ROADMAP.md) for full details.
   - [x] 11-01-PLAN.md — TEST-12 + TEST-13 + TEST-15: Shared helpers (fake_blocs, collectStates) + CategoryBloc, StatsBloc, ExportBloc tests
   - [x] 11-02-PLAN.md — TEST-09 + TEST-11: ExpenseBloc and IncomeBloc tests (GetIt isolation for CRUD handlers)
   - [x] 11-03-PLAN.md — TEST-14: SettingsBloc tests (BiometricService stub + all 4 fake BLoCs in GetIt)
-- [ ] Phase 12: Widget Component Tests — Screen and component unit tests for rendering, interaction, and form validation
+- [x] Phase 12: Widget Component Tests — Screen and component unit tests for rendering, interaction, and form validation (completed 2026-06-21)
   **Plans:** 5 plans
   Plans:
-  - [ ] 12-01-PLAN.md — TEST-16–23: Foundation (mocktail dep, pumpApp helper, shared test data factories)
-  - [ ] 12-02-PLAN.md — TEST-16 + TEST-17: ExpensesScreen and AddExpenseFormView tests
-  - [ ] 12-03-PLAN.md — TEST-18 + TEST-19: IncomeScreen and CategoriesScreen tests
-  - [ ] 12-04-PLAN.md — TEST-20 + TEST-21: StatsScreen and SettingsScreen tests
-  - [ ] 12-05-PLAN.md — TEST-22 + TEST-23: AmountFieldView and DateFieldView tests
+  - **Wave 1**
+  - [x] 12-01-PLAN.md — TEST-16–23: Foundation (mocktail dep, pumpApp helper, shared test data factories)
+  - **Wave 2** *(blocked on Wave 1 completion)*
+  - [x] 12-02-PLAN.md — TEST-16 + TEST-17: ExpensesScreen and AddExpenseFormView tests
+  - [x] 12-03-PLAN.md — TEST-18 + TEST-19: IncomeScreen and CategoriesScreen tests
+  - [x] 12-04-PLAN.md — TEST-20 + TEST-21: StatsScreen and SettingsScreen tests
+  - [x] 12-05-PLAN.md — TEST-22 + TEST-23: AmountFieldView and DateFieldView tests
 - [ ] Phase 13: Integration & Critical Path Tests — End-to-end user workflows and file operations (PDF generation)
 
 </details>
@@ -63,5 +65,5 @@ See [v1.0-ROADMAP.md](.planning/milestones/v1.0-ROADMAP.md) for full details.
 | 9     | v1.1      | 6/6   | Complete | 2026-05-03 |
 | 10    | v1.2      | 3/3 | Complete   | 2026-05-21 |
 | 11    | v1.2      | 3/3 | Complete   | 2026-05-21 |
-| 12    | v1.2      | 5 plans | Not started | — |
+| 12    | v1.2      | 5/5 | Complete   | 2026-06-21 |
 | 13    | v1.2      | TBD   | Not started | — |
