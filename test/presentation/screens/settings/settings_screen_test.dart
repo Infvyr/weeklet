@@ -132,5 +132,65 @@ void main() {
         ).called(1);
       },
     );
+
+    testWidgets(
+      'dispatches ThemeChanged when a theme option is selected in the sheet',
+      (tester) async {
+        await pumpSettingsScreen(tester);
+        await tester.pump();
+
+        // Open ThemeSelectionSheet via the Theme tile.
+        await tester.tap(find.byIcon(Icons.palette_outlined));
+        await tester.pumpAndSettle();
+
+        // Tap 'Dark' — different from the default ThemeMode.system.
+        await tester.tap(find.text('Dark'));
+        await tester.pumpAndSettle();
+
+        verify(
+          () => mockSettingsBloc.add(any(that: isA<ThemeChanged>())),
+        ).called(1);
+      },
+    );
+
+    testWidgets(
+      'dispatches LocaleChanged when a language option is selected in the sheet',
+      (tester) async {
+        await pumpSettingsScreen(tester);
+        await tester.pump();
+
+        // Open LanguageSelectionSheet via the Language tile.
+        await tester.tap(find.byIcon(Icons.language));
+        await tester.pumpAndSettle();
+
+        // Tap 'English' — different from the default null (system locale).
+        await tester.tap(find.text('English'));
+        await tester.pumpAndSettle();
+
+        verify(
+          () => mockSettingsBloc.add(any(that: isA<LocaleChanged>())),
+        ).called(1);
+      },
+    );
+
+    testWidgets(
+      'dispatches CurrencyChanged when a currency option is selected in the sheet',
+      (tester) async {
+        await pumpSettingsScreen(tester);
+        await tester.pump();
+
+        // Open CurrencySelectionSheet via the Currency tile.
+        await tester.tap(find.byIcon(Icons.attach_money));
+        await tester.pumpAndSettle();
+
+        // Tap 'EUR' — different from the default 'MDL'.
+        await tester.tap(find.text('EUR'));
+        await tester.pumpAndSettle();
+
+        verify(
+          () => mockSettingsBloc.add(any(that: isA<CurrencyChanged>())),
+        ).called(1);
+      },
+    );
   });
 }
