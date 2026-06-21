@@ -231,11 +231,10 @@ void main() {
 
         // Confirm the currently selected (today's) date in the calendar dialog.
         final okButton = find.text('OK');
-        if (okButton.evaluate().isNotEmpty) {
-          await tester.tap(okButton);
-          await tester.pump();
-          await tester.pump(const Duration(milliseconds: 500));
-        }
+        expect(okButton, findsOneWidget);
+        await tester.tap(okButton);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
 
         // Change expense bloc state so that BlocListener (pop on success) does
         // not immediately close the form after dispatch.

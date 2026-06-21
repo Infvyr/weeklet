@@ -13,6 +13,7 @@ import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_event.dart';
 import 'package:weeklet/presentation/blocs/stats/stats_state.dart';
 import 'package:weeklet/presentation/screens/stats/stats_screen.dart';
+import 'package:weeklet/presentation/screens/stats/widgets/stats_error_view.dart';
 import '../../../helpers/test_app.dart';
 import '../../../helpers/test_data.dart';
 
@@ -143,8 +144,7 @@ void main() {
 
         expect(find.byType(CircularProgressIndicator), findsNothing);
         expect(find.byType(CustomScrollView), findsNothing);
-        // StatsErrorView is rendered in the Scaffold body
-        expect(find.byType(Scaffold), findsOneWidget);
+        expect(find.byType(StatsErrorView), findsOneWidget);
       },
     );
   });

@@ -16,6 +16,7 @@ import 'package:weeklet/presentation/blocs/settings/settings_event.dart';
 import 'package:weeklet/presentation/blocs/settings/settings_state.dart';
 import 'package:weeklet/core/utils/locale_manager.dart';
 import 'package:weeklet/presentation/screens/income/income_screen.dart';
+import 'package:weeklet/presentation/screens/income/widgets/list/income_list_view.dart';
 import 'package:weeklet/presentation/widgets/common/empty_state_view.dart';
 import '../../../helpers/test_app.dart';
 import '../../../helpers/test_data.dart';
@@ -113,6 +114,7 @@ void main() {
         await tester.pump();
 
         expect(find.byType(CircularProgressIndicator), findsNothing);
+        expect(find.byType(IncomeListView), findsOneWidget);
       },
     );
 
