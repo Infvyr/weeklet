@@ -8,10 +8,15 @@ import 'package:weeklet/l10n/app_localizations.dart';
 ///
 /// [providers] are passed directly to [MultiBlocProvider]; supply one
 /// `BlocProvider<XxxBloc>.value(value: mockBloc)` per BLoC the screen reads.
+///
+/// [theme] is optional; when provided it is used as [MaterialApp.theme].
+/// Some screens use `context.theme.appBarTheme.backgroundColor!` (with null
+/// assertion) and require a theme with that field set to avoid a null crash.
 Future<void> pumpApp(
   WidgetTester tester,
   Widget child, {
   List<BlocProvider> providers = const [],
+  ThemeData? theme,
 }) async {
   await tester.pumpWidget(
     MultiBlocProvider(
@@ -20,6 +25,7 @@ Future<void> pumpApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: const Locale('en'),
+        theme: theme,
         home: child,
       ),
     ),
