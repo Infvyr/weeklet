@@ -7,6 +7,7 @@ import 'package:weeklet/core/utils/locale_manager.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
 import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/domain/repositories/category_repository.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/widgets/common/common_dropdown_button.dart';
 
 import '../helpers/fake_share_platform.dart';
@@ -89,6 +90,43 @@ void main() {
     expect(
       find.text(NumberFormatter.formatCompactWithSign(45.50, 'MDL')),
       findsWidgets,
+    );
+
+    // --- Edit ----------------------------------------------------------
+    final l10n = AppLocalizations.of(
+      tester.element(find.byType(Scaffold).first),
+    );
+
+    await tester.tap(find.byIcon(Icons.more_vert).first);
+    await tester.pump();
+
+    await tester.tap(find.text(l10n.editMenuLabel));
+    await tester.pumpAndSettle();
+
+    // Amount field is pre-filled from the tapped Expense: 45.5 (double's
+    // toString drops the trailing zero from the entered '45.50').
+    expect(
+      tester
+          .widget<TextFormField>(find.byType(TextFormField).first)
+          .controller!
+          .text,
+      '45.5',
+    );
+
+    await tester.enterText(find.byType(TextFormField).first, '60.25');
+    await tester.pump();
+
+    // EditExpenseFormFooter renders Cancel then Save — Save is last.
+    await tester.tap(find.byType(ElevatedButton).last);
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(NumberFormatter.formatCompactWithSign(60.25, 'MDL')),
+      findsWidgets,
+    );
+    expect(
+      find.text(NumberFormatter.formatCompactWithSign(45.50, 'MDL')),
+      findsNothing,
     );
   });
 }
