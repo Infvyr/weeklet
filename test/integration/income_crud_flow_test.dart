@@ -15,14 +15,15 @@
 //
 // Per D-01's scope and REQUIREMENTS.md's exact TEST-25 wording
 // ("add -> view -> delete"), this flow intentionally does NOT exercise
-// IncomeItemView's edit path (EditIncomeFormView) — that production feature
-// exists but is out of this requirement's scope, not omitted by accident.
+// IncomeItemView's edit path — that production feature exists but is out
+// of this requirement's scope, not omitted by accident.
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:share_plus_platform_interface/share_plus_platform_interface.dart';
 import 'package:weeklet/app.dart';
 import 'package:weeklet/core/utils/locale_manager.dart';
 import 'package:weeklet/core/utils/number_formatter.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 
 import '../helpers/fake_share_platform.dart';
 import '../helpers/test_hive_env.dart';
@@ -105,5 +106,21 @@ void main() {
       ),
       findsWidgets,
     );
+
+    // --- Delete ------------------------------------------------------------
+    final l10n = AppLocalizations.of(
+      tester.element(find.byType(Scaffold).first),
+    );
+
+    await tester.tap(find.byIcon(Icons.more_vert).first);
+    await tester.pump();
+
+    await tester.tap(find.text(l10n.deleteMenuLabel));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(l10n.deleteButtonLabel));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Freelance payment'), findsNothing);
   });
 }
