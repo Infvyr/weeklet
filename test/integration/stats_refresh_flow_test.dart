@@ -19,17 +19,19 @@
 // this flow — leaves the event's month as `null`, so `selectedMonth` stays
 // `null` for the entire test. StatsScreen derives
 // `isAnnual: loaded.month == null`, which is therefore ALWAYS true here.
-// Asserting `l10n.statsMonthlyBalance` would be asserting the wrong label
-// given this app's current wiring — a future reader must not "fix" this
-// assertion back to the monthly label.
+// Asserting the l10n key for the *monthly* balance label would be
+// asserting the wrong label given this app's current wiring — a future
+// reader must not "fix" this assertion back to that label.
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:share_plus_platform_interface/share_plus_platform_interface.dart';
 import 'package:weeklet/app.dart';
 import 'package:weeklet/core/utils/locale_manager.dart';
+import 'package:weeklet/core/utils/number_formatter.dart';
 import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/domain/repositories/category_repository.dart';
+import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/widgets/common/common_dropdown_button.dart';
 
 import '../helpers/fake_share_platform.dart';
@@ -127,5 +129,35 @@ void main() {
 
     await tester.tap(find.byType(ElevatedButton));
     await tester.pumpAndSettle();
+
+    // --- Navigate to the Stats tab and assert the refreshed balance -------
+    // StatsScreen rebuilds from the SAME StatsBloc instance that both
+    // ExpenseBloc._onAddExpense and IncomeBloc._onAddIncome already
+    // refreshed via their pre-existing cross-BLoC side effect (Phase 11
+    // wiring) — this tab switch is a local setState swap in MainNavigation,
+    // not a route push, so nothing re-triggers the load manually here.
+    await tester.tap(find.byIcon(Icons.trending_up));
+    await tester.pumpAndSettle();
+
+    final l10n = AppLocalizations.of(
+      tester.element(find.byType(Scaffold).first),
+    );
+
+    // Confirms the ANNUAL — not monthly — balance card is shown, per this
+    // file's top-of-file doc comment.
+    expect(find.text(l10n.statsAnnualBalance), findsWidgets);
+
+    // 250.00 income - 45.50 expense = 204.50, positive so isIncome: true
+    // renders the '+' sign.
+    expect(
+      find.text(
+        NumberFormatter.formatCompactWithSign(
+          204.50,
+          'MDL',
+          isIncome: true,
+        ),
+      ),
+      findsOneWidget,
+    );
   });
 }
