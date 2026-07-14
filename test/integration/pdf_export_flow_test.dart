@@ -25,6 +25,8 @@ import 'package:weeklet/app.dart';
 import 'package:weeklet/core/utils/locale_manager.dart';
 import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/domain/repositories/category_repository.dart';
+import 'package:weeklet/presentation/blocs/export/export_bloc.dart';
+import 'package:weeklet/presentation/blocs/export/export_state.dart';
 import 'package:weeklet/presentation/widgets/common/common_dropdown_button.dart';
 
 import '../helpers/fake_share_platform.dart';
@@ -107,5 +109,43 @@ void main() {
 
     // The export icon is only rendered once filteredExpenses is non-empty.
     expect(find.byIcon(Icons.picture_as_pdf), findsOneWidget);
+
+    // --- Export ----------------------------------------------------------
+    // Tapping the real icon dispatches ExportExpensesStarted via
+    // _onExportTapped, awaits the real ExportExpensesUseCase (real `pdf`
+    // package render + real file write to the faked temp dir), then the
+    // BlocListener's unawaited SharePlus.instance.share(...) fires against
+    // fakeShare and, once that resolves, dispatches a reset back to
+    // ExportInitial — a full round trip that completes within a single
+    // pumpAndSettle() since the fake share call resolves immediately. The
+    // ExportSuccess state itself is therefore captured via a stream
+    // subscription started before the tap, not read from `.state`
+    // afterward (which would already show the post-reset ExportInitial).
+    ExportSuccess? capturedSuccess;
+    final exportSubscription = GetIt.instance<ExportBloc>().stream.listen((
+      state,
+    ) {
+      if (state is ExportSuccess) capturedSuccess = state;
+    });
+
+    await tester.tap(find.byIcon(Icons.picture_as_pdf));
+    await tester.pumpAndSettle();
+    await exportSubscription.cancel();
+
+    expect(capturedSuccess, isNotNull);
+
+    final filePath = capturedSuccess!.filePath;
+    final file = File(filePath);
+    expect(file.existsSync(), isTrue);
+    expect(file.lengthSync(), greaterThan(0));
+
+    // Valid PDF header check.
+    final headerBytes = file.readAsBytesSync().sublist(0, 5);
+    expect(latin1.decode(headerBytes, allowInvalid: true), '%PDF-');
+
+    // Proves the icon -> BLoC -> share wiring completed end-to-end without
+    // throwing (per D-04).
+    expect(fakeShare.shareCalls.length, 1);
+    expect(fakeShare.shareCalls.first.files!.single.path, filePath);
   });
 }
