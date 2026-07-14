@@ -30,6 +30,7 @@ import 'package:weeklet/presentation/blocs/export/export_state.dart';
 import 'package:weeklet/presentation/widgets/common/common_dropdown_button.dart';
 
 import '../helpers/fake_share_platform.dart';
+import '../helpers/pdf_text_extractor.dart';
 import '../helpers/test_data.dart';
 import '../helpers/test_hive_env.dart';
 
@@ -58,6 +59,28 @@ void main() {
 
   tearDown(() async {
     await teardownTestDi();
+
+    // Defensive cleanup pass: teardownTestDi() only removes the temp Hive
+    // directory, never the PDF this flow writes into the shared OS temp
+    // dir. The per-test assertions below already delete their own file on
+    // the happy path; this guards against a prior failed run leaving one
+    // behind (T-13-07 — dummy fixture data must not accumulate in
+    // Directory.systemTemp across runs).
+    try {
+      for (final entity in Directory.systemTemp.listSync()) {
+        if (entity is! File) continue;
+        final name = entity.uri.pathSegments.last;
+        final isExportArtifact =
+            (name.startsWith('weeklet_expenses_') ||
+                name.startsWith('weeklet_income_')) &&
+            name.endsWith('.pdf');
+        if (isExportArtifact) {
+          entity.deleteSync();
+        }
+      }
+    } catch (_) {
+      // Best-effort cleanup only — never fail a test over stale temp files.
+    }
   });
 
   testWidgets('exporting expenses generates a real PDF with correct content', (
@@ -147,5 +170,21 @@ void main() {
     // throwing (per D-04).
     expect(fakeShare.shareCalls.length, 1);
     expect(fakeShare.shareCalls.first.files!.single.path, filePath);
+
+    // --- Content ---------------------------------------------------------
+    // Byte-level verification (not just "a file exists"): recover the
+    // PDF's actual rendered text and confirm the exported expense's real
+    // data made it into the document.
+    final text = extractPdfText(file);
+    expect(text, contains('120.75'));
+    expect(text, contains('Groceries at market'));
+    expect(text, contains('Food'));
+
+    // Explicit temp-artifact hygiene: dummy financial fixture data must
+    // not accumulate in the shared OS temp directory across test runs
+    // (T-13-07). teardownTestDi() only cleans up Hive, not this file.
+    if (file.existsSync()) {
+      file.deleteSync();
+    }
   });
 }
