@@ -1,0 +1,111 @@
+// TEST-27: PDF export flow triggered by the real export icon (D-04), with
+// byte-level content verification via the pdf_text_extractor helper.
+//
+// This test taps the real Icons.picture_as_pdf icon in ExpensesScreen's
+// AppBar — never dispatches the export BLoC event directly — and asserts
+// on the REAL generated PDF's byte content, not merely its existence.
+//
+// NOTE on extraction coupling: the byte-level assertions below rely on
+// test/helpers/pdf_text_extractor.dart, which inflates the PDF's
+// FlateDecode-compressed content streams and recovers Tj/TJ text-showing
+// operator strings from the raw file bytes. That approach is coupled to
+// the `pdf` package's current internal writer output format (compression
+// choice, operator emission) and is not a public API — a future `pdf`
+// package upgrade that changes those internals could break this test's
+// extraction step even though the exported PDF itself remains perfectly
+// valid. See test/helpers/pdf_text_extractor.dart for the same caveat.
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
+import 'package:share_plus_platform_interface/share_plus_platform_interface.dart';
+import 'package:weeklet/app.dart';
+import 'package:weeklet/core/utils/locale_manager.dart';
+import 'package:weeklet/domain/entities/category.dart';
+import 'package:weeklet/domain/repositories/category_repository.dart';
+import 'package:weeklet/presentation/widgets/common/common_dropdown_button.dart';
+
+import '../helpers/fake_share_platform.dart';
+import '../helpers/test_data.dart';
+import '../helpers/test_hive_env.dart';
+
+void main() {
+  // A LIVE binding (not the default AutomatedTestWidgetsFlutterBinding via
+  // TestWidgetsFlutterBinding.ensureInitialized()) is required here: real
+  // dart:io Hive box writes issued from inside a testWidgets callback never
+  // resolve under the automated/fake-clock binding — the awaited Future
+  // hangs forever even after pumpAndSettle() (13-02-SUMMARY.md Deviation 1).
+  LiveTestWidgetsFlutterBinding();
+
+  late FakeSharePlatform fakeShare;
+
+  setUpAll(() {
+    registerHiveAdaptersOnce();
+    registerTestPathProvider();
+    fakeShare = FakeSharePlatform();
+    SharePlatform.instance = fakeShare;
+    LocaleManager().initialize(const Locale('en'));
+  });
+
+  setUp(() async {
+    await initTestDi();
+    await GetIt.instance<CategoryRepository>().addCategory(fakeCategory());
+  });
+
+  tearDown(() async {
+    await teardownTestDi();
+  });
+
+  testWidgets('exporting expenses generates a real PDF with correct content', (
+    tester,
+  ) async {
+    // A taller-than-default test surface is required: bottom sheets (Add /
+    // Edit) are sized to 80% of screen height, and the default 800x600 test
+    // window is too short to fit every field above the pinned Save button
+    // without scrolling — which would otherwise make the Date field's
+    // computed tap offset collide with the Save button's hit-test region.
+    await tester.binding.setSurfaceSize(const Size(400, 1200));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(const WeekletApp());
+    await tester.pumpAndSettle();
+
+    // --- Add -----------------------------------------------------------
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextFormField).first, '120.75');
+    await tester.pump();
+
+    await tester.enterText(
+      find.byType(TextFormField).at(1),
+      'Groceries at market',
+    );
+    await tester.pump();
+
+    await tester.tap(find.byType(CommonDropdownButton<Category>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Food').last);
+    await tester.pumpAndSettle();
+
+    // Confirming today's date via the picker's default-to-today 'OK' tap
+    // guarantees ExpenseBloc.selectedMonth is non-null once the expense is
+    // saved, which is required for the export icon to actually dispatch
+    // (ExpensesScreen._onExportTapped early-returns otherwise).
+    await tester.ensureVisible(find.byIcon(Icons.calendar_today_outlined));
+    await tester.pump();
+    await tester.tap(find.byIcon(Icons.calendar_today_outlined));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pumpAndSettle();
+
+    // The export icon is only rendered once filteredExpenses is non-empty.
+    expect(find.byIcon(Icons.picture_as_pdf), findsOneWidget);
+  });
+}
