@@ -1,3 +1,20 @@
+// TEST-24: full expense CRUD flow driven entirely by real widget
+// interaction against a real Hive-backed DI graph (test/helpers/
+// test_hive_env.dart), never a direct BLoC event dispatch (D-01).
+//
+// A single testWidgets flow covers, in order, against the real WeekletApp:
+//   1. Add    — tap the FAB, fill the real Add Expense form, pick a real
+//               category and today's date, save, and see the new expense
+//               in the real list.
+//   2. View   — assert the added expense's description and formatted
+//               amount are visible in the real list.
+//   3. Edit   — open the item's overflow menu, tap Edit (a second real
+//               bottom sheet, not the dead-code EditExpenseScreen route —
+//               13-RESEARCH.md Pitfall 5), change the amount, save via the
+//               real Save button, and see only the updated amount.
+//   4. Delete — open the overflow menu, tap Delete, confirm the real
+//               confirmation dialog, and see the expense removed (real
+//               empty state shown).
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
@@ -9,6 +26,7 @@ import 'package:weeklet/domain/entities/category.dart';
 import 'package:weeklet/domain/repositories/category_repository.dart';
 import 'package:weeklet/l10n/app_localizations.dart';
 import 'package:weeklet/presentation/widgets/common/common_dropdown_button.dart';
+import 'package:weeklet/presentation/widgets/common/empty_state_view.dart';
 
 import '../helpers/fake_share_platform.dart';
 import '../helpers/test_data.dart';
@@ -128,5 +146,18 @@ void main() {
       find.text(NumberFormatter.formatCompactWithSign(45.50, 'MDL')),
       findsNothing,
     );
+
+    // --- Delete ----------------------------------------------------------
+    await tester.tap(find.byIcon(Icons.more_vert).first);
+    await tester.pump();
+
+    await tester.tap(find.text(l10n.deleteMenuLabel));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(l10n.deleteButtonLabel));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Groceries at market'), findsNothing);
+    expect(find.byType(EmptyStateView), findsOneWidget);
   });
 }
