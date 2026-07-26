@@ -14,4 +14,8 @@ class FakeSharePlatform extends SharePlatform {
     shareCalls.add(params);
     return const ShareResult('', ShareResultStatus.dismissed);
   }
+
+  /// Clears recorded calls — call from `setUp` (not just `setUpAll`) when a
+  /// test file has more than one `testWidgets` sharing a single instance.
+  void reset() => shareCalls.clear();
 }
