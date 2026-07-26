@@ -59,6 +59,13 @@ import 'package:weeklet/presentation/blocs/stats/stats_bloc.dart';
 /// by [teardownTestDi].
 Directory? _tempDir;
 
+/// Isolated temp directory backing [_TestTempPathProvider]'s directory
+/// getters, created by [initTestDi] and removed by [teardownTestDi]. Keeps
+/// PDF exports (deterministic filenames like `weeklet_expenses_july_2026.pdf`)
+/// out of the shared, machine-wide [Directory.systemTemp] so concurrent
+/// export tests can't collide (WR-04).
+Directory? _exportTempDir;
+
 /// Registers Hive's [TypeAdapter]s exactly once per test FILE.
 ///
 /// Call this from `setUpAll` — never from [initTestDi] itself, since
@@ -84,19 +91,22 @@ void registerHiveAdaptersOnce() {
 class _TestTempPathProvider
     with MockPlatformInterfaceMixin
     implements PathProviderPlatform {
-  @override
-  Future<String?> getTemporaryPath() async => Directory.systemTemp.path;
+  /// Resolves to the per-test-run isolated [_exportTempDir] when available,
+  /// falling back to the raw OS temp dir only if [initTestDi] has not run
+  /// (WR-04).
+  String get _basePath => (_exportTempDir ?? Directory.systemTemp).path;
 
   @override
-  Future<String?> getApplicationDocumentsPath() async =>
-      Directory.systemTemp.path;
+  Future<String?> getTemporaryPath() async => _basePath;
 
   @override
-  Future<String?> getApplicationSupportPath() async =>
-      Directory.systemTemp.path;
+  Future<String?> getApplicationDocumentsPath() async => _basePath;
 
   @override
-  Future<String?> getApplicationCachePath() async => Directory.systemTemp.path;
+  Future<String?> getApplicationSupportPath() async => _basePath;
+
+  @override
+  Future<String?> getApplicationCachePath() async => _basePath;
 
   @override
   Future<String?> getDownloadsPath() async => null;
@@ -132,6 +142,7 @@ void registerTestPathProvider() {
 /// Call in `setUp` (or at the start of a test) for true per-test isolation.
 Future<void> initTestDi() async {
   _tempDir = await Directory.systemTemp.createTemp('weeklet_test_hive_');
+  _exportTempDir = await Directory.systemTemp.createTemp('weeklet_test_export_');
   Hive.init(_tempDir!.path);
 
   final categoryBox = await Hive.openBox<CategoryModel>('categories');
@@ -391,6 +402,24 @@ Future<void> initTestDi() async {
 /// test, even when the next `initTestDi()` reopens boxes with the same
 /// names.
 Future<void> teardownTestDi() async {
+  // Close BLoCs explicitly before GetIt forgets about them — reset() does
+  // not call close() since Bloc isn't a get_it Disposable and no dispose:
+  // callback was supplied at registration, so their StreamControllers would
+  // otherwise leak across per-test reuse (WR-02).
+  for (final closeable in [
+    if (GetIt.instance.isRegistered<SettingsBloc>())
+      GetIt.instance<SettingsBloc>(),
+    if (GetIt.instance.isRegistered<StatsBloc>()) GetIt.instance<StatsBloc>(),
+    if (GetIt.instance.isRegistered<CategoryBloc>())
+      GetIt.instance<CategoryBloc>(),
+    if (GetIt.instance.isRegistered<IncomeBloc>()) GetIt.instance<IncomeBloc>(),
+    if (GetIt.instance.isRegistered<ExpenseBloc>())
+      GetIt.instance<ExpenseBloc>(),
+    if (GetIt.instance.isRegistered<ExportBloc>()) GetIt.instance<ExportBloc>(),
+  ]) {
+    await closeable.close();
+  }
+
   await GetIt.instance.reset();
   await Hive.deleteFromDisk();
   final dir = _tempDir;
@@ -398,4 +427,10 @@ Future<void> teardownTestDi() async {
     await dir.delete(recursive: true);
   }
   _tempDir = null;
+
+  final exportDir = _exportTempDir;
+  if (exportDir != null && exportDir.existsSync()) {
+    await exportDir.delete(recursive: true);
+  }
+  _exportTempDir = null;
 }
