@@ -1,5 +1,31 @@
 # Milestones
 
+## v1.2 Testing (Shipped: 2026-07-26)
+
+**Phases completed:** 4 phases (10–13), 16 plans
+
+**Delivered:** Comprehensive automated test infrastructure and coverage — the suite grew from **0 to 169 passing tests** across use cases, BLoCs, widgets, and real-Hive integration flows, with zero regressions and full 27/27 requirement coverage.
+
+**Stats:**
+- 4 phases · 16 plans · 27/27 requirements satisfied
+- 169 tests passing (fresh full-suite run at audit, exit 0)
+- 63 files changed, +11,626 / −90 since v1.1
+- Timeline: 2026-05-21 → 2026-07-26 (test-hygiene fixes through close)
+- Git range: `d9f74fb` → `9cf1014`
+
+**Key accomplishments:**
+
+- **Phase 10 — Use case unit tests:** validation (AddExpense/AddIncome/AddCategory incl. TDD case-insensitive duplicate-name guard), delete success/not-found, and year/month filtering for both filter utils (TEST-01–08).
+- **Phase 11 — BLoC state machine tests:** all six BLoCs (Expense, Income, Category, Stats, Settings, Export) with `bloc_test`, Equatable-aware seeding, and `noSuchMethod` stubs / concrete `FakeStatsBloc` for GetIt CRUD-handler resolution (TEST-09–15).
+- **Phase 12 — Widget component tests:** 5 screens + AmountFieldView/DateFieldView via a shared `pumpApp` helper and mocktail BLoCs; all four SettingsScreen toggles verified by real UI taps (TEST-16–23). Verified 8/8.
+- **Phase 13 — Integration & critical-path tests:** 4 end-to-end flows (expense CRUD, income CRUD, stats refresh, PDF export) driven by real widget taps against a real Hive-backed DI graph, including byte-level PDF content verification via a hand-rolled `extractPdfText` (TEST-24–27). Verified 12/12; verifier independently re-ran the full suite.
+- **Shared test infrastructure:** `test/helpers/test_hive_env.dart` (real temp-dir Hive + 46-registration DI graph mirroring `service_locator.dart`), `fake_share_platform.dart`, `pdf_text_extractor.dart`.
+- **Post-verification hardening:** all four 13-REVIEW test-hygiene warnings (WR-01–04) and two info lints (IN-01/02) fixed before close.
+
+**Known deferred items at close:** Phases 10 & 11 lack formal `VERIFICATION.md`/`VALIDATION.md` and Phase 12's `VALIDATION.md` is unsigned — GSD process-artifact debt only; all 27 requirements independently confirmed passing in the milestone audit. See `.planning/v1.2-MILESTONE-AUDIT.md`.
+
+---
+
 ## v1.1 UX Polish (Shipped: 2026-05-03)
 
 **Phases completed:** 9 phases, 33 plans, 47 tasks

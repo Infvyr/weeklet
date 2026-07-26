@@ -2,34 +2,42 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Testing
-status: executing
-last_updated: "2026-06-21T10:12:20.929Z"
-last_activity: 2026-06-21 -- Phase 12 execution started
+status: milestone_shipped
+last_updated: 2026-07-26
+last_activity: 2026-07-26
 progress:
-  total_phases: 12
-  completed_phases: 11
-  total_plans: 44
-  completed_plans: 39
-  percent: 89
+  total_phases: 4
+  completed_phases: 4
+  total_plans: 16
+  completed_plans: 16
+  percent: 100
+stopped_at: v1.2 milestone archived and tagged — awaiting next milestone scope
 ---
 
 # Project State
 
-**Status:** Executing Phase 12
-**Last Updated:** 2026-06-21
+**Status:** v1.2 Testing shipped & archived (tag `v1.2`, 2026-07-26)
+**Last Updated:** 2026-07-26
 
-## Milestone v1.2 — Testing
+## Project Reference
 
-- **Phases:** 4 (10–13)
-- **Plans:** 3 (Phase 10); 3 (Phase 11); 5 (Phase 12); TBD (Phase 13)
-- **Requirements:** 27 total (TEST-01–27)
+See: .planning/PROJECT.md (updated 2026-07-26)
 
-## Current Position
+**Core value:** Users can always see where their money went — fast entry, accurate totals, no friction.
+**Current focus:** Planning next milestone — run `/gsd:new-milestone` to scope v1.3 and define fresh requirements.
 
-Phase: 12 (widget-component-tests) — EXECUTING
-Plan: 1 of 5
-Status: Executing Phase 12
-Last activity: 2026-06-21 -- Phase 12 execution started
+## Milestone History
+
+- **v1.0 MVP** — Phases 1–7 — shipped 2026-04-27
+- **v1.1 UX Polish** — Phases 8–9 — shipped 2026-05-03
+- **v1.2 Testing** — Phases 10–13 — shipped 2026-07-26 (0 → 169 tests, 27/27 requirements)
+
+## Accumulated Context
+
+- **Open blockers:** none.
+- **Deferred (GSD process debt, non-blocking):** Phases 10 & 11 lack `VERIFICATION.md`/`VALIDATION.md`; Phase 12 `VALIDATION.md` unsigned. All 27 v1.2 requirements independently confirmed passing at audit (169/169). Backfill via `/gsd:verify-work 10`/`11` and `/gsd:validate-phase 10`/`11`/`12` if a complete audit trail is wanted.
+- **Constraint note:** the "no Flutter upgrades" constraint was scoped to v1.2 (now complete) and can be revisited next milestone.
+- Full decision log and requirement outcomes: `.planning/PROJECT.md`. Milestone summaries: `.planning/MILESTONES.md`.
 
 ### Quick Tasks Completed
 

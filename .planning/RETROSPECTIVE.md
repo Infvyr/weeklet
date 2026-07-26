@@ -49,6 +49,52 @@
 
 ---
 
+## Milestone: v1.2 — Testing
+
+**Shipped:** 2026-07-26
+**Phases:** 4 (10–13) | **Plans:** 16 | **Sessions:** multiple across ~2 months
+
+### What Was Built
+
+- **Phase 10 — Use case tests:** validation (incl. TDD `CategoryValidationError.duplicateName` case-insensitive guard), delete success/not-found, year/month filter utils (TEST-01–08).
+- **Phase 11 — BLoC tests:** all six BLoCs with `bloc_test`, shared `fake_blocs.dart`, per-test GetIt isolation for CRUD handlers that call `sl<StatsBloc>()` (TEST-09–15).
+- **Phase 12 — Widget tests:** 5 screens + 2 form components via a shared `pumpApp` helper and mocktail BLoCs; all SettingsScreen toggles verified by real UI taps (TEST-16–23).
+- **Phase 13 — Integration tests:** 4 real-Hive, widget-driven E2E flows (expense CRUD, income CRUD, stats refresh, PDF export) with byte-level PDF content verification via a hand-rolled extractor (TEST-24–27).
+
+### What Worked
+
+- **Real Hive over fakes for integration.** Phase 13 exercised the actual persistence + DI graph (harness mirrors `service_locator.dart` registration-for-registration), so integration tests proved real wiring instead of re-verifying BLoC logic already covered by unit tests.
+- **Assert what the user sees.** CRUD flows driven by real widget taps (never direct BLoC dispatch, D-01) and stats proven via the visible Stats-tab balance (D-03) — tests survive internal refactors.
+- **Independent verification paid off.** The Phase 13 verifier re-ran the full suite itself (169/169) rather than trusting SUMMARY narration, catching the premature `requirements-completed` marking in 13-01's frontmatter.
+- **Equatable-aware seeding.** Repeated pattern across StatsBloc/SettingsBloc: seed with a *distinct* prior state so a no-op transition still emits — otherwise `bloc_test` sees `[]` and fails confusingly.
+
+### What Was Inefficient
+
+- **`TestWidgetsFlutterBinding` hangs on real `dart:io` Hive writes.** Root-causing why integration tests hung forever cost real time before landing on `LiveTestWidgetsFlutterBinding()` — a non-obvious requirement now documented as a project decision.
+- **No pure-Dart PDF text extractor exists.** Had to hand-roll `extractPdfText` (zlib inflate + Tj/TJ regex) because no suitable FFI-free package is on pub.dev — worked, but was unplanned effort.
+- **`const` churn in domain tests.** Multiple plans hit `const` compile errors (`DateTime` has no const constructor; `late` repository vars aren't const) — the planner's snippets used `const` liberally and each executor had to strip it.
+
+### Patterns Established
+
+- **Real-Hive test harness:** `test/helpers/test_hive_env.dart` provides `initTestDi()`/`teardownTestDi()` with a temp-dir Hive and full DI graph; the canonical way to write an integration test in this repo.
+- **Platform fakes for file/share:** `_TestTempPathProvider implements PathProviderPlatform` + `FakeSharePlatform extends SharePlatform` avoid `MissingPluginException` in PDF export/share tests.
+- **Concrete fake BLoCs for GetIt:** fakes must `extend` the concrete BLoC type (e.g. `FakeStatsBloc extends StatsBloc`) — not bare `Bloc<E,S>` — so `sl<ConcreteBloc>()` registrations resolve.
+
+### Key Lessons
+
+1. **The verifier must run the suite, not read the summary.** Independent re-execution is what separates "claimed done" from "done" — it caught a premature completion marking that source-of-truth checkboxes would have hidden.
+2. **REQUIREMENTS.md checkbox drift persists across milestones.** As in v1.1, execution left 21/27 boxes unticked despite passing tests. The milestone audit + archive step is the reliable place to reconcile — don't trust checkbox state as coverage evidence.
+3. **Process artifacts lagged the work.** Phases 10 & 11 shipped passing tests but no `VERIFICATION.md`/`VALIDATION.md`. Verified-by-execution ≠ verified-by-artifact; if the audit trail matters, run `/gsd:verify-work` per phase during execution, not retroactively.
+4. **Fix review findings before they compound.** All four 13-REVIEW warnings were addressed in small, atomic `fix(13)` commits right after verification — cheap because the context was fresh.
+
+### Cost Observations
+
+- Model: Claude Opus / Sonnet (1M context)
+- Sessions: multiple across ~2 months (2026-05-21 → 2026-07-26)
+- Notable: longest-running milestone by calendar time, but purely additive (63 files, +11,626/−90) — no production behavior changed, so regression risk was contained to the test layer itself.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -57,6 +103,7 @@
 |-----------|--------|-------|------------|
 | v1.0 | 7 | 21 | Initial GSD setup; single-agent sequential execution |
 | v1.1 | 2 | 12 | Parallel worktree execution for Wave 2; mandatory code review gate |
+| v1.2 | 4 | 16 | Wave-based test authoring; independent verifier re-runs suite; real-Hive integration harness |
 
 ### Cumulative Quality
 
@@ -64,9 +111,12 @@
 |-----------|-------|-----------------|--------------|
 | v1.0 | 34 (use case + export) | ✓ | ArgumentError (partial) |
 | v1.1 | 34 (stable) | ✓ | Typed exception enums (complete) |
+| v1.2 | 169 (use case + BLoC + widget + integration) | ✓ | Typed exception enums (complete) |
 
 ### Top Lessons (Verified Across Milestones)
 
 1. **Domain layer must stay Flutter-free.** Any Flutter import in `lib/domain/` is a red flag — it breaks testability and localization.
 2. **Code review gate catches production bugs.** Two milestones, two mandatory reviews — both found critical issues that automated tests missed.
 3. **Stream timeouts are recoverable, not catastrophic.** Committed work survives; the recovery path (manual merge + leftover commit) is well-understood.
+4. **REQUIREMENTS.md checkbox state is not coverage evidence.** Two milestones running (v1.1, v1.2), execution left requirement boxes unticked despite passing work. Reconcile at the milestone audit/archive step; verify against the actual codebase, never the checkboxes.
+5. **Verify by execution, and record the artifact.** v1.2 proved coverage by re-running the suite, but two phases shipped without `VERIFICATION.md`. Passing tests ≠ complete audit trail — produce the verification artifact during the phase if the record matters.
