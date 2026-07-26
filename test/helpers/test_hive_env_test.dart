@@ -8,9 +8,7 @@ import 'test_hive_env.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUpAll(() {
-    registerHiveAdaptersOnce();
-  });
+  setUpAll(registerHiveAdaptersOnce);
 
   group('test_hive_env', () {
     // Registering cleanup with tearDown (not calling it inline at the end of
