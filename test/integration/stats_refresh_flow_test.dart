@@ -144,8 +144,11 @@ void main() {
     );
 
     // Confirms the ANNUAL — not monthly — balance card is shown, per this
-    // file's top-of-file doc comment.
-    expect(find.text(l10n.statsAnnualBalance), findsWidgets);
+    // file's top-of-file doc comment. findsOneWidget (not findsWidgets):
+    // statsAnnualBalance renders exactly once (StatsBalanceCard), and
+    // MainNavigation builds only the selected tab, so a second match would
+    // be a regression worth catching (IN-02).
+    expect(find.text(l10n.statsAnnualBalance), findsOneWidget);
 
     // 250.00 income - 45.50 expense = 204.50, positive so isIncome: true
     // renders the '+' sign.
