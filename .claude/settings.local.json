@@ -28,7 +28,10 @@
       "Skill(gsd-complete-milestone)",
       "Skill(gsd-plan-milestone-gaps)",
       "Skill(gsd:update)",
-      "Skill(gsd:new-milestone)"
+      "Skill(gsd:new-milestone)",
+      "Skill(gsd:quick)",
+      "Skill(gsd:health)",
+      "Skill(gsd:pause-work)"
     ]
   }
 }

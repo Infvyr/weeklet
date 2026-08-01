@@ -49,13 +49,16 @@ app.*.map.json
 .fvmrc
 
 .agent/
+.agents/
 .claude/
+.codex/
 .planning
 devtools_options.yaml
 .claude/settings.local.json
 .planning/STATE.md
 .planning/ROADMAP.md
 .planning/PROJECT.md
+AGENTS.md
 
 # gen-l10n generated files
 lib/l10n/app_localizations.dart
